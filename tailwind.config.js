@@ -4,7 +4,6 @@ module.exports = {
     'bg-primary', 'text-primary', 'border-primary',
     'bg-secondary', 'text-secondary', 'border-secondary',
     'bg-tertiary', 'text-tertiary', 'border-tertiary',
-    'bg-red', 'text-red', 'border-red',
     'bg-white', 'text-white', 'border-white',
     'bg-blue', 'text-blue', 'border-blue',
     'bg-orange', 'text-orange', 'border-orange',
@@ -17,15 +16,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#FD6600',
-        secondary: '#0167F7',
-        tertiary: '#FDE820',
-        cuaternary: '#FF4DFF',
-        quinary: '#0167F7',
-        red: '#FC4238',
+        primary: '#385CAD',
+        secondary: '#B5D3ED',
+        tertiary: '#DC9EE5',
+        cuaternary: '#9AE3BE',
+        quinary: '#9AE3BE',
         white: '#FFFFFF',
-        brown: '#5B3F2E',
-        blue: '#0167F7',
+        brown: '#847174',
+        blue: '#385CAD',
         green: '#10b981',
         orange: '#FD6600',
         yellow: '#FDE820',
@@ -34,10 +32,10 @@ module.exports = {
     
       },
       fontFamily: {
-        sans: ['Rockeby regular', 'sans-serif'],
-        title: ['Rockeby black', 'serif'],
-        heading: ['Rockeby regular', 'sans-serif'],
-        text: ['Rockeby regular', 'sans-serif']
+        sans: ['bespoke-serif', 'sans-serif'],
+        title: ['a-love-of-thunder', 'serif'],
+        heading: ['bespoke-serif', 'sans-serif'],
+        text: ['bespoke-serif', 'sans-serif']
       },
       animation: {
         'spin-slow': 'spin 5s linear infinite',
