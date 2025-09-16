@@ -41,23 +41,14 @@ const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
 <a 
   href={recipeLink} 
   class={`block group relative transition-all duration-500 ease-in-out flex-shrink-0 ${
-    isMainCard ? 'w-[530px] h-[562px]' : 'w-[310px] h-[562px]'
+    isMainCard ? 'w-[530px]' : 'w-[310px]'
   }`}
   transition:animate="fade"
 >
   <!-- Container principal con las medidas específicas -->
-  <div class={`flex flex-col ${isMainCard ? 'w-[530px] h-[562px]' : 'w-[310px] h-[562px]'} relative`}>
-    <!-- Overlay gris para tarjetas no principales -->
-    {!isMainCard && (
-      <div class="absolute inset-0 bg-[#0A0A0A40] z-10 rounded-[30px]"></div>
-    )}
-    
+  <div class={`flex flex-col gap-[25px] ${isMainCard ? 'w-[530px]' : 'w-[310px]'} relative`}>
     <!-- Imagen -->
-    <div class={`relative overflow-hidden flex-shrink-0 ${
-      isMainCard 
-        ? 'w-[530px] h-[300px] rounded-t-[30px] border-t border-r border-l border-[#388BFF]' 
-        : 'w-[310px] h-[300px] rounded-t-[30px] border-t border-r border-l border-black border-opacity-50'
-    }`}>
+    <div class={`relative overflow-hidden flex-shrink-0 w-full h-[339px] rounded-t-[21px]`}>
       <LazyImage
         src={image}
         alt={title}
@@ -66,21 +57,9 @@ const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
       />
     </div>
     
-    <!-- Información -->
-    <div class={`flex-shrink-0 ${
-      isMainCard 
-        ? 'w-[530px] h-[262px] bg-[#F8E31F] rounded-b-[30px] border-r border-b border-l border-black border-opacity-50' 
-        : 'w-[310px] h-[262px] bg-[#F8E31F] rounded-b-[30px] border border-black border-opacity-50'
-    } p-6 flex flex-col justify-between`}>
-      <!-- Título -->
-      <h3 class="font-title font-bold text-black leading-tight flex-1 flex items-center text-2xl">{title}</h3>
-      
-      <!-- Botón Ver Receta -->
-      <div class="flex justify-center">
-        <div class="flex py-5 px-2.5 justify-center w-full items-center gap-2.5 rounded-[15px] border border-[#388BFF66] bg-[#FFED41] text-black text-xl font-bold hover:bg-yellow-300 transition-colors">
-          {viewRecipeText}
-        </div>
-      </div>
+    <!-- Título -->
+    <div class="font-sans leading-[0] not-italic relative shrink-0 text-black text-[28px] tracking-[-1.5px]">
+      <p class="leading-[35px]">{title}</p>
     </div>
   </div>
 </a>

@@ -438,6 +438,32 @@
             "title": "Yumminuts",
             "url": "https://yumminuts.com",
             "alt": "Yumminuts",
+            "categories": [
+                {
+                    "id": "manies",
+                    "slug": "manies",
+                    "title": "Maníes",
+                    "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
+                    "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
+                    "bgColor": "#95CFF2"
+                },
+                {
+                    "id": "semillas",
+                    "slug": "semillas",
+                    "title": "Semillas",
+                    "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
+                    "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-semilla-2.webp",
+                    "bgColor": "#DC9EE5"
+                },
+                {
+                    "id": "maranones",
+                    "slug": "maranones",
+                    "title": "Marañones",
+                    "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
+                    "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
+                    "bgColor": "#9AE3BE"
+                }
+            ],
             "products": [
                 {
                     "id": "yummi-nut-mani-con-sal",

@@ -32,8 +32,8 @@ export interface SocialLink {
 // Logos
 export const logos = {
   principal: {
-    url: `${S3_BASE_ASSETS_URL}/zibas-logo-3.webp`,
-    alt: 'Snacks Yummies'
+    url: `${S3_BASE_ASSETS_URL}/logo-blue-yumminuts.webp`,
+    alt: 'Yummies Nuts'
   }
 };
 

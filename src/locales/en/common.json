@@ -152,7 +152,21 @@
     "email": "ayudacliente@zibas.com",
     "copyright": "Copyright 2025. Ziba's. All rights reserved.",
     "privacy_policy_text": "Privacy Policy",
-    "privacy_policy_url": "/es/politica-privacidad"
+    "privacy_policy_url": "/es/politica-privacidad",
+    "newsletter": "NEWS",
+    "newsletter_description": "Be the first to know about new products, events and surprises.",
+    "email_placeholder": "ENTER EMAIL",
+    "home": "HOME",
+    "products": "Our Products",
+    "health": "Health & Wellness",
+    "latest_news": "Latest News",
+    "contact": "Contact Us",
+    "support": "SUPPORT",
+    "privacy_policy": "Privacy Policy",
+    "cookie_policy": "Cookie Policy",
+    "terms_conditions": "Terms and Conditions",
+    "complaints_book": "Complaints Book",
+    "help": "HELP"
   },
   "messagetop":[
     {
@@ -174,5 +188,46 @@
   },
   "subscribe": {
     "success": "Thank you for subscribing!"
+  },
+  "discover": {
+    "title": "Discover Us",
+    "images": [
+      {
+        "id": "slide1",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "image1",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide2",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "image2",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide3",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "image3",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide4",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "image4",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      }
+    ]
   }
 }

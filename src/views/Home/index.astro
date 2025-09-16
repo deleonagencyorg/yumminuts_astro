@@ -1,4 +1,3 @@
-<!-- src/views/Home/index.astro -->
 ---
 import LazyImage from '../../components/common/LazyImage.astro';
 // Component Imports
@@ -10,6 +9,9 @@ import PixelGrid from '../../components/atoms/PixelGrid.astro';
 import AnimHeart from '../../components/common/AnimHeart/index.astro';
 import SocialMediaIcons from '../../components/common/SocialMediaIcons/index.astro';
 import Newsletter from '../../components/common/Newsletter/index.astro';
+import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
+import Categories from '../../components/common/Categories/index.astro';
+import Discover from '../../components/common/Discover/index.astro';
 
 // Style Imports
 import './styles.css';
@@ -36,8 +38,8 @@ const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const products = t('items', { namespace: 'products', locale: currentLang }) || [];
 const brandsList = brandsAssets.brands || [];
-const zibasBrand = brandsList.find((brand: any) => brand.id === 'zibas');
-const zibasProducts = zibasBrand?.products || [];
+const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
+const nutsCategories = nutsBrand?.categories || [];
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
 const slides = Array.isArray(commonAssets) 
@@ -53,7 +55,7 @@ const slides = Array.isArray(commonAssets)
     }))
   : [];
 
-
+const discoverAssets = t('discover', { namespace: 'common', locale: currentLang }) || {};
 
 ---
 
@@ -67,60 +69,51 @@ const slides = Array.isArray(commonAssets)
       </div>
     </div>
     
-    <!-- Sección de Productos Zibas -->
-    {zibasProducts.length > 0 && (
-      <section class="w-full py-4 bg-blue pt-16">
+    <!-- Sección de Información -->
+    <HealthInfoSection />
+
+    <!-- Sección de Productos Nuts -->
+    {nutsCategories.length > 0 && (
+      <section class="w-full py-4 bg-white pt-16">
         <div class="container mx-auto px-4">
-          {brandsAssets.home?.title && (
-          <div class="text-center mb-2 relative z-20" >
-            <h2 class="text-3xl md:text-4xl italic font-bold mb-3" style={`color: white`}>
-              {brandsAssets.home?.title}
-            </h2>
-            {brandsAssets.home?.subtitle && (
-              <h1 class="text-6xl md:text-9xl italic font-bold " style={`color: white`}>
-                {brandsAssets.home?.subtitle}
-              </h1>
-            )}
-          </div>
-        )}
-          <ProductsCarousel 
-            products={products}
-            color={'white'}
-            autoplay={true}
-            speed={4000}
-            slidesPerView={3}
-            spaceBetween={30}
-            loop={true}
-            className="max-w-7xl mx-auto mb-8"
+          <Categories 
+            products={nutsCategories}
+            title="Categorías"
           />
         </div>
       </section>
     )}
-    <!-- Sección de recetas con carrusel -->
-    <!-- <section id="recipes" class="w-full py-12" transition:animate="slide">
-      <div class="container mx-auto px-4">
+
+    <!-- Sección de video -->
+    <section id="video" class="w-full h-[30rem] bg-pink">
+
+    </section>
+
+    <!-- Sección de Recetas -->
+    <section id="recipes" class="w-full py-12" transition:animate="slide">
+      <div class="container mx-auto px-4 bg-white">
         {recipesAssets.home?.title && (
-          <div class="text-center mb-16 relative z-20" >
-            <h2 class="text-3xl md:text-4xl italic font-bold mb-4" style={`color: #5B3F2E`}>
+          <div class="text-left mb-16 relative z-20" >
+            <h2 class="text-3xl md:text-4xl text-sans font-bold mb-4" style={`color: black`}>
               {recipesAssets.home?.title}
             </h2>
-            {recipesAssets.home?.subtitle && (
-              <h1 class="text-6xl md:text-9xl italic font-bold mb-4" style={`color: #5B3F2E`}>
-                {recipesAssets.home?.subtitle}
-              </h1>
-            )}
+            
           </div>
         )}
         <RecipesCarousel 
           recipes={recipesAssets.items || []} 
-          title={recipesAssets.home?.title || 'DESCUBRE NUEVOS SABORES CON NUESTRAS'}
+          title={recipesAssets.home?.title || 'Recetas'}
           textButton={recipesAssets.home?.view_more || 'Ver Todas'}
         />
       </div>
-    </section> -->
+    </section>
 
+    <!-- Sección Descubrenos -->
+    <section id="discover" class="w-full bg-white py-16">
+      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+    </section>
 
-    <!-- Sección Gallery -->
+    <!-- Sección Gallery 
     <section id="gallery" class="bg-pink w-full py-12" transition:animate="slide">
       <div class="container mx-auto px-4">
         {Array.isArray(galleryAssets.images) && galleryAssets.images.length > 0 && (
@@ -133,7 +126,7 @@ const slides = Array.isArray(commonAssets)
         )}
       </div>
     </section>
-
+    -->
 
 
 

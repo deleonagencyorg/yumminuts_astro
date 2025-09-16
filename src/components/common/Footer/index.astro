@@ -31,6 +31,12 @@ const instagramUrl = t('social_media.instagram.url', { namespace: 'common', loca
 const facebookUrl = t('social_media.facebook.url', { namespace: 'common', locale: currentLang });
 const instagramIconUrl = t('social_media.instagram.iconUrl', { namespace: 'common', locale: currentLang });
 const facebookIconUrl = t('social_media.facebook.iconUrl', { namespace: 'common', locale: currentLang });
+const twitterUrl = t('social_media.twitter.url', { namespace: 'common', locale: currentLang });
+const twitterIconUrl = t('social_media.twitter.iconUrl', { namespace: 'common', locale: currentLang });
+const twitterText = t('social_media.twitter.text', { namespace: 'common', locale: currentLang });
+const youtubeUrl = t('social_media.youtube.url', { namespace: 'common', locale: currentLang });
+const youtubeIconUrl = t('social_media.youtube.iconUrl', { namespace: 'common', locale: currentLang });
+const youtubeText = t('social_media.youtube.text', { namespace: 'common', locale: currentLang });
 
 // Obtener el logo específico de Zibas desde brands.json
 const zibasLogo = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-logo-3.webp';
@@ -39,97 +45,54 @@ const zibasLogo = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/ziba
 {loading ? (
   <Skeleton />
 ) : (
-  <footer class="bg-secondary text-white relative overflow-hidden">
-    <div class="container mx-auto px-6 py-8 md:py-8 flex md:flex-row flex-col items-center justify-center md:gap-20 lg:gap-80">
-      <div class="w-full md:w-1/3 mb-8 md:mb-0 flex justify-start items-start flex-col">
-        <h3 class="font-title text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-            {mainText}
-          </h3>
-          <p class="font-sans italic text-sm md:text-base leading-relaxed w-100%">
-            {description}
-          </p>
-      </div>
-      <div class="w-full md:w-1/3 flex justify-start items-start flex-col">
-       <div class="md:flex flex-row items-center hidden ">
-        <h3 class="font-title text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight mr-4 ">
-            {choose}
-          </h3>
-        <a href={`/${currentLang}/`} >
-            <LazyImage 
-              src={logos.principal.url} 
-              alt={logos.principal.alt || 'Zibas Logo'} 
-              class="h-16 md:h-20 lg:h-24 w-auto -mt-4"
-            />
-        </a>
-       </div> 
-       <div class="flex justify-start items-start flex-row md:space-x-4 space-x-24">
-        <div class="text-center lg:text-right">
-            <h3 class="font-title text-lg md:text-xl font-bold mb-3">
-              {followUs}
-            </h3>
-            <div class="flex flex-col space-y-1">
-              <div>
-                <a 
-                href={instagramUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="font-sans text-sm md:text-base hover:underline transition-all duration-200 hover:opacity-80 flex items-center justify-center lg:justify-end space-x-2"
-              >                
-                <LazyImage 
-                  src={instagramIconUrl} 
-                  alt={instagramText} 
-                    class="h-6 md:h-2 lg:h-8 w-auto"
-                    color="white"
-                />
-                <span>{instagramText}</span>
-              </a>
-              </div>
-              <div class="flex items-center justify-start space-x-2">
-              <a 
-                href={facebookUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="font-sans text-sm md:text-base hover:underline transition-all duration-200 hover:opacity-80 flex items-center justify-center lg:justify-end space-x-2"
-              >
-                <LazyImage 
-                  src={facebookIconUrl} 
-                  alt={facebookText} 
-                  color="white"
-                  class="h-6 md:h-2 lg:h-8 w-auto"
-                />
-                <span>{facebookText}</span>
-              </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contáctanos -->
-          <div class="text-start">
-            <h3 class="font-title text-lg md:text-xl font-bold mb-3">
-              {contactUs}
-            </h3>
-            <div class="flex flex-col space-y-1">
-              <a 
-                href={`mailto:${email}`}
-                class="font-sans text-sm md:text-base hover:underline transition-all duration-200 hover:opacity-80"
-              >
-                {email}
-              </a>
-            </div>
-          </div>
-       </div>
-      </div>
-     
-    </div>
-    <div class="w-full text-center container mx-auto px-6 py-4 flex items-center justify-center flex-col">
-        <div class="flex items-center md:space-x-16 lg:space-x-24 flex-col md:flex-row">
-          <div class="hidden md:block"><LazyImage src="https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-derecho 2.webp" alt="Ziba's papas" class="h-16 md:h-20 lg:h-24 w-auto -mt-4 transform rotate-180" /></div>
-          <div class="text-center text-2xl">{currentLang=='es' ? `Copyright ${new Date().getFullYear()} Zibas. Todos los derechos reservados.` : `Copyright ${new Date().getFullYear()} Zibas. All rights reserved.`}</div>
-          <div class="hidden md:block"><LazyImage src="https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-derecho 2.webp" alt="Ziba's papas" class="h-16 md:h-20 lg:h-32 w-auto -mt-4 " /></div>
+  <footer class="bg-secondary text-primary relative overflow-hidden">
+    <div class="container mx-auto px-6 py-8 md:py-8 flex flex-col md:flex-row items-start md:items-center justify-between">
+      <div class="flex flex-col gap-12 items-start justify-start pl-2.5 pr-0 py-0 relative shrink-0 w-full md:w-1/2 lg:w-[670px]">
+        <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
+          {t('footer.newsletter', { namespace: 'common', locale: currentLang })}
         </div>
-      <div class="hidden md:block"><LazyImage src="https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-derecho 2.webp" alt="Ziba's papas" class="h-16 md:h-20 lg:h-24 w-auto -mt-4 transform -rotate-45" /></div>
+        
+      </div>
+      <div class="flex items-start justify-between pl-0 pr-2.5 py-0 relative shrink-0 w-full md:w-1/2 lg:w-[670px] mt-8 md:mt-0">
+        <div class="flex flex-col gap-12 items-start justify-start relative shrink-0">
+          <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
+            {t('footer.home', { namespace: 'common', locale: currentLang })}
+          </div>
+          <div class="flex flex-col font-sans gap-6 items-start justify-start leading-relaxed not-italic relative shrink-0 text-primary text-lg">
+            <a href={`/${currentLang}/products`} class="hover:underline">{t('footer.products', { namespace: 'common', locale: currentLang })}</a>
+            <a href={`/${currentLang}/health`} class="hover:underline">{t('footer.health', { namespace: 'common', locale: currentLang })}</a>
+            <a href={`/${currentLang}/news`} class="hover:underline">{t('footer.latest_news', { namespace: 'common', locale: currentLang })}</a>
+            <a href={`/${currentLang}/contact`} class="hover:underline">{t('footer.contact', { namespace: 'common', locale: currentLang })}</a>
+          </div>
+        </div>
+        <div class="flex flex-col gap-12 items-start justify-start relative shrink-0">
+          <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
+            {t('footer.support', { namespace: 'common', locale: currentLang })}
+          </div>
+          <div class="flex flex-col font-sans gap-6 items-start justify-start leading-relaxed not-italic relative shrink-0 text-primary text-lg">
+            <a href="#" class="hover:underline">{t('footer.privacy_policy', { namespace: 'common', locale: currentLang })}</a>
+            <a href="#" class="hover:underline">{t('footer.cookie_policy', { namespace: 'common', locale: currentLang })}</a>
+            <a href="#" class="hover:underline">{t('footer.terms_conditions', { namespace: 'common', locale: currentLang })}</a>
+            <a href="#" class="hover:underline">{t('footer.complaints_book', { namespace: 'common', locale: currentLang })}</a>
+          </div>
+        </div>
+        <div class="flex flex-col gap-10 items-start justify-start relative shrink-0">
+          <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
+            {t('footer.help', { namespace: 'common', locale: currentLang })}
+          </div>
+          <div class="flex gap-4 items-center justify-start relative shrink-0">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+              <LazyImage src={instagramIconUrl} alt={instagramText} class="h-8 w-8" />
+            </a>
+            <a href={facebookUrl} target="_blank" rel="noopener noreferrer">
+              <LazyImage src={facebookIconUrl} alt={facebookText} class="h-8 w-8" />
+            </a>
+            
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Chips decorativos -->
+    
     <div class="w-full border-t border-white border-[1.5px] mt-6 pt-6">
         <div class="container mx-auto">
           <div class="text-center mb-4">

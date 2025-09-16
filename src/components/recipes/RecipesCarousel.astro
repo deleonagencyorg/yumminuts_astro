@@ -32,16 +32,17 @@ function getCategoryKey(recipe: any): string {
   // mapear posibles variaciones a claves conocidas
   if (['breakfast', 'desayuno'].includes(key)) return 'breakfast';
   if (['brunch'].includes(key)) return 'brunch';
+  if (['snack', 'merienda'].includes(key)) return 'snack';
   if (['lunch', 'almuerzo'].includes(key)) return 'lunch';
   return key || 'other';
 }
 
 // Etiquetas por idioma (solo UI)
 const filterLabels = currentLang === 'es'
-  ? { breakfast: 'DESAYUNO', brunch: 'BRUNCH', lunch: 'ALMUERZO', all: 'TODO' }
-  : { breakfast: 'BREAKFAST', brunch: 'BRUNCH', lunch: 'LUNCH', all: 'ALL' };
+  ? { breakfast: 'DESAYUNOS', brunch: 'SNACK ENERGÉTICOS', lunch: 'ALMUERZOS', all: 'CENAS' }
+  : { breakfast: 'BREAKFAST', brunch: 'ENERGY SNACKS', lunch: 'LUNCH', all: 'DINNER' };
 
-// Para desktop: mostrar 4 tarjetas por vista, avanzar de 1 en 1
+// Para desktop: mostrar 3 tarjetas por vista, avanzar de 1 en 1
 // Para mobile: 2 por slide (agrupadas de a 2)
 const mobileGroups = [] as any[];
 for (let i = 0; i < recipeItems.length; i += 2) {
@@ -57,17 +58,17 @@ for (let i = 0; i < recipeItems.length; i += 2) {
     <!-- Seccion de recetas -->
     
     <!-- Botones de filtro -->
-    <div class="flex gap-2.5 mb-8 px-4 md:px-0 justify-center" id="recipesFilters">
-      <button type="button" data-filter="breakfast" class="filter-btn flex py-5 px-2.5 justify-center items-center gap-2.5 flex-1  text-xl rounded-full border border-brown bg-yellow font-bold text-brown hover:bg-yellow-400 transition-colors">
+    <div class="flex gap-5 mb-8 px-4 md:px-0 justify-start" id="recipesFilters">
+      <button type="button" data-filter="breakfast" class="filter-btn flex py-5 px-[25px] justify-center items-center gap-2.5 shrink-0 text-[20px] rounded-[10px] bg-skyblue text-primary font-sans text-nowrap hover:bg-skyblue hover:text-primary transition-colors">
         {filterLabels.breakfast}
       </button>
-      <button type="button" data-filter="brunch" class="filter-btn flex py-5 px-2.5 justify-center items-center gap-2.5 flex-1 text-xl rounded-full border border-brown bg-yellow font-bold text-brown hover:bg-yellow-400 transition-colors">
+      <button type="button" data-filter="brunch" class="filter-btn flex py-5 px-[25px] justify-center items-center gap-2.5 shrink-0 text-[20px] rounded-[10px] bg-gray-200 text-black font-sans text-nowrap hover:bg-skyblue hover:text-primary transition-colors">
         {filterLabels.brunch}
       </button>
-      <button type="button" data-filter="lunch" class="filter-btn flex py-5 px-2.5 justify-center items-center gap-2.5 flex-1 text-xl rounded-full border border-brown bg-yellow font-bold text-brown hover:bg-yellow-400 transition-colors">
+      <button type="button" data-filter="lunch" class="filter-btn flex py-5 px-[25px] justify-center items-center gap-2.5 shrink-0 text-[20px] rounded-[10px] bg-gray-200 text-black font-sans text-nowrap hover:bg-skyblue hover:text-primary transition-colors">
         {filterLabels.lunch}
       </button>
-      <button type="button" data-filter="all" class="filter-btn flex py-5 px-2.5 justify-center items-center gap-2.5 flex-1 text-xl rounded-full border border-brown bg-yellow font-bold text-brown hover:bg-yellow-400 transition-colors">
+      <button type="button" data-filter="all" class="filter-btn flex py-5 px-[25px] justify-center items-center gap-2.5 shrink-0 text-[20px] rounded-[10px] bg-gray-200 text-black font-sans text-nowrap hover:bg-skyblue hover:text-primary transition-colors">
         {filterLabels.all}
       </button>
     </div>
@@ -98,7 +99,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
       </div>
       
       <!-- Controles de navegación desktop (flechas y puntos en la parte inferior) -->
-      <div class="flex justify-center items-center gap-4 mt-8">
+      <div class="flex justify-center items-center gap-4 mt-5">
         <!-- Flecha anterior -->
         <button class="carousel-prev bg-white text-brown p-2 rounded-full shadow-lg z-10" aria-label="Anterior" id="prevBtnDesktop">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,7 +111,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
         <div class="carousel-dots-desktop flex gap-2"></div>
         
         <!-- Flecha siguiente -->
-        <button class="carousel-next bg-white text-brown p-2 rounded-full shadow-lg z-10" aria-label="Siguiente" id="nextBtnDesktop">
+        <button class="carousel-next bg-blue text-white p-2 rounded-full shadow-lg z-10" aria-label="Siguiente" id="nextBtnDesktop">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
@@ -120,7 +121,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
     
     <!-- Botón "Ver Todas" - Visible en ambos modes -->
     <div class="flex justify-center mt-6 w-full px-4 md:px-0">
-      <a href={`/${currentLang === 'es' ? 'es/recetas' : 'en/recipes'}`} class="bg-yellow text-brown font-bold py-2 px-8 rounded-full hover:border-brown hover:border-2 hover:bg-brown hover:text-yellow transition-colors w-full md:w-auto text-center font-title text-2xl">
+      <a href={`/${currentLang === 'es' ? 'es/recetas' : 'en/recipes'}`} class="bg-blue text-white font-bold py-2 px-8 rounded-full hover:border-brown hover:border-2 hover:bg-white hover:text-primary transition-colors w-full md:w-auto text-center font-sans text-2xl">
         {textButton}
       </a>
     </div>
@@ -132,7 +133,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
     if (!root || root.dataset.rcInitialized === 'true') return;
     root.dataset.rcInitialized = 'true';
     // Estado de filtro actual
-    let currentFilter = 'all';
+    let currentFilter = 'breakfast';
 
     // Setup filtros
     const filtersContainer = root.querySelector('#recipesFilters');
@@ -150,8 +151,14 @@ for (let i = 0; i < recipeItems.length; i += 2) {
         const filter = btn.getAttribute('data-filter') || 'all';
         currentFilter = filter;
         // estilos activos
-        filterButtons.forEach(b => b.classList.remove('ring-2', 'ring-brown'));
-        btn.classList.add('ring-2', 'ring-brown');
+        filterButtons.forEach(b => {
+          b.className = b.className.replace(/bg-\[#b7e4ff\]/g, 'bg-gray-200');
+          b.className = b.className.replace(/text-\[#3e6dd7\]/g, 'text-black');
+          b.className = b.className.replace(/font-\['Bespoke_Serif_Variable:Medium',_sans-serif\]/g, "font-sans");
+        });
+        btn.className = btn.className.replace(/bg-\[#f2f2f2\]/g, 'bg-skyblue');
+        btn.className = btn.className.replace(/text-\[#242424\]/g, 'text-primary');
+        btn.className = btn.className.replace(/font-\['Bespoke_Serif_Variable:Regular',_sans-serif\]/g, "font-sans");
         // aplicar filtros
         applyFilterMobile();
         applyFilterDesktop();
@@ -285,7 +292,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
       });
 
       nextClone.addEventListener('click', () => {
-        if (currentSlide < Math.max(0, visibleSlides.length - 4)) {
+        if (currentSlide < Math.max(0, visibleSlides.length - 3)) {
           currentSlide++;
           updateDesktopCarousel();
         }
@@ -293,7 +300,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
 
       function createDesktopDots() {
         dotsContainer.innerHTML = '';
-        const totalDots = Math.max(0, visibleSlides.length - 3); // totalSlides - 4 + 1
+        const totalDots = Math.max(0, visibleSlides.length - 2); // totalSlides - 3 + 1
         for (let i = 0; i < totalDots; i++) {
           const dot = document.createElement('button');
           dot.classList.add('w-3', 'h-3', 'rounded-full', i === currentSlide ? 'bg-white' : 'bg-gray-300');
@@ -406,7 +413,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
           }
 
           // Mostrar/ocultar slides visibles en ventana
-          if (index >= currentSlide && index < currentSlide + 4) {
+          if (index >= currentSlide && index < currentSlide + 3) {
             slide.style.display = 'block';
           } else {
             slide.style.display = 'none';
@@ -427,7 +434,7 @@ for (let i = 0; i < recipeItems.length; i += 2) {
 
         // Habilitar/deshabilitar botones
         prevClone.classList.toggle('opacity-50', currentSlide === 0);
-        nextClone.classList.toggle('opacity-50', currentSlide >= Math.max(0, visibleSlides.length - 4));
+        nextClone.classList.toggle('opacity-50', currentSlide >= Math.max(0, visibleSlides.length - 2));
       }
     }
   }

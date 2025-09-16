@@ -12,8 +12,8 @@ export interface HeaderColors {
 
 // Configuración por defecto
 export const defaultHeaderColors: HeaderColorConfig = {
-  textColor: 'text-white',
-  backgroundColor: 'bg-blue',
+  textColor: 'text-primary',
+  backgroundColor: 'bg-white',
   hoverTextColor: 'hover:text-gray-300',
   hoverBackgroundColor: 'hover:bg-blue-800',
   showMessageCarousel: true,
@@ -110,8 +110,8 @@ export const headerColors: HeaderColors = {
   
   // Configuración para la página de inicio
   home: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-primary',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-gray-300',
     hoverBackgroundColor: 'hover:bg-blue-800',
     showMessageCarousel: true,

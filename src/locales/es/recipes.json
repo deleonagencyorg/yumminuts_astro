@@ -4,14 +4,14 @@
     "description": "¡Combinaciones realmente explosivas! Descubrí aquí recetas fáciles de preparar con tus Taqueritos favoritos y la colaboración de nuestro chef Marco Prats."
   },
   "page": {
-    "title": "Descubre nuevos sabores con nuestras",
+    "title": "Recetas",
     "subtitle": "RECETAS",
     "description": "¡Combinaciones realmente explosivas! Descubrí aquí recetas fáciles de preparar con tus Taqueritos favoritos y la colaboración de nuestro chef Marco Prats.",
     "no_recipes": "No hay recetas disponibles en este momento.",
     "read_more": "Leer más"
   },
   "home": {
-    "title": "Descubre nuevos sabores con nuestras",
+    "title": "Recetas",
     "subtitle": "RECETAS",
     "related_recipes": "Recetas relacionadas",
     "recipes": "Ingredientes",
@@ -64,7 +64,7 @@
       "id": "TaqueDogs",
       "slug": "taqueritos-Queso funcion - TaqueDogs",
       "title": "TaqueDogs ",
-      "category": "Lunch",
+      "category": "breakfast",
       "image": "https://taqueritos.com/wp-content/uploads/2022/12/TaqueDogs.webp",
       "product_image": "https://snack.yummiespromociones.com/taqueritos/taqueritoqueso.png",
       "preparation_time": 15,
@@ -98,7 +98,7 @@
       "image": "https://snack.yummiespromociones.com/taqueritos/Elote_loco_Con_Chile_Taqueritos.webp",
       "product_image": "https://snack.yummiespromociones.com/taqueritos/taqueritochile.webp",
       "preparation_time": 20,
-      "category": "Brunch",
+      "category": "breakfast",
       "ingredients": [
         "2 elotes de maíz",
         "1 bolsa de Taqueritos Chile Toreado",
@@ -122,7 +122,7 @@
       "image": "https://snack.yummiespromociones.com/taqueritos/Dados_Queso_T.webp",
       "product_image": "https://snack.yummiespromociones.com/taqueritos/taqueritochile.webp",
       "preparation_time": 20,
-      "category": "Brunch",
+      "category": "snack",
       "ingredients": [
         "1 libra de queso crema o quesillo en dados.",
         "1 taza de harina",
@@ -145,7 +145,7 @@
       "image": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
       "product_image": "https://snack.yummiespromociones.com/taqueritos/taqueritochile.webp",
       "preparation_time": 15,
-      "category": "Brunch",
+      "category": "lunch",
           "ingredients": [
         "1 lechuga romana",
         "1 pechuga de pollo",
