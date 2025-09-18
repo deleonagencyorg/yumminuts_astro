@@ -1,0 +1,110 @@
+---
+// src/components/common/ProductImageCarousel/index.astro
+export interface Props {
+  images: string[];
+  productName: string;
+  activeImageIndex?: number;
+  className?: string;
+}
+
+const { images, productName, activeImageIndex = 0, className = "" } = Astro.props;
+---
+
+<div class={`product-image-carousel flex flex-col gap-5 ${className}`} data-component="product-image-carousel">
+  {images.map((image, index) => (
+    <div 
+      class={`relative shrink-0 size-[95px] cursor-pointer transition-all duration-300 hover:scale-105 ${
+        index === activeImageIndex ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+      }`}
+      data-image-index={index}
+      data-node-id={`carousel-${index}`}
+    >
+      {index === 0 ? (
+        // First image with special frame styling
+        <div class="relative size-full">
+          <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-md">
+            <div class="absolute inset-2 bg-white rounded-md overflow-hidden">
+              <img 
+                alt={`${productName} - View ${index + 1}`}
+                class="block w-full h-full object-contain transition-transform duration-300 hover:scale-110" 
+                src={image}
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        // Other images with simpler frame
+        <div class="relative size-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <img 
+            alt={`${productName} - View ${index + 1}`}
+            class="block w-full h-full object-contain transition-transform duration-300 hover:scale-110" 
+            src={image}
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  // Handle image carousel interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.querySelector('[data-component="product-image-carousel"]');
+    if (!carousel) return;
+
+    const imageItems = carousel.querySelectorAll('[data-image-index]');
+    const mainProductImage = document.querySelector('#product-image');
+
+    imageItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        // Remove active class from all items
+        imageItems.forEach(i => i.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2'));
+        
+        // Add active class to clicked item
+        item.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+
+        // Update main product image if it exists
+        if (mainProductImage) {
+          const img = item.querySelector('img');
+          if (img && mainProductImage instanceof HTMLImageElement) {
+            mainProductImage.src = img.src;
+            mainProductImage.alt = img.alt;
+          }
+        }
+
+        // Dispatch custom event
+        const changeEvent = new CustomEvent('imageChanged', {
+          detail: { index, src: item.querySelector('img')?.src }
+        });
+        carousel.dispatchEvent(changeEvent);
+      });
+    });
+  });
+</script>
+
+<style>
+  .product-image-carousel {
+    /* Custom scrollbar for vertical overflow if needed */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .product-image-carousel::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .product-image-carousel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .product-image-carousel::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  .product-image-carousel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+</style>

@@ -23,8 +23,8 @@ export const defaultHeaderColors: HeaderColorConfig = {
 export const headerColors: HeaderColors = {
   // Configuración por defecto (se aplica a todas las páginas)
   default: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-primary',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-gray-300',
     hoverBackgroundColor: 'hover:bg-blue-800',
     showMessageCarousel: true,
@@ -65,7 +65,7 @@ export const headerColors: HeaderColors = {
   
   // Configuración para la página de productos
   products: {
-    textColor: 'text-white',
+    textColor: 'text-primary',
     backgroundColor: 'bg-blue-900',
     hoverTextColor: 'hover:text-gray-300',
     hoverBackgroundColor: 'hover:bg-blue-800',

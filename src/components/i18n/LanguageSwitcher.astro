@@ -57,7 +57,7 @@ const esUrl = activeLocale === 'es' ? currentPath : getTranslatedPath('es');
 const enUrl = activeLocale === 'en' ? currentPath : getTranslatedPath('en');
 
 // Usar colores por defecto si no se proporciona configuración
-const textColor = headerColorConfig?.textColor || 'text-white';
+const textColor = headerColorConfig?.textColor || 'text-black';
 const hoverTextColor = headerColorConfig?.hoverTextColor || 'hover:text-yellow-300';
 ---
 
@@ -65,8 +65,7 @@ const hoverTextColor = headerColorConfig?.hoverTextColor || 'hover:text-yellow-3
   <div class="flex items-center space-x-2">
     {activeLocale === 'es' && (
  <a href={enUrl} class={`font-title language-link flex items-center ${activeLocale === 'es' ? 'font-bold text-yellow-500' : `${textColor} ${hoverTextColor}`}`} title="English" data-lang="en">
-   
-      <span class={textColor}>EN</span>
+      <span class="text-black">EN</span>
     </a>
     )}
     {activeLocale === 'en' && (

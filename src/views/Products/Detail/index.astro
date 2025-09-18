@@ -6,6 +6,7 @@ import './styles.css';
 import { initProductDetail } from './scripts.js';
 import ProductsCarousel from '../../../components/common/ProductsCarousel/index.astro';
 import LazyImage from '../../../components/common/LazyImage.astro';
+import ProductImageCarousel from '../../../components/common/ProductImageCarousel/index.astro';
 
 
 // Interfaces locales
@@ -89,6 +90,16 @@ if (allProductsArray.length > 1) {
     .slice(0, 3);
 }
 
+// Preparar imágenes para el carousel (usando la imagen principal y variaciones)
+const carouselImages = [
+  safeProduct.image,
+  // Para demo, duplicamos la imagen. En producción, estas serían diferentes vistas del producto
+  safeProduct.image,
+  safeProduct.image,
+  safeProduct.image,
+  safeProduct.image
+];
+
 
 ---
 
@@ -101,6 +112,16 @@ if (allProductsArray.length > 1) {
     transition:animate="slide"
   >
     <div class="md:mt-[0] container mx-auto px-6 py-5 flex flex-col md:flex-row gap-5">
+      {/* Product Image Carousel */}
+      <div class="hidden md:flex md:flex-col md:justify-start md:items-center md:pr-4">
+        <ProductImageCarousel 
+          images={carouselImages}
+          productName={safeProduct.name}
+          activeImageIndex={0}
+          className="max-h-[605px] overflow-y-auto"
+        />
+      </div>
+      
       {/* Contenedor de la imagen del lado izquierdo */}
       <div class="relative flex justify-center items-center w-full md:w-[605px] p-4 md:px-28 md:py-16 rounded-[85px] gap-2 cursor-pointer overflow-hidden group" style={{ backgroundColor: safeProduct.color_button }}>
         {/* Overlay para el efecto de oscurecimiento */}
