@@ -7,6 +7,10 @@ import { initProductDetail } from './scripts.js';
 import ProductsCarousel from '../../../components/common/ProductsCarousel/index.astro';
 import LazyImage from '../../../components/common/LazyImage.astro';
 import ProductImageCarousel from '../../../components/common/ProductImageCarousel/index.astro';
+import ProductBenefits from '../../../components/common/ProductBenefits/index.astro';
+import RelatedProducts from '../../../components/common/RelatedProducts/index.astro';
+import Categories from '../../../components/common/Categories/index.astro';
+import Discover from '../../../components/common/Discover/index.astro';
 
 
 // Interfaces locales
@@ -25,6 +29,7 @@ interface Stockist {
 interface Product {
   id: string;
   name: string;
+  category: string;
   image: string;
   available?: string;
   background_image: string;
@@ -53,8 +58,10 @@ const product = products.find((item: Product) => item.id === productId);
 const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const brandsList = brandsAssets.brands || [];
-const zibasBrand = brandsList.find((brand: any) => brand.id === 'zibas');
-const zibasProducts = (zibasBrand?.products || []).filter((product: any) => product.id !== productId);
+const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
+const nutsCategories = nutsBrand?.categories || [];
+const discoverAssets = t('discover', { namespace: 'common', locale: currentLang }) || {};
+
 
 // Si el producto no existe, lanzar error
 if (!product || Object.keys(product).length === 0) {
@@ -65,6 +72,7 @@ if (!product || Object.keys(product).length === 0) {
 const safeProduct: Product = {
   id: product.id || '',
   name: product.name || '',
+  category: product.category || '',
   image: product.image || '',
   background_image: product.background_color || '',
   background_color: product.background_color || '',
@@ -100,6 +108,25 @@ const carouselImages = [
   safeProduct.image
 ];
 
+// Preparar beneficios del producto
+const productBenefits = [
+  {
+    icon: "/src/assets/gluten-free.svg",
+    text: currentLang === 'es' ? "100% libre de gluten" : "100% gluten free",
+    alt: "Gluten free icon"
+  },
+  {
+    icon: "/src/assets/gluten-free.svg", 
+    text: currentLang === 'es' ? "Sin conservantes" : "No preservatives",
+    alt: "No preservatives icon"
+  },
+  {
+    icon: "/src/assets/gluten-free.svg",
+    text: currentLang === 'es' ? "Natural" : "Natural",
+    alt: "Natural icon"
+  }
+];
+
 
 ---
 
@@ -123,7 +150,7 @@ const carouselImages = [
       </div>
       
       {/* Contenedor de la imagen del lado izquierdo */}
-      <div class="relative flex justify-center items-center w-full md:w-[605px] p-4 md:px-28 md:py-16 rounded-[85px] gap-2 cursor-pointer overflow-hidden group" style={{ backgroundColor: safeProduct.color_button }}>
+      <div class="relative flex justify-center items-center w-full md:w-[505px] p-4 md:px-28 md:py-16 rounded-[85px] gap-2 cursor-pointer overflow-hidden group" style={{ backgroundColor: safeProduct.color_button }}>
         {/* Overlay para el efecto de oscurecimiento */}
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 rounded-[85px]"></div>
         <img id="product-image" class="relative z-10 max-w-full h-auto transition-transform duration-300 group-hover:scale-110" src={safeProduct.image} alt={safeProduct.name} transition:name={`product-image-${safeProduct.id}`} />
@@ -131,112 +158,73 @@ const carouselImages = [
       
       {/* Contenido del lado derecho */}
       <div class="w-full md:w-1/2 md:h-[605px] h-auto">
+      <h4 class="md:text-2xl text-xl font-sans uppercase " style={{ color: safeProduct.header_text_color }}>{safeProduct.category}</h4>
         <div class="flex justify-between items-center mb-6">
-          <h1 class="md:text-6xl text-6xl font-bold uppercase italic" style={{ color: safeProduct.header_text_color }}>{safeProduct.name}</h1>
+          
+          <h3 class="md:text-2xl text-xl font-sans font-semibold uppercase " style={{ color: safeProduct.header_text_color }}>{safeProduct.name}</h3>
           <a 
             href="#" 
-            class="flex h-[54px] justify-center items-center gap-[10px] px-10 py-5 rounded-[47px] border whitespace-nowrap uppercase italic font-title text-xl font-medium"
-            style={{ color: safeProduct.header_text_color, borderColor: safeProduct.header_text_color, backgroundColor: safeProduct.color_button }}
+            class="flex h-[54px] justify-center items-center gap-[10px] px-10 py-5 rounded-[47px] bg-primary border whitespace-nowrap uppercase font-title text-lg font-medium text-white"
+            style={{  borderColor: safeProduct.header_text_color}}
           >
             {currentLang === 'es' ? 'ENCUÉNTRALO' : 'FIND IT'}
           </a>
         </div>
-        <h1 
-          class="uppercase italic font-title md:text-4xl text-xl  font-medium text-[${safeProduct.header_text_color}] py-4"
-          style={{ color: safeProduct.header_text_color }}>
-         {currentLang === 'es' ? 'DESCRIPCIÓN' : 'DESCRIPTION'}
-        </h1>
-        <h2 
-          class=" md:text-3xl text-2xl italic font-text font-medium gap-30 py-5"
+        
+        <p
+          class=" md:text-lg text-lg font-text font-medium gap-30 py-5"
           style={{ color: safeProduct.header_text_color }}
         >
             {safeProduct.description}
-        </h2>
+        </p>
 
-        <h1 
-          class="uppercase italic font-title md:text-4xl text-xl  font-medium text-[${safeProduct.header_text_color}] py-4"
-          style={{ color: safeProduct.header_text_color }}>
-          {currentLang === 'es' ? 'PRESENTACIONES' : 'PRESENTATIONS'}
-        </h1>
-        <h2 
-          class=" md:text-3xl text-2xl italic font-text font-medium py-5"
-          style={{ color: safeProduct.header_text_color }}
-        >
-            {currentLang === 'es' ? 'Tamaño por presentación varía de acuerdo al país.​' : 'The size of the presentation varies according to the country.'}
-        </h2>
+        {/* Product Benefits Section */}
+        <div class="my-8">
+          <ProductBenefits 
+            title={currentLang === 'es' ? 'Beneficios' : 'Benefits'}
+            benefits={productBenefits}
+            titleColor={safeProduct.header_text_color}
+            textColor="#385cad"
+            className="w-full"
+          />
+        </div>
 
-        {safeProduct.weight && safeProduct.weight.length > 0 && (
-          <div class="flex flex-wrap gap-2 my-4">
-            {safeProduct.weight.map((weight, index) => (
-              <div class="flex flex-col items-center">
-                <span class="flex h-[75px] px-[35px] py-4 flex-col justify-center items-center gap-2 flex-1 rounded-[15px] border text-lg md:text-xl font-bold" style={{ color: safeProduct.header_text_color, borderColor: safeProduct.header_text_color, backgroundColor: safeProduct.color_button }}>{weight}</span>
-              </div>
-            ))}
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div class="my-8">
+            <RelatedProducts 
+              products={relatedProducts}
+              currentLang={currentLang}
+              title={currentLang === 'es' ? '' : ''}
+              titleColor={safeProduct.header_text_color}
+              className="w-full"
+            />
           </div>
         )}
 
-        {/* Sección de Stockists */}
-        {stockists && stockists.length > 0 && (
-          <div class="stockists-section mt-8 mb-16">
-            <h1 
-              class="uppercase italic font-title md:text-4xl text-xl font-medium py-4"
-              style={{ color: safeProduct.header_text_color }}>
-              {currentLang === 'es' ? productsAssets.product_available || 'DISPONIBLE EN' : 'AVAILABLE AT'}
-            </h1>
-            <div class="flex flex-wrap gap-4 my-4 mb-8">
-              {stockists.map((stockist: Stockist) => (
-                <div 
-                  class="flex items-center justify-center h-[100px] w-[100px] p-2 rounded-[15px] border hover:scale-105 transition-transform"
-                  style={{ borderColor: safeProduct.header_text_color, backgroundColor: safeProduct.color_button }}
-                >
-                  <a href={stockist.link} target="_blank" rel="noopener noreferrer">  
-                  <LazyImage
-                    src={stockist.icon} 
-                    alt={stockist.name}
-                    color={safeProduct.background_color==='#FDE820'?'black':'white'}
-                    class="w-full h-full object-contain"
-                    title={stockist.name}
-                  />
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-     
+        
       </div>
     </div>
   </article>
 )}
-<!-- Sección de Productos Zibas -->
-    {products.length > 0 && (
-      <section class="w-full py-16 bg-blue">
-        <div class="container mx-auto px-4">
-          {brandsAssets.home?.title && (
-          <div class="text-center mb-8 relative z-20" >
-            <h2 class="text-3xl md:text-4xl italic font-bold mb-4" style={`color: white`}>
-              {brandsAssets.home?.title}
-            </h2>
-            {brandsAssets.home?.subtitle && (
-              <h1 class="text-6xl md:text-9xl italic font-bold mb-4" style={`color: white`}>
-                {brandsAssets.home?.subtitle}
-              </h1>
-            )}
-          </div>
-        )}
-          <ProductsCarousel 
-            products={products}
-            color={'white'}
-            autoplay={true}
-            speed={4000}
-            slidesPerView={3}
-            spaceBetween={30}
-            loop={true}
-            className="max-w-7xl mx-auto"
+
+<!-- Sección de Productos Nuts -->
+    {nutsCategories.length > 0 && (
+      <section class="w-full py-2 bg-white pt-10">
+        <div class="container mx-auto ">
+          <Categories 
+            products={nutsCategories}
+            title="Categorías"
           />
         </div>
       </section>
-    )}
+  )}
+
+  <section id="discover" class="w-full bg-white py-16">
+      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+  </section>
+
+
 <script>
   // Este script se ejecuta solo en el navegador
   import { initProductDetail } from './scripts.js';

@@ -15,11 +15,11 @@ export interface Props {
 const { title, images } = Astro.props;
 ---
 
-<div class="box-border flex flex-col gap-12 items-left justify-start container mx-auto px-4 py-0 relative w-full bg-white">
-  <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+<div class="box-border flex flex-col gap-12 items-left justify-start container mx-auto  py-0 relative w-full bg-white">
+  <h2 class="font-heading font-bold leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
     {title}
   </h2>
-  <div class="flex items-center justify-evenly gap-12 md:justify-between w-full max-w-6xl">
+  <div class="flex items-center justify-evenly gap-12 md:justify-between w-full ">
     {images.map((image) => (
       <a href={image.link} class="group overflow-hidden relative flex-1 aspect-square rounded-2xl bg-cover bg-center bg-no-repeat hover:scale-105 hover:shadow-2xl transition-transform" style={`background-image: url('${image.desktop}')`}>
         <img src={image.desktop} alt={image.alt} class="w-full h-full object-cover rounded-2xl" />
