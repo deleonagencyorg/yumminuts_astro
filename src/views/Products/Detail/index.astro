@@ -60,7 +60,7 @@ const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const brandsList = brandsAssets.brands || [];
 const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
 const nutsCategories = nutsBrand?.categories || [];
-const discoverAssets = t('discover', { namespace: 'common', locale: currentLang }) || {};
+const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 
 // Si el producto no existe, lanzar error

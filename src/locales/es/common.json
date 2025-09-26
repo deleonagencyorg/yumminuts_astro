@@ -20,6 +20,10 @@
       "title": "Productos",
       "description": "Descubre nuestra línea completa de productos Ziba's. Sabor auténtico para toda la familia."
     },
+    "health": {
+      "title": "Beneficios para la Salud - Ziba's",
+      "description": "Descubre los beneficios para la salud de nuestros snacks nutritivos. Altos en proteína, fibra, y opciones sin gluten para un estilo de vida saludable."
+    },
     "brands": {
       "title": "Nuestras Marcas de Snacks",
       "description": "Descubre Ziba's, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
@@ -72,14 +76,122 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/zibas/banner.webp",
-        "mobile": "https://snack.yummiespromociones.com/zibas/banner-m.webp",
-        "alt": "Zambos",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "alt": "Home Yumminuts",
         "title": "",
         "description": "",
-        "link": "https://www.zambos.com"
+        "link": "https://www.yumminuts.com"
       }
-    ]
+    ],
+    "healthInfo": [
+      {
+        "id": "info1",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg",
+        "alt": "Alto en proteina",
+        "text": "Alto en Proteína"
+      },
+      {
+        "id": "info2",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg",
+        "alt": "Alto en fibra",
+        "text": "Alto en Fibra"
+      },
+      {
+        "id": "info3",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/azucar.svg",
+        "alt": "Bajo en azúcares",
+        "text": "Bajo en Azúcares"
+      },
+      {
+        "id": "info4",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg",
+        "alt": "Alto en energía",
+        "text": "Alto en Energía"
+      }
+    ],
+    "discoverSection": {
+      "title": "Descúbrenos",
+      "images": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
+          "alt": "imagen1",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide2",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
+          "alt": "imagen2",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide3",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
+          "alt": "imagen3",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide4",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
+          "alt": "imagen4",
+          "title": "",
+          "description": "",
+          "link": "#"
+        }
+      ]
+    },
+    "healthPage": {
+      "title": "Activa tu mente y cuerpo con Yummi Nuts",
+      "description": "Descubre los beneficios de nuestros snacks para tu salud.",
+      "link": "/es/salud",
+      "image": "https://snack.yummiespromociones.com/yumminuts/home-salud.png",
+      "slider": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "alt": "Home Yumminuts",
+          "title": "",
+          "description": "",
+          "link": "https://www.yumminuts.com"
+        }
+      ],
+      "videosSection": {
+        "title": "Tips para mantener tu cuerpo siempre saludable",
+        "description": "Explora más sobre Yummi Nuts a través de nuestros videos."
+      },
+      "videos": [
+        {
+          "id": "video1",
+          "url": "https://www.youtube.com/embed/lDQWoYSB9xg",
+          "thumbnail": "https://img.youtube.com/vi/lDQWoYSB9xg/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #1"
+        },
+        {
+          "id": "video2",
+          "url": "https://www.youtube.com/embed/rhqXNtfKk8s",
+          "thumbnail": "https://img.youtube.com/vi/rhqXNtfKk8s/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #2"
+        },
+        {
+          "id": "video3",
+          "url": "https://www.youtube.com/embed/OY3AoQ4eqqU",
+          "thumbnail": "https://img.youtube.com/vi/OY3AoQ4eqqU/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #3"
+        }
+      ]
+    }
   },
   "menu_labels": {
     "open_main_menu": "Abrir menú principal",

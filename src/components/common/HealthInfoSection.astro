@@ -1,23 +1,25 @@
 ---
 // src/components/common/ProteinSection.astro
 import proteinaSvg from '../../assets/proteina.svg';
+import { t, getLocale } from '../../i18n/i18n';
+
+// Get current locale and health info assets
+const locale = getLocale();
+const healthInfo = t('assets.healthInfo', { locale });
 ---
 
 <section class="w-full py-12 bg-white">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="flex justify-center">
-        <img src={proteinaSvg.src} alt="Proteina 1" class="w-24 h-24 md:w-32 md:h-32 object-contain" />
-      </div>
-      <div class="flex justify-center">
-        <img src={proteinaSvg.src} alt="Proteina 2" class="w-24 h-24 md:w-32 md:h-32 object-contain" />
-      </div>
-      <div class="flex justify-center">
-        <img src={proteinaSvg.src} alt="Proteina 3" class="w-24 h-24 md:w-32 md:h-32 object-contain" />
-      </div>
-      <div class="flex justify-center">
-        <img src={proteinaSvg.src} alt="Proteina 4" class="w-24 h-24 md:w-32 md:h-32 object-contain" />
-      </div>
+      {healthInfo && healthInfo.map((item: any) => (
+        <div class="flex justify-center">
+          <img 
+            src={item.icon} 
+            alt={item.alt} 
+            class="w-24 h-24 md:w-32 md:h-32 object-contain"  
+          />
+        </div>
+      ))}
     </div>
   </div>
 </section>

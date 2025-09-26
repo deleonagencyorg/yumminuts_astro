@@ -20,6 +20,10 @@
       "title": "Products",
       "description": "Discover our complete line of Yummi Nuts products. Authentic flavor for the whole family."
     },
+    "health": {
+      "title": "Health Benefits - Yummi Nuts",
+      "description": "Discover the health benefits of our nutritious snacks. High in protein, fiber, and gluten-free options for a healthy lifestyle."
+    },
     "brands": {
       "title": "Our Snack Brands",
       "description": "Discover Ziba's, Zambos, Ranchitas and Superman. Each brand with unique and authentic flavors that conquer Central America."
@@ -75,7 +79,108 @@
         "description": "",
         "link": "https://www.zambos.com"
       }
-    ]
+    ],
+    "healthInfo": [
+      {
+        "id": "info1",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg",
+        "alt": "High in protein",
+        "text": "High in Protein"
+      },
+      {
+        "id": "info2",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg",
+        "alt": "High in fiber",
+        "text": "High in Fiber"
+      },
+      {
+        "id": "info3",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/sin-gluten.svg",
+        "alt": "Gluten free",
+        "text": "Gluten Free"
+      }
+    ],
+    "healthPage": {
+      "title": "Activate your mind and body with Yummi Nuts",
+      "description": "Lorem Ipsum Dolor It",
+      "image": "https://snack.yummiespromociones.com/yumminuts/home-salud.png",
+      "slider": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "alt": "Home Yumminuts",
+          "title": "",
+          "description": "",
+          "link": "https://www.yumminuts.com"
+        }
+      ],
+      "videosSection": {
+        "title": "Tips to keep your body always healthy",
+        "description": "Explore more about Yummi Nuts through our videos."
+      },
+      "videos": [
+        {
+          "id": "video1",
+          "url": "https://www.youtube.com/embed/zkximeTgUvM",
+          "thumbnail": "https://img.youtube.com/vi/zkximeTgUvM/maxresdefault.jpg",
+          "title": "Healthy Living Tips #1"
+        },
+        {
+          "id": "video2",
+          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
+          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
+          "title": "Healthy Living Tips #2"
+        },
+        {
+          "id": "video3",
+          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
+          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
+          "title": "Healthy Living Tips #3"
+        }
+      ]
+    },
+    "discoverSection": {
+      "title": "Discover Us",
+      "images": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "alt": "image1",
+          "title": "",
+          "description": "",
+          "link": "https://www.zambos.com"
+        },
+        {
+          "id": "slide2",
+          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "alt": "image2",
+          "title": "",
+          "description": "",
+          "link": "https://www.zambos.com"
+        },
+        {
+          "id": "slide3",
+          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "alt": "image3",
+          "title": "",
+          "description": "",
+          "link": "https://www.zambos.com"
+        },
+        {
+          "id": "slide4",
+          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+          "alt": "image4",
+          "title": "",
+          "description": "",
+          "link": "https://www.zambos.com"
+        }
+      ]
+    }
   },
   "menu_labels": {
     "open_main_menu": "Abrir menú principal",

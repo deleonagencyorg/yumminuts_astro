@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "title": "Health Benefits - Yummi Nuts",
+    "description": "Discover the health benefits of our nutritious snacks. High in protein, fiber, and gluten-free options for a healthy lifestyle."
+  },
+  "title": "Health Benefits of Our Snacks",
+  "subtitle": "Nutritious & Delicious",
+  "home": {
+    "title": "Discover the benefits",
+    "subtitle": "For Your Health",
+    "textButton": "Learn More",
+    "slider": [
+      {
+        "id": "health-slide1",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/health-banner.webp",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/health-banner-m.webp",
+        "alt": "Healthy Snacks",
+        "title": "Healthy Snacking",
+        "description": "Nutritious snacks for a balanced lifestyle",
+        "link": "#benefits"
+      },
+      {
+        "id": "health-slide2",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/nutrition-banner.webp",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/nutrition-banner-m.webp",
+        "alt": "Nutrition Facts",
+        "title": "Packed with Nutrition",
+        "description": "High protein, high fiber, gluten-free options",
+        "link": "#nutrition"
+      }
+    ]
+  },
+  "benefits": {
+    "protein": {
+      "title": "High in Protein",
+      "description": "Our snacks are packed with plant-based proteins that help build and maintain muscle mass, providing sustained energy throughout your day.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg"
+    },
+    "fiber": {
+      "title": "Rich in Fiber",
+      "description": "High fiber content promotes digestive health, helps maintain stable blood sugar levels, and keeps you feeling satisfied longer.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg"
+    },
+    "gluten_free": {
+      "title": "Gluten-Free Options",
+      "description": "Perfect for those with celiac disease or gluten sensitivity, our gluten-free snacks don't compromise on taste or nutrition.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/sin-gluten.svg"
+    },
+    "natural": {
+      "title": "Natural Ingredients",
+      "description": "Made with carefully selected natural ingredients, free from artificial preservatives and harmful additives.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/natural.svg"
+    },
+    "antioxidants": {
+      "title": "Rich in Antioxidants",
+      "description": "Packed with antioxidants that help fight free radicals and support your immune system for better overall health.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/antioxidantes.svg"
+    },
+    "energy": {
+      "title": "Sustained Energy",
+      "description": "The perfect balance of nutrients provides long-lasting energy without the crash associated with sugary snacks.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg"
+    }
+  },
+  "categories": {
+    "protein_rich": "High Protein",
+    "fiber_rich": "High Fiber",
+    "gluten_free": "Gluten-Free",
+    "natural": "Natural",
+    "low_sodium": "Low Sodium",
+    "heart_healthy": "Heart Healthy"
+  },
+  "nutrition_facts": {
+    "title": "Nutrition Facts",
+    "serving_size": "Serving Size",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fiber": "Fiber",
+    "sodium": "Sodium",
+    "carbs": "Total Carbohydrates"
+  }
+}

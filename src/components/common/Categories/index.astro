@@ -4,7 +4,7 @@ interface Product {
   id: string;
   title: string;
   image: string;
-  bgColor: string;
+  bgColor: string; // Now represents a background image URL instead of hex color
 }
 
 export interface Props {
@@ -33,7 +33,7 @@ const displayProducts = products.slice(0, 3);
         {displayProducts.map((product, index) => (
           <div class="content-stretch flex flex-col  h-[421px] items-start justify-start relative shrink-0 w-[350px]">
             <div class="h-[374.054px] overflow-clip relative shrink-0 w-[275px]">
-              <div class="absolute inset-0 rounded-lg" style={`background-color: ${product.bgColor}`}></div>
+              <div class="absolute inset-0 rounded-lg bg-center bg-cover bg-no-repeat" style={`background-image: url('${product.bgColor}')`}></div>
               <div class="absolute bg-center bg-cover bg-no-repeat h-[344.27px] shadow-[8.262px_4.957px_8.51px_0px_rgba(22,22,22,0.03)] translate-x-[-50%] translate-y-[-50%] w-[181.064px] hover:scale-110 transition-all duration-300" style={{ top: "calc(50% + 0.143px)", left: "calc(50% - 0.158px)", backgroundImage: `url('${product.image}')` }}></div>
             </div>
             <div class="font-sans leading-[0] min-w-full not-italic relative shrink-0 text-black text-lg tracking-[-1.5px]" style={{ width: "min-content" }}>

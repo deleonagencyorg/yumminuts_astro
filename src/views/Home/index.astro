@@ -55,7 +55,7 @@ const slides = Array.isArray(commonAssets)
     }))
   : [];
 
-const discoverAssets = t('discover', { namespace: 'common', locale: currentLang }) || {};
+const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 ---
 
@@ -75,7 +75,7 @@ const discoverAssets = t('discover', { namespace: 'common', locale: currentLang 
     <!-- Sección de Productos Nuts -->
     {nutsCategories.length > 0 && (
       <section class="w-full py-4 bg-white pt-16">
-        <div class="container mx-auto px-4">
+        <div class="container mx-autxo px-4">
           <Categories 
             products={nutsCategories}
             title="Categorías"
@@ -85,8 +85,21 @@ const discoverAssets = t('discover', { namespace: 'common', locale: currentLang 
     )}
 
     <!-- Sección de video -->
-    <section id="video" class="w-full h-[30rem] bg-pink">
-
+    <section id="video" class="w-full py-16 bg-pink">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-center items-center">
+          <div class="w-full max-w-4xl aspect-video">
+            <iframe 
+              class="w-full h-full rounded-lg shadow-lg"
+              src="https://www.youtube.com/embed/mgorDuLFk3I"
+              title="YouTube video player" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Sección de Recetas -->

@@ -13,20 +13,9 @@ import Discover from '../../components/common/Discover/index.astro';
 const currentLang = getLocale();
 const products = t('items', { namespace: 'products', locale: currentLang });
 const categories = t('categories', { namespace: 'products', locale: currentLang });
-const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
-const slides = Array.isArray(commonAssets) 
-  ? commonAssets
-    .filter(asset => asset && typeof asset === 'object' && asset.desktop && asset.mobile)
-    .map(asset => ({
-      desktop: asset.desktop,
-      mobile: asset.mobile,
-      alt: asset.alt || "Ziba's",
-      title: asset.title || '',
-      subtitle: asset.description || '',
-      link: asset.url || asset.link || ''
-    }))
-  : [];
-const discoverAssets = t('discover', { namespace: 'common', locale: currentLang }) || {};
+const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
+const slides = commonAssets;
+const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 // Obtener categorías únicas de los productos
 const uniqueCategories = Object.keys(categories);
@@ -34,10 +23,10 @@ const uniqueCategories = Object.keys(categories);
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
   <!-- Slider Section con máscara -->
-    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[21/9] lg:h-[66vh]">
+    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[16/9] lg:h-[80vh]">
      
 
-      <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[72vh] md:flex md:items-center md:justify-center">
+      <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[95vh] md:flex md:items-center md:justify-center">
         <Carousel slides={slides} />
       </div>
     </div>

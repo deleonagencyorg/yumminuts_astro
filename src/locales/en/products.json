@@ -6,8 +6,19 @@
   "home": {
     "title": "Descubre la variedad de nuestros",
     "subtitle": "Productos",
-    "textButton": "Conoce más"
-},
+    "textButton": "Conoce más",
+    "banners": [
+      {
+        "id": "banner1",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "alt": "Yumminuts Products Banner",
+        "title": "Discover",
+        "subtitle": "Our Products",
+        "link": "#"
+      }
+    ]
+  },
   "stockist":[
     {
       "id": "sompopopoapp",
