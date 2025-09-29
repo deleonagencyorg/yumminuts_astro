@@ -1,8 +1,8 @@
 {
   "meta": {
     "home": {
-      "title": "Ziba's - Enjoy your Ziba's at any moment",
-      "description": "Your favorite potato chip flakes come with naturally authentic flavors for all tastes."
+      "title": "Enjoy your Yummi Nuts at any time",
+      "description": "We believe that taking care of your body is not just a trend, it's a lifestyle. That's why Yummi Nuts shares important information about your health and some tips to keep taking care of your body and enjoying your favorite snacks."
     },
     "contact": {
       "title": "Contact",
@@ -22,39 +22,33 @@
     },
     "health": {
       "title": "Health Benefits - Yummi Nuts",
-      "description": "Discover the health benefits of our nutritious snacks. High in protein, fiber, and gluten-free options for a healthy lifestyle."
+      "description": "Discover the benefits of our nutritious snacks for your health. High in protein, fiber, and gluten-free options for a healthy lifestyle."
     },
     "brands": {
       "title": "Our Snack Brands",
-      "description": "Discover Ziba's, Zambos, Ranchitas and Superman. Each brand with unique and authentic flavors that conquer Central America."
+      "description": "Discover Yummi Nuts, Zambos, Ranchitas, and Superman. Each brand has its own unique flavors and authentic character that conquers Central America."
     },
     "about_us": {
       "title": "About Us - History and Values",
-      "description": "Learn about the history of Ziba's, a leading snack company in Central America since 1990. Our mission, values and commitment to quality."
+      "description": "Learn about the history of Yummi Nuts, the leading snack company in Central America since 1990. Our mission, values, and commitment to quality."
     },
     "yummiesone": {
-      "title": "Ziba's One",
-      "description": "Discover Ziba's One, our new exclusive platform for true snack lovers."
-    }
+      "title": "Yummi Nuts One",
+      "description": "Discover Yummi Nuts One, our new exclusive platform for snack lovers."
+  }
   },
   "social_media": {
    "facebook": {
       "name": "Facebook",
-      "url": "https://www.facebook.com/yummi.nuts",
+      "url": "https://www.facebook.com/yummi.nuts/",
       "alt": "Facebook de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/facebook.svg"
     },
     "instagram": {
       "name": "Instagram",
-      "url": "https://www.instagram.com/yummi.nuts",
+      "url": "https://www.instagram.com/yummi.nuts/",
       "alt": "Instagram de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/instagram.svg"
-    },
-    "tiktok": {
-      "name": "TikTok",
-      "url": "https://www.tiktok.com/@yummi.nuts",
-      "alt": "TikTok de Yummi Nuts",
-      "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/tiktok.svg"
     }
   },
   "cookie_consent": {
@@ -72,8 +66,8 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/zibas/banner.webp",
-        "mobile": "https://snack.yummiespromociones.com/zibas/banner-m.webp",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
         "alt": "Zambos",
         "title": "",
         "description": "",

@@ -24,13 +24,13 @@ const { slide, priority = false } = Astro.props;
         <LazyImage 
           src={slide.mobile} 
           alt={slide.alt}
-          class="w-full h-full object-none object-center md:hidden"
+          class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
         />
         <LazyImage 
           src={slide.desktop} 
           alt={slide.alt}
-          class="w-full h-full object-none object-center hidden md:block"
+          class="w-full h-full object-cover object-center hidden md:block"
           priority={priority}
         />
       </div>
@@ -45,13 +45,13 @@ const { slide, priority = false } = Astro.props;
         <LazyImage 
           src={slide.mobile} 
           alt={slide.alt}
-          class="w-full h-full object-fill object-center md:hidden"
+          class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
         />
         <LazyImage 
           src={slide.desktop} 
           alt={slide.alt}
-          class="w-full h-full object-fill object-center hidden md:block"
+          class="w-full h-full object-cover object-center hidden md:block"
           priority={priority}
         />
       </div>

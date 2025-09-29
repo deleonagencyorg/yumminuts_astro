@@ -27,17 +27,12 @@ const menuItems = t('menu_items', { namespace: 'common', locale: currentLang }) 
   <!-- Logo -->
   <div class="flex-shrink-0">
     <a href={`/${currentLang}/`} class="block">
-      <img src={logos.principal.url} alt={logos.principal.alt} class="h-20 w-auto" />
+      <img src={logos.principal.url} alt={logos.principal.alt} class="h-16 w-auto" />
     </a>
   </div>
 
   <!-- Navigation Items - Center -->
   <div class="flex items-center justify-center flex-1 px-4 mx-auto">
-   
-  </div>
-
-  <!-- Right Side - Language Switcher and Yummies One -->
-  <div class="flex items-center space-x-5">
     <div class="flex space-x-10" id="desktop-menu-items">
       {menuItems && menuItems.map((item: any) => (
         <div class="relative group">
@@ -75,17 +70,21 @@ const menuItems = t('menu_items', { namespace: 'common', locale: currentLang }) 
         </div>
       ))}
     </div>
+  </div>
+
+  <!-- Right Side - Language Switcher and Yummies One -->
+  <div class="flex items-center space-x-5">
     <!-- Language Switcher -->
     <LanguageSwitcher activeLocale={currentLang} headerColorConfig={headerColorConfig} />
 
-    <div class="hidden md:flex">
+    <!-- <div class="hidden md:flex">
       <SocialMediaIcons 
         currentLang={currentLang} 
         iconColor='#242424'
         centered={false} 
       />
     </div>
-    
+     -->
     <!-- Yummies One -->
     <!-- <a href="/yummies-one" class="flex items-center text-white hover:text-gray-300 uppercase text-sm font-medium">
       <span>Yummies One</span>

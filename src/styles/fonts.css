@@ -1,8 +1,16 @@
 /* fonts.css: Fuentes para Taqueritos */
 
 @font-face {
+  font-family: 'bespoke-bold';
+  src: url('../assets/fonts/BespokeSerif-Extrabold.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'bespoke-serif';
-  src: url('../assets/fonts/bespokeserif-Variable.ttf') format('truetype');
+  src: url('../assets/fonts/BespokeSerif-Regular.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -20,7 +28,7 @@
 /* Variables CSS para compatibilidad con código existente */
 :root {
   --font-title: 'a-love-of-thunder', serif;
-  --font-heading: 'bespoke-serif', serif;
+  --font-heading: 'bespoke-bold', serif;
   --font-text: 'bespoke-serif', serif;
   --font-sans: 'bespoke-serif', serif;
 }

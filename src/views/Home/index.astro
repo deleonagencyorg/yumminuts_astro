@@ -61,7 +61,7 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
     <!-- Slider Section con máscara -->
-    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[21/9] lg:h-[66vh]">
+    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[21/9] lg:h-[66vh] reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
      
 
       <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[72vh] md:flex md:items-center md:justify-center">
@@ -70,44 +70,35 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
     </div>
     
     <!-- Sección de Información -->
-    <HealthInfoSection />
+    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <HealthInfoSection />
+    </div>
 
     <!-- Sección de Productos Nuts -->
     {nutsCategories.length > 0 && (
-      <section class="w-full py-4 bg-white pt-16">
+      <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
         <div class="container mx-autxo px-4">
           <Categories 
             products={nutsCategories}
-            title="Categorías"
+            title={currentLang === 'es' ? 'Categorías' : 'Categories'}
           />
         </div>
       </section>
     )}
 
     <!-- Sección de video -->
-    <section id="video" class="w-full py-16 bg-pink">
-      <div class="container mx-auto px-4">
-        <div class="flex justify-center items-center">
-          <div class="w-full max-w-4xl aspect-video">
-            <iframe 
-              class="w-full h-full rounded-lg shadow-lg"
-              src="https://www.youtube.com/embed/mgorDuLFk3I"
-              title="YouTube video player" 
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              allowfullscreen>
-            </iframe>
-          </div>
-        </div>
-      </div>
+    <section id="video" class="w-full  bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <video height="100%" width="100%" muted playsinline preload="metadata" data-autoplay-on-view controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
+        <source src="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4" type="video/mp4">
+      </video>
     </section>
 
     <!-- Sección de Recetas -->
-    <section id="recipes" class="w-full py-12" transition:animate="slide">
+    <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
       <div class="container mx-auto px-4 bg-white">
         {recipesAssets.home?.title && (
           <div class="text-left mb-16 relative z-20" >
-            <h2 class="text-3xl md:text-4xl text-sans font-bold mb-4" style={`color: black`}>
+            <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
               {recipesAssets.home?.title}
             </h2>
             
@@ -122,7 +113,7 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
     </section>
 
     <!-- Sección Descubrenos -->
-    <section id="discover" class="w-full bg-white py-16">
+    <section id="discover" class="w-full bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
       <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
     </section>
 
@@ -209,4 +200,64 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
 
 
 
+    <style>
+      /* Hide any native media controls UI if a browser tries to show them */
+      #video video::-webkit-media-controls { display: none !important; }
+      #video video::-webkit-media-controls-enclosure { display: none !important; }
+      #video video::-moz-media-controls { display: none !important; }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
+
+        const show = (el) => {
+          el.classList.remove('opacity-0', 'translate-y-6');
+          el.classList.add('opacity-100', 'translate-y-0');
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              // Stagger children if present
+              const children = el.querySelectorAll('[data-reveal-child]');
+              if (children.length) {
+                children.forEach((child, idx) => {
+                  child.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+                  child.classList.remove('opacity-0', 'translate-y-6');
+                  child.classList.add('opacity-100', 'translate-y-0');
+                });
+              }
+              show(el);
+              observer.unobserve(el);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+
+        revealElements.forEach((el) => observer.observe(el));
+
+        // Auto-play/pause video when the section is in view
+        const autoPlayVideos = Array.from(document.querySelectorAll('video[data-autoplay-on-view]'));
+        if (autoPlayVideos.length) {
+          const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              const vid = entry.target;
+              if (!(vid instanceof HTMLVideoElement)) return;
+              if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                // Ensure muted for autoplay policies
+                vid.muted = true;
+                const playPromise = vid.play();
+                if (playPromise && typeof playPromise.then === 'function') {
+                  playPromise.catch(() => {/* swallow autoplay rejection */});
+                }
+              } else {
+                vid.pause();
+              }
+            });
+          }, { threshold: [0, 0.5, 1] });
+
+          autoPlayVideos.forEach((v) => videoObserver.observe(v));
+        }
+      });
+    </script>
   </main>

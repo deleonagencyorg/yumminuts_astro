@@ -1,6 +1,6 @@
-# Zibas Astro
+# Yummi Nuts Astro
 
-Sitio web multilingüe para Zibas, construido con Astro y Tailwind CSS. Incluye sistema de internacionalización, efectos parallax, animaciones, y más.
+Sitio web multilingüe para Yummi Nuts, construido con Astro y Tailwind CSS. Incluye sistema de internacionalización, efectos parallax, animaciones, y más.
 
 ![Versión](https://img.shields.io/badge/versión-1.0.0-brightgreen)
 ![Astro](https://img.shields.io/badge/Astro-5.8.0-orange)

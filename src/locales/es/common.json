@@ -1,8 +1,8 @@
 {
   "meta": {
     "home": {
-      "title": "Ziba's - Disfruta tus Ziba's en todo momento",
-      "description": "Tus hojuelas de papa frita favoritas llegan con sabores naturalmente auténticos para todos los gustos."
+      "title": "Yummi Nuts - Disfruta tus Yummi Nuts en todo momento",
+      "description": "abemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas."
     },
     "contact": {
       "title": "Contacto",
@@ -10,55 +10,45 @@
     },
     "recipes": {
       "title": "Recetas",
-      "description": "Descubre deliciosas recetas con Ziba's. Desde platos tradicionales hasta creaciones innovadoras."
+      "description": "Descubre deliciosas recetas con Yummi Nuts. Desde platos tradicionales hasta creaciones innovadoras."
     },
     "news": {
       "title": "Noticias",
-      "description": "Mantente al día con las últimas noticias y eventos de Ziba's."
+      "description": "Mantente al día con las últimas noticias y eventos de Yummi Nuts."
     },
     "products": {
       "title": "Productos",
-      "description": "Descubre nuestra línea completa de productos Ziba's. Sabor auténtico para toda la familia."
+      "description": "Descubre nuestra línea completa de productos Yummi Nuts. Sabor auténtico para toda la familia."
     },
     "health": {
-      "title": "Beneficios para la Salud - Ziba's",
+      "title": "Beneficios para la Salud - Yummi Nuts",
       "description": "Descubre los beneficios para la salud de nuestros snacks nutritivos. Altos en proteína, fibra, y opciones sin gluten para un estilo de vida saludable."
     },
     "brands": {
       "title": "Nuestras Marcas de Snacks",
-      "description": "Descubre Ziba's, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
+      "description": "Descubre Yummi Nuts, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
     },
     "about_us": {
       "title": "Nosotros - Historia y Valores",
-      "description": "Conoce la historia de Ziba's, empresa líder en snacks de Centroamérica desde 1990. Nuestra misión, valores y compromiso con la calidad."
+      "description": "Conoce la historia de Yummi Nuts, empresa líder en snacks de Centroamérica desde 1990. Nuestra misión, valores y compromiso con la calidad."
     },
     "yummiesone": {
-      "title": "Ziba's One",
-      "description": "Descubre Ziba's One, nuestra nueva plataforma exclusiva para los verdaderos amantes de los snacks."
-    },
-    "zibas_creators": {
-      "title": "Ziba's Creators - Concurso de Creatividad",
-      "description": "Participa en el concurso de creatividad de Ziba's. Sube tu contenido en video, baile, música, arte, memes e inteligencia artificial y gana premios increíbles."
+      "title": "Yummi Nuts One",
+      "description": "Descubre Yummi Nuts One, nuestra nueva plataforma exclusiva para los verdaderos amantes de los snacks."
     }
   },
   "social_media": {
    "facebook": {
       "name": "Facebook",
-      "url": "https://www.facebook.com/yummi.nuts",
+      "url": "https://www.facebook.com/yummi.nuts/",
       "alt": "Facebook de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/facebook.svg"
     },
     "instagram": {
       "name": "Instagram",
-      "url": "https://www.instagram.com/yummi.nuts",
+      "url": "https://www.instagram.com/yummi.nuts/",
       "alt": "Instagram de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/instagram.svg"
-    },
-    "tiktok": {
-      "name": "TikTok",
-      "url": "https://www.tiktok.com/@yummi.nuts",
-      "alt": "TikTok de Yummi Nuts",
-      "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/tiktok.svg"
     }
   },
   "cookie_consent": {
@@ -77,7 +67,7 @@
       {
         "id": "slide1",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
