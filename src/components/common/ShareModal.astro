@@ -1,0 +1,132 @@
+---
+import { getLocale, type Locale } from '../../i18n/i18n';
+import SocialShare from './SocialShare.astro';
+
+interface Props {
+  id?: string; // DOM id of the modal wrapper
+  url?: string;
+  title?: string;
+  description?: string;
+  hashtags?: string[];
+  platforms?: ('facebook' | 'twitter' | 'whatsapp' | 'telegram')[];
+  showLabels?: boolean;
+  iconSize?: number;
+  round?: boolean;
+  openTextEs?: string;
+  openTextEn?: string;
+  acceptTextEs?: string;
+  acceptTextEn?: string;
+}
+
+const locale = getLocale(Astro.url);
+const {
+  id = 'shareModal',
+  url,
+  title = 'Zibas',
+  description = '',
+  hashtags = [],
+  platforms = ['facebook','twitter','whatsapp','telegram'],
+  showLabels = false,
+  iconSize = 40,
+  round = true,
+  openTextEs = 'Compartir en redes sociales',
+  openTextEn = 'Share on social media',
+  acceptTextEs = 'Aceptar',
+  acceptTextEn = 'Accept',
+} = Astro.props;
+
+const texts = {
+  es: {
+    header: 'Comparte esta receta',
+    helper: openTextEs,
+    accept: acceptTextEs,
+  },
+  en: {
+    header: 'Share this recipe',
+    helper: openTextEn,
+    accept: acceptTextEn,
+  }
+};
+
+const t = texts[(locale as 'es'|'en')] || texts.es;
+---
+
+<div id={id} class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="modal-backdrop fixed inset-0 bg-black/60"></div>
+  <div class="bg-orange text-white rounded-lg p-6 md:p-8 max-w-lg mx-4 relative z-10 transform transition-all shadow-xl">
+    <!-- Close X -->
+    <button type="button" class="modal-close absolute top-3 right-3 text-white hover:opacity-80" aria-label="Close">
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Title -->
+    <div class="flex justify-center items-center mb-3">
+      <h3 class="md:text-3xl text-2xl font-bold font-title text-white" id={`${id}-title`}>{t.header}</h3>
+    </div>
+
+    <!-- Helper text -->
+    <p class="text-white/90 text-center mb-6" id={`${id}-helper`}>{t.helper}</p>
+
+    <!-- Social share buttons -->
+    <div class="flex justify-center">
+      <SocialShare
+        url={url}
+        title={title}
+        description={description}
+        hashtags={hashtags}
+        platforms={platforms}
+        showLabels={showLabels}
+        iconSize={iconSize}
+        round={round}
+        className="flex flex-wrap gap-4 justify-center"
+        buttonClassName="bg-white text-orange font-bold px-3 py-2 rounded-full hover:opacity-90 transition"
+      />
+    </div>
+
+    <!-- Accept button -->
+    <div class="flex justify-center mt-6">
+      <button type="button" class="modal-close px-6 py-2 bg-white text-orange rounded-full font-bold hover:opacity-90 transition-all">
+        {t.accept}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ modalId: id }}>
+  function initShareModal(modalId){
+    const modal = document.getElementById(modalId);
+    if(!modal) return;
+    const closes = modal.querySelectorAll('.modal-close');
+    const backdrop = modal.querySelector('.modal-backdrop');
+
+    function closeModal(){
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+    closes.forEach(btn=>btn.addEventListener('click', closeModal));
+    if(backdrop) backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+  }
+
+  // Public API: window.showShareModal(id)
+  if(typeof window!=='undefined'){
+    window.showShareModal = function(modalId){
+      const id = modalId || 'shareModal';
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    initShareModal(modalId);
+  });
+  document.addEventListener('astro:page-load', ()=>{
+    initShareModal(modalId);
+  });
+</script>

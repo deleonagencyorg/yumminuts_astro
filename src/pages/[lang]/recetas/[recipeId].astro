@@ -4,25 +4,21 @@ import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 
-export function getStaticPaths() {
-  // Obtener todos los idiomas y recetas disponibles
-  const locales = ['es'];
-  const paths = [];
-
-  for (const locale of locales) {
-    // Obtener recetas para este idioma
-    const recipes = t('items', { namespace: 'recipes', locale: locale as Locale }) || [];
-    console.log(`Encontradas ${recipes.length} recetas para idioma ${locale}`);
-    
-    // Para cada receta, crear una ruta
-    for (const recipe of recipes) {
-      paths.push({
-        params: { lang: locale, recipeId: recipe.id },
-        props: { recipe, currentLang: locale }
-      });
-    }
+export async function getStaticPaths() {
+  const paths: any[] = [];
+  const locale = 'es';
+  // Cargar recetas desde archivos JSON con glob estático
+  const modules = import.meta.glob('../../../locales/es/recipes/*.json', { eager: true });
+  const files = Object.values(modules) as any[];
+  console.log(`Encontradas ${files.length} recetas para idioma ${locale}`);
+  for (const mod of files) {
+    const recipe = (mod as any).default;
+    if (!recipe?.id) continue;
+    paths.push({
+      params: { lang: locale, recipeId: recipe.id },
+      props: { recipe, currentLang: locale }
+    });
   }
-
   console.log(`Generadas ${paths.length} rutas de recetas en español`);
   return paths;
 }
@@ -36,6 +32,6 @@ setLocale(lang as Locale);
 console.log(`Renderizando receta: ${recipeId} en idioma: ${lang}`);
 ---
 
-<MainLayout title={recipe.title} currentLang={currentLang}>
+<MainLayout title={recipe.title}>
   <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
 </MainLayout>
