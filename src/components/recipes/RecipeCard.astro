@@ -26,23 +26,21 @@ const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 're
 
 <a 
   href={recipeLink} 
-  class="flex flex-col gap-6 items-start group relative transition-all duration-300 hover:scale-[1.02] w-full max-w-[585px]"
+  class="block group relative transition-all duration-300 ease-in-out w-full"
   transition:animate="fade"
 >
-  <!-- Recipe Image -->
-  <div class="h-[250px] md:h-[338px] w-full overflow-hidden relative rounded-[21px] group-hover:shadow-lg transition-shadow duration-300">
-    <LazyImage
-      src={image}
-      alt={title}
-      class="absolute inset-0 w-full h-full object-cover"
-      transition:name={`recipe-image-${id}`}
-    />
-    <!-- Dark overlay on hover -->
-    <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+  <div class="flex flex-col relative w-full">
+    <div class="relative overflow-hidden w-full aspect-[4/3] rounded-xl">
+      <LazyImage
+        src={image}
+        alt={title}
+        class="w-full h-full object-cover"
+        transition:name={`recipe-image-${id}`}
+      />
+    </div>
+
+    <div class="pt-2 md:pt-3 h-[64px] md:h-[72px]">
+      <h3 class="font-sans font-bold text-black text-sm md:text-xl leading-snug mt-2 break-words overflow-hidden line-clamp-2">{title}</h3>
+    </div>
   </div>
-  
-  <!-- Recipe Title -->
-  <h3 class={`font-text font-medium text-[20px] md:text-[28px] leading-[25px] md:leading-[35px] tracking-[-1.5px] ${textColor} group-hover:text-[#3e6dd7] transition-colors duration-300`}>
-    {title}
-  </h3>
 </a>

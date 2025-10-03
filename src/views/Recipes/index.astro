@@ -1,104 +1,127 @@
 ---
-// src/components/pages/RecipesPage.astro
-import { t } from '../../i18n/i18n';
-import type { Locale } from '../../i18n/i18n';
+// src/views/Recipes/index.astro
 import { getLocale } from '../../i18n/i18n';
 import './styles.css';
 import RecipeCard from '../../components/recipes/RecipeCard.astro';
 import CategoryButton from '../../components/recipes/CategoryButton.astro';
 import Pagination from '../../components/recipes/Pagination.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
+import PixelGrid from '../../components/atoms/PixelGrid.astro';
+import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
+
+interface Recipe {
+  id: string;
+  title: string;
+  image?: string;
+  preparation_time: number;
+  type?: string;
+}
 
 const currentLang = getLocale();
-const allRecipes = t('items', { namespace: 'recipes', locale: currentLang });
 
-// Pagination settings
-const recipesPerPage = 4;
-const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
-const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+// Get all recipe files with correct Vite glob typing
+const recipeModules = import.meta.glob<{default: Recipe}>('../../locales/*/recipes/*.json');
+const allRecipes: Recipe[] = [];
 
-// Calculate recipes for current page
-const startIndex = (currentPage - 1) * recipesPerPage;
-const endIndex = startIndex + recipesPerPage;
-const recipes = allRecipes.slice(startIndex, endIndex);
-
-// Define recipe categories
-const categories = [
-  { 
-    id: 'breakfast', 
-    name: currentLang === 'es' ? 'Desayunos' : 'Breakfast',
-    active: true 
-  },
-  { 
-    id: 'snack', 
-    name: currentLang === 'es' ? 'Snack Energéticos' : 'Energy Snacks',
-    active: false 
-  },
-  { 
-    id: 'lunch', 
-    name: currentLang === 'es' ? 'Almuerzos' : 'Lunch',
-    active: false 
-  },
-  { 
-    id: 'dinner', 
-    name: currentLang === 'es' ? 'Cenas' : 'Dinner',
-    active: false 
+// Process each file
+for (const path in recipeModules) {
+  // Path format: ../../locales/es/recipes/file.json
+  const pathParts = path.split('/');
+  const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
+  if (lang === currentLang) {
+    const module = await recipeModules[path]();
+    allRecipes.push(module.default);
   }
-];
----
+}
 
-<div class="bg-white py-12">
-  <div class="container mx-auto px-4 mt-12">
-    
-    <!-- Category Buttons Section -->
-    <div class="flex gap-3 md:gap-5 items-center mb-[60px] flex-wrap justify-center md:justify-start">
-      {categories.map((category) => (
-        <CategoryButton
-          id={category.id}
-          name={category.name}
-          active={category.active}
-        />
-      ))}
+// Shared translations
+const noRecipesText = currentLang === 'es' 
+  ? 'No hay recetas disponibles en este momento.' 
+  : 'No recipes available at this time.';
+const noFilterResultsText = currentLang === 'es'
+  ? 'No se encontraron resultados para la selección'
+  : 'No results found for the selection';
+
+// Filter labels (keys must be in EN, labels localized)
+const filterLabels = currentLang === 'es'
+  ? {
+      all: 'Todas',
+      breakfast: 'Desayunos',
+      snacks: 'Snack Energéticos',
+      lunch: 'Almuerzos',
+      dinner: 'Cenas'
+    }
+  : {
+      all: 'All',
+      breakfast: 'Breakfast',
+      snacks: 'Energy Snacks',
+      lunch: 'Lunch',
+      dinner: 'Dinner'
+    };
+
+// Normaliza la categoría de receta.
+// Nota: en los JSON se usa "type" para cosas como el tipo de media (p.ej. "image").
+// Para los filtros debemos priorizar la propiedad "category" si existe.
+function normalizeType(r: Recipe): string {
+  const rawCategory = String((r as any).category || '').toLowerCase().trim();
+  const rawType = String((r as any).type || '').toLowerCase().trim();
+
+  // Prefer category over type
+  const raw = rawCategory || rawType;
+
+  // Breakfast
+  if (['breakfast', 'desayuno', 'desayunos'].includes(raw)) return 'breakfast';
+  // Snacks / Energy snacks (map brunch items here for this project taxonomy)
+  if ([
+    'snack', 'snacks', 'snack energeticos', 'snack energético', 'snack energéticos', 'snack-energeticos', 'energy snacks', 'brunch'
+  ].includes(raw)) return 'snacks';
+  // Lunch
+  if (['lunch', 'almuerzo', 'almuerzos'].includes(raw)) return 'lunch';
+  // Dinner
+  if (['dinner', 'cena', 'cenas'].includes(raw)) return 'dinner';
+
+  return 'other';
+}
+---
+<div class="-mt-px -mb-px overflow-hidden bg-white">
+  
+  <div class="container mx-auto px-4 mt-0">
+    <div class="pt-4">
+      <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
     </div>
 
-    {recipes.length === 0 ? (
-      <p class="text-center text-gray-500">{t('page.no_recipes', { namespace: 'recipes' })}</p>
+    <!-- Filter Buttons -->
+    <div id="recipeFilters" class="grid grid-cols-2 gap-3 mb-8 max-w-md mx-auto md:max-w-none md:grid-cols-5 md:gap-4 md:flex md:justify-center">
+      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="all">{filterLabels.all}</button>
+      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="breakfast">{filterLabels.breakfast}</button>
+      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="snacks">{filterLabels.snacks}</button>
+      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="lunch">{filterLabels.lunch}</button>
+      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="dinner">{filterLabels.dinner}</button>
+    </div>
+
+    {allRecipes.length === 0 ? (
+      <p class="text-center text-gray-500">{noRecipesText}</p>
     ) : (
-      <div class="flex flex-col gap-2.5 w-full" transition:animate="slide">
-        {/* Display exactly 2 rows of 2 recipes each (4 total) */}
-        {Array.from({ length: 2 }, (_, rowIndex) => {
-          const rowRecipes = recipes.slice(rowIndex * 2, rowIndex * 2 + 2);
-          return rowRecipes.length > 0 ? (
-            <div class="flex flex-col md:flex-row items-start justify-between w-full max-w-[1260px] mx-auto gap-6">
-              {rowRecipes.map((recipe: any) => (
-                <RecipeCard
-                  image={recipe.image || '/images/recipes/placeholder.jpg'}
-                  title={recipe.title}
-                  time={`${recipe.preparation_time}MIN`}
-                  id={recipe.id}
-                  textColor="text-gray-800"
-                  iconColor="text-gray-800"
-                />
-              ))}
-              {/* Add empty div if only one recipe in the row to maintain layout */}
-              {rowRecipes.length === 1 && (
-                <div class="hidden md:block w-full max-w-[585px]"></div>
-              )}
-            </div>
-          ) : null;
-        })}
+      <div id="recipesGrid" class="w-full mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mt-12" transition:animate="slide">
+        {allRecipes.map((recipe: Recipe) => (
+          <div class="recipe-card" data-type={normalizeType(recipe)}>
+            <RecipeCard
+              image={recipe.image || '/images/recipes/placeholder.jpg'}
+              title={recipe.title}
+              time={`${recipe.preparation_time}MIN`}
+              id={recipe.id}
+              textColor="text-white"
+              iconColor="text-white"
+            />
+          </div>
+        ))}
       </div>
-    )}
-    
-    <!-- Pagination -->
-    {allRecipes.length > recipesPerPage && (
-      <div class="flex justify-center mt-[60px]">
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={totalPages}
-          baseUrl={`/${currentLang}/${currentLang === 'es' ? 'recetas' : 'recipes'}`}
-        />
+      <!-- No results message for filters -->
+      <div id="noResults" class="hidden mt-6 items-center justify-center h-48 md:h-64">
+        <span class="text-white text-lg md:text-xl font-semibold">{noFilterResultsText}</span>
       </div>
+      <!-- Infinite scroll sentinel -->
+      <div id="infiniteSentinel" class="w-full h-10"></div>
     )}
   </div>
 </div>
@@ -106,55 +129,116 @@ const categories = [
 <script>
   // This script runs only on the client side
   document.addEventListener('DOMContentLoaded', () => {
+    // Fallback image handling
     const images = document.querySelectorAll('img');
-    images.forEach(img => {
+    images.forEach((img) => {
       img.addEventListener('error', function() {
         this.src = '/images/recipes/placeholder.jpg';
       });
     });
 
-    // Category button functionality
-    const categoryButtons = document.querySelectorAll('[data-category]');
-    categoryButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Remove active classes from all buttons
-        categoryButtons.forEach(btn => {
-          btn.classList.remove('bg-skyblue', 'text-primary', 'font-medium');
-          btn.classList.add('bg-white', 'text-black', 'font-normal');
-        });
-        
-        // Add active classes to clicked button
-        button.classList.remove('bg-white', 'text-black', 'font-normal');
-        button.classList.add('bg-skyblue', 'text-primary', 'font-medium');
-        
-        // Get selected category
-        const selectedCategory = button.getAttribute('data-category');
-        console.log('Selected category:', selectedCategory);
-        
-        // Reset to page 1 when changing categories
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('page', '1');
-        // TODO: Add category filtering parameter
-        // currentUrl.searchParams.set('category', selectedCategory);
-        
-        // For now, just reset to page 1
-        // In a full implementation, you would reload with the filtered results
-        window.history.pushState({}, '', currentUrl.toString());
+    // Filters
+    const filterButtons = Array.from(document.querySelectorAll('#recipeFilters .filter-btn')) as HTMLButtonElement[];
+    const cards = Array.from(document.querySelectorAll('#recipesGrid .recipe-card')) as HTMLElement[];
+    const noResultsEl = document.getElementById('noResults') as HTMLElement | null;
+    const sentinel = document.getElementById('infiniteSentinel');
+
+    // Pagination settings
+    const pageSize = 6;
+    let currentFilter = 'all';
+    let revealedCount = 0;
+
+    // Hide all cards
+    function hideAll() {
+      cards.forEach((c) => (c.style.display = 'none'));
+    }
+
+    // Get cards matching filter
+    function getMatchingCards(filter: string) {
+      return cards.filter((card) => {
+        const type = (card.dataset.type || 'other').toLowerCase();
+        return filter === 'all' || type === filter;
+      });
+    }
+
+    // Reveal next page of matching cards
+    function revealNextPage() {
+      const matching = getMatchingCards(currentFilter);
+      const nextBatch = matching.slice(revealedCount, revealedCount + pageSize);
+      nextBatch.forEach((card) => (card.style.display = ''));
+      revealedCount += nextBatch.length;
+
+      // Toggle no-results
+      const anyVisible = matching.length > 0;
+      if (noResultsEl) {
+        if (anyVisible) {
+          noResultsEl.classList.add('hidden');
+          noResultsEl.classList.remove('flex');
+        } else {
+          noResultsEl.classList.remove('hidden');
+          noResultsEl.classList.add('flex');
+        }
+      }
+    }
+
+    // Apply filter and reset pagination
+    function applyFilter(filter: string) {
+      currentFilter = filter;
+      revealedCount = 0;
+      hideAll();
+      revealNextPage();
+    }
+
+    function setActive(btn: HTMLButtonElement) {
+      // Reset styles for all buttons
+      filterButtons.forEach(b => {
+        b.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
+        // Asegurar texto blanco siempre
+        b.classList.add('text-primary');
+      });
+      // Highlight active
+      btn.classList.add('bg-secondary', 'text-primary');
+      // Dim the rest
+      filterButtons.forEach(b => {
+        if (b !== btn) b.classList.add('opacity-40');
+      });
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter') || 'all';
+        setActive(btn as HTMLButtonElement);
+        applyFilter(filter);
       });
     });
 
-    // Add smooth transitions for pagination
-    const paginationLinks = document.querySelectorAll('a[href*="page="]');
-    paginationLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        // Add loading state or smooth transition here if needed
-        document.body.style.opacity = '0.8';
-        setTimeout(() => {
-          document.body.style.opacity = '1';
-        }, 200);
+    // Initialize default state (ALL)
+    const defaultBtn = filterButtons.find(b => b.getAttribute('data-filter') === 'all');
+    if (defaultBtn) {
+      setActive(defaultBtn);
+      applyFilter('all');
+    }
+
+    // Infinite scroll observer
+    if ('IntersectionObserver' in window && sentinel) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const matching = getMatchingCards(currentFilter);
+            if (revealedCount < matching.length) {
+              revealNextPage();
+            }
+          }
+        });
       });
-    });
+      io.observe(sentinel);
+    }
   });
 </script>
+
+<style>
+  /* Active filter visual state (keeps tailwind classes consistent) */
+  #recipeFilters .filter-btn.bg-brown {
+    /* nothing else, class toggles handle colors */
+  }
+</style>

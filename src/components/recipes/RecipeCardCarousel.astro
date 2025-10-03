@@ -33,22 +33,19 @@ const {
 } = Astro.props;
 
 const currentLocale = getLocale();
-// const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
-const recipeLink = `#`;
+const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
 const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
 ---
 
 <a 
   href={recipeLink} 
-  class={`block group relative transition-all duration-500 ease-in-out flex-shrink-0 ${
-    isMainCard ? 'w-[530px]' : 'w-[310px]'
-  }`}
+  class="block group relative transition-all duration-300 ease-in-out w-full"
   transition:animate="fade"
 >
-  <!-- Container principal con las medidas específicas -->
-  <div class={`flex flex-col gap-[25px] ${isMainCard ? 'w-[530px]' : 'w-[310px]'} relative`}>
-    <!-- Imagen -->
-    <div class={`relative overflow-hidden flex-shrink-0 w-full h-[339px] rounded-t-[21px]`}>
+  <!-- Contenedor principal con altura uniforme -->
+  <div class="flex flex-col relative w-full">
+    <!-- Imagen con tamaño uniforme y background-size: cover (via object-cover) -->
+    <div class="relative overflow-hidden w-full aspect-[4/3] rounded-xl">
       <LazyImage
         src={image}
         alt={title}
@@ -57,9 +54,10 @@ const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
       />
     </div>
     
-    <!-- Título -->
-    <div class="font-sans leading-[0] not-italic relative shrink-0 text-black text-[28px] tracking-[-1.5px]">
-      <p class="leading-[35px]">{title}</p>
+    <!-- Información con altura fija para alinear cards -->
+    <div class="pt-2 md:pt-3 h-[64px] md:h-[72px]">
+      <!-- Título: envuelve y no desborda; máximo 2 líneas -->
+      <h3 class="font-sans font-bold text-black text-sm md:text-xl leading-snug mt-2 break-words overflow-hidden line-clamp-2">{title}</h3>
     </div>
   </div>
 </a>

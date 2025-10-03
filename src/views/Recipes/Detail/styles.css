@@ -39,50 +39,17 @@
   counter-reset: item;
 }
 
-.recipe-detail-container ol li {
-  display: block;
-  margin-bottom: 0.3rem;
+
+#hero{
+
+
 }
 
-.recipe-detail-container ol li:before {
-  content: counter(item, decimal) ". ";
-  counter-increment: item;
-  font-weight: bold;
-  color: black;
+#instructions{
+
+
 }
 
-/* Smooth transitions for better UX */
-.recipe-detail-container img {
-  transition: transform 0.3s ease-in-out;
-}
+#ingredients{
 
-.recipe-detail-container img:hover {
-  transform: scale(1.02);
-}
-
-/* Responsive typography adjustments */
-@media (max-width: 768px) {
-  .recipe-detail-container h1 {
-    font-size: 2rem !important;
-    line-height: 1.1;
-  }
-  
-  .recipe-detail-container h2 {
-    font-size: 1.5rem !important;
-    line-height: 1.2;
-  }
-  
-  .related-recipes-title {
-    font-size: 2rem !important;
-  }
-  
-  .related-recipe-title {
-    font-size: 1.125rem !important;
-  }
-}
-
-/* Remove any existing background styles */
-#hero, #ingredients, #instructions {
-  background: none !important;
-  background-image: none !important;
 }

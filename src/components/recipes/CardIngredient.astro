@@ -1,0 +1,26 @@
+---
+import LazyImage from '../common/LazyImage.astro';
+export interface Props {
+  icon?: string | null;
+  text?: string | null;
+}
+
+const { icon = null, text = null } = Astro.props as Props;
+
+// Si no hay nada que mostrar, no renderizar
+if ((!icon || icon === 'null' || icon === 'undefined') && (!text || text === 'null' || text === 'undefined')) {
+  return null;
+}
+---
+
+
+<div class="w-full max-w-xs">
+  <div class="flex items-center justify-center gap-3 rounded-[15px] border border-white border-opacity-20 bg-[#F04F00] px-4 shadow-sm h-14 md:h-16">
+    {icon && icon !== 'null' && icon !== 'undefined' && (
+      <LazyImage src={icon} alt={text ?? 'ingredient'} class="w-8 h-8 object-contain" loading="lazy" />
+    )}
+    {text && text !== 'null' && text !== 'undefined' && (
+      <span class="text-white font-title font-bold text-base md:text-2xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{text}</span>
+    )}
+  </div>
+</div>

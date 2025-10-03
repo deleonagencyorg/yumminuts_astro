@@ -197,7 +197,7 @@
     {
       "id": "recipes",
       "text": "Recetas",
-      "href": "/es/recipes"
+      "href": "/es/recetas"
     },
     {
       "id": "health",
@@ -207,12 +207,12 @@
     {
       "id": "news",
       "text": "Noticias",
-      "href": "/es/news"
+      "href": "/es/blog"
     },
     {
       "id": "contact",
       "text": "Contacto",
-      "href": "/es/contact"
+      "href": "/es/contacto"
     }
    
   ],
@@ -324,12 +324,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"😎​ ¡Bienvenidos a Snacks Yummies! Si se te antoja un snack, estás en el lugar correcto 🎉",
+      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
       "link":""
     },
     {
       "id":"2",
-      "title":"😎​ ¡Bienvenidos a Snacks Yummies! Si se te antoja un snack, estás en el lugar correcto 🎉",
+      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
       "link":""
     }
   ],

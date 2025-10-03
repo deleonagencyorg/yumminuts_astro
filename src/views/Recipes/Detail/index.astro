@@ -1,31 +1,48 @@
 ---
 // src/views/Recipes/Detail/index.astro
-import { t } from '../../../i18n/i18n';
-import type { Locale } from '../../../i18n/i18n';
+import { getLocale } from '../../../i18n/i18n';
 import './styles.css';
 import RecipeCard from '../../../components/recipes/RecipeCard.astro';
+import RelatedRecipesCarousel from '../../../components/recipes/RelatedRecipesCarousel.astro';
+import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
+import LazyImage from '../../../components/common/LazyImage.astro';
+import { div } from 'framer-motion/m';
+import IngredientsCarousel from '../../../components/recipes/IngredientsCarousel.astro';
+import ShareModal from '../../../components/common/ShareModal.astro';
 
 interface RecipeItem {
   id: string;
   title: string;
   description: string;
   ingredients: string[];
-  instructions: string | string[];
+  instructions: string[];
   preparation_time: number;
   servings: number;
   image?: string;
   tags?: string[];
+  product_image?: string;
 }
 
 const { currentLang, recipeId } = Astro.props;
 
-// Obtener datos desde traducciones
-const recipesAssets = t('detail', { namespace: 'recipes', locale: currentLang }) || {};
-const recipes = t('items', { namespace: 'recipes', locale: currentLang as Locale }) || [];
-const recipe = recipes.find((item: RecipeItem) => item.id === recipeId);
+// Import all recipe files with static glob and filter by language
+const recipeModules = import.meta.glob<{ default: RecipeItem }>("../../../locales/*/recipes/*.json");
+const allRecipes: RecipeItem[] = [];
+for (const path in recipeModules) {
+  // Path format: ../../../locales/es/recipes/file.json
+  const pathParts = path.split('/');
+  const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
+  if (lang === currentLang) {
+    const mod = await recipeModules[path]();
+    allRecipes.push(mod.default);
+  }
+}
 
-// Obtener recetas relacionadas
-const relatedRecipes = recipes
+// Find current recipe
+const recipe = allRecipes.find((item: RecipeItem) => item.id === recipeId);
+
+// Get related recipes (filter current and limit to 3)
+const relatedRecipes = allRecipes
   .filter((item: RecipeItem) => item.id !== recipeId)
   .slice(0, 3);
 
@@ -33,11 +50,18 @@ if (!recipe) {
   throw new Error(`Recipe with id ${recipeId} not found`);
 }
 
-function formatTime(minutes: number, locale: Locale): string {
+// Load shared recipe assets (titles, labels etc)
+const recipesAssets = {
+  recipes: currentLang === 'es' ? 'Ingredientes' : 'Ingredients',
+  preparation: currentLang === 'es' ? 'Preparación' : 'Preparation',
+  related_recipes: currentLang === 'es' ? 'Recetas relacionadas' : 'Related recipes'
+};
+
+function formatTime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   
-  if (locale === 'es') {
+  if (currentLang === 'es') {
     return hours > 0 
       ? `${hours}h ${mins}min` 
       : `${mins}min`;
@@ -53,25 +77,27 @@ const instructionsList = Array.isArray(recipe.instructions)
   ? recipe.instructions 
   : [recipe.instructions];
 ---
-<!-- Recipe Detail Container -->
-<div class="recipe-detail-container font-text bg-white min-h-screen py-12 px-4" transition:animate="slide">
-  <div class="max-w-6xl mx-auto">
-    
-    <!-- Recipe Title -->
-    <div class="mb-16">
-      <h1 class="font-heading text-black text-3xl md:text-[45px] leading-none tracking-[-2px] font-bold max-w-4xl">
-        {recipe.title}
-      </h1>
-    </div>
+<div class="bg-white">
+  <div class="w-full max-w-6xl mx-auto px-4 pt-4">
+    <Breadcrumb 
+    bgColor="bg-transparent" textColor="text-black" hoverColor="hover:text-black" />
+  </div>
+<section id="hero" class="pt-8 md:pt-12 pb-6" transition:animate="slide">
+  <div class="w-full max-w-6xl mx-auto px-4 py-4">
+    <h1 class="font-heading md:text-4xl text-xl font-bold text-black text-left uppercase italic mb-4">{recipe.title}</h1>
+  </div>
+  
+</section>
 
-    <!-- Main Content: Image + Instructions -->
-    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
-      
-      <!-- Recipe Image -->
-      <div class="w-full lg:w-1/2 flex-shrink-0">
-        <div class="relative h-[300px] md:h-[395px] overflow-hidden rounded-3xl">
-          <img 
-            src={recipe.image || '/images/recipes/placeholder.jpg'} 
+<!-- Imagen e Instrucciones: dos columnas (stack en mobile) -->
+<section id="recipe-content" class="pb-8">
+  <div class="w-full max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+    <!-- Columna Izquierda: Imagen -->
+    {recipe.image && (
+      <div class="w-full">
+        <div class="relative rounded-2xl overflow-hidden w-full aspect-[4/3]">
+          <LazyImage
+            src={recipe.image}
             alt={recipe.title}
             class="w-full h-full object-cover"
             onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
@@ -79,59 +105,20 @@ const instructionsList = Array.isArray(recipe.instructions)
           />
         </div>
       </div>
+    )}
 
-      <!-- Instructions Section -->
-      <div class="w-full lg:w-1/2 flex flex-col gap-8">
-        
-        <!-- Instructions Title -->
-        <h2 class="font-heading text-black text-2xl md:text-[30px] leading-none tracking-[-2px] font-bold">
-          {recipesAssets.instructions || 'Instrucciones'}
-        </h2>
-
-        <!-- Instructions Content -->
-        <div class="font-text text-black text-lg md:text-[20px]">
-          
-          <!-- Description if available -->
-          {recipe.description && (
-            <p class="leading-[35px] mb-6">
-              {recipe.description}
-            </p>
-          )}
-
-          <!-- Instructions List -->
-          <ol class="list-decimal space-y-2">
-            {instructionsList.map((instruction: string, index: number) => (
-              <li class="ml-8">
-                <span class="leading-[35px]">
-                  {instruction}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <!-- Preparation Time -->
-        <div class="flex items-center gap-3 mt-6">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-6 w-6 text-black" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-              stroke-width="2" 
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
-            />
-          </svg>
-          <span class="font-text text-black text-lg">
-            {formatTime(recipe.preparation_time, currentLang as Locale)}
-          </span>
-        </div>
-
-      </div>
+    <!-- Columna Derecha: Ingredientes -->
+    <div class="w-full">
+      <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left mb-4 uppercase italic">
+        {recipesAssets.recipes}
+      </h2>
+      <section class="mb-4 text-black">
+        <ul class="list-disc list-inside space-y-2 text-black">
+          {recipe.ingredients.map((ing: string) => (
+            <li class="text-lg">{ing}</li>
+          ))}
+        </ul>
+      </section>
     </div>
 
     <!-- Ingredients Section -->
@@ -155,49 +142,45 @@ const instructionsList = Array.isArray(recipe.instructions)
     )}
 
   </div>
+</section>
+
+<div id="ingredients" class=" flex flex-col justify-center items-center    mb-4 py-4 ">
+  <div class="w-full max-w-6xl px-4">
+    <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left  uppercase italic ">
+      {recipesAssets.preparation}
+    </h2>
+    
+    <div class="w-full md:w-full flex flex-col gap-4 md:p-8 p-4 rounded-lg">
+      <section class="mb-4 text-black">
+        <ul class="list-disc list-inside space-y-2 text-black">
+          {recipe.instructions.map((instruction: string) => (
+            <li class="text-lg">{instruction}</li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  </div>
 </div>
 
-<!-- Related Recipes Section - Figma Design -->
-<div class="bg-white py-16 px-4" transition:animate="fade">
-  <div class="max-w-6xl mx-auto px-6">
-    
-    <!-- Section Title - Matching Figma exactly -->
-    <div class="mb-12">
-      <h2 class="font-heading text-black text-3xl md:text-[55px] leading-none tracking-[-2px] font-bold text-left">
-        {recipesAssets.related_recipes || 'Ver otras recetas'}
-      </h2>
-    </div>
-    
-    <!-- Recipe Cards Grid - 4 columns on desktop, responsive on mobile -->
-    <div class="flex flex-col md:flex-row md:items-start md:justify-center gap-8 md:gap-6 lg:gap-8">
-      {relatedRecipes.map((related: RecipeItem) => (
-        <div class="flex flex-col gap-5 items-start w-full md:w-[283px] mx-auto">
-          
-          <!-- Recipe Image - Square format matching Figma -->
-          <div class="relative w-full aspect-square overflow-hidden rounded-[18px] bg-gray-100">
-            <img 
-              src={related.image || '/images/recipes/placeholder.jpg'}
-              alt={related.title}
-              class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-              onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
-            />
-          </div>
-          
-          <!-- Recipe Title - Matching Figma typography -->
-          <div class="w-full">
-            <a 
-              href={`/${currentLang}/recipes/${related.id}`}
-              class="block font-text text-black text-lg md:text-[20px] leading-[25px] tracking-[-1.5px] hover:text-gray-600 transition-colors duration-200 font-medium"
-            >
-              {related.title}
-            </a>
-          </div>
-          
-        </div>
-      ))}
+<!-- Sección de instrucciones separada eliminada; contenido movido a recipe-content -->
+<div id="suggestions_related" class="mt-[-2rem] flex flex-col justify-center items-center pt-12 pb-16 " transition:animate="fade">
+  <div class="w-full max-w-6xl px-4 py-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-black mb-8 text-start font-heading">
+      {currentLang === 'es' ? 'Ver otras recetas similares' : 'View More Recipes'}
+    </h2>
+
+    <!-- Carousel reutilizable con la lista de recetas sugeridas (usa RecipeCard) -->
+    <div class="w-full">
+      {relatedRecipes.length > 0 && (
+        <RelatedRecipesCarousel items={relatedRecipes} />
+      )}
     </div>
     
   </div>
+</div>
+
+
+<!-- Close background wrapper -->
 </div>
 
 <script>
@@ -228,3 +211,19 @@ const instructionsList = Array.isArray(recipe.instructions)
     });
   });
 </script>
+
+<!-- Share Modal instance -->
+<ShareModal
+  id="shareModal-recipe"
+  url={Astro.url.href}
+  title={recipe.title}
+  description={recipe.description}
+  hashtags={recipe.tags || []}
+  showLabels={false}
+  iconSize={40}
+  round={true}
+  openTextEs="Comparte esta receta en tus redes sociales"
+  openTextEn="Share this recipe on your social networks"
+  acceptTextEs="Aceptar"
+  acceptTextEn="Accept"
+/>

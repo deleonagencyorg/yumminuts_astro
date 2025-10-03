@@ -2,6 +2,7 @@
 // Hybrid component combining Categories products display with Recipe-style filtering
 import { t } from '../../../i18n/i18n';
 import { getLocale } from '../../../i18n/i18n';
+import ProductCard from '../ProductCard/index.astro';
 
 const currentLang = getLocale();
 const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
@@ -57,11 +58,29 @@ function getProductCategory(product: any): string {
   if (id === 'semillas' || slug === 'semillas') return 'semillas';
   if (id === 'maranones' || slug === 'maranones') return 'maranones';
   
-  return 'manies'; // Default fallback
+  // Fallback default
+  return 'manies';
 }
 
 // Display products (limit to 6 if not showing all)
 const displayProducts = showAllProducts ? productItems : productItems.slice(0, 6);
+
+function slugify(input: string): string {
+  return (input || '')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+function productHref(product: any): string {
+  const lang = currentLang === 'es' ? 'es' : 'en';
+  const seg = currentLang === 'es' ? 'productos' : 'products';
+  const slug = product?.slug || product?.id || slugify(product?.title || product?.name || '');
+  return `/${lang}/${seg}/${slug}`;
+}
+
 ---
 
 <div class="w-full py-12 bg-white">
@@ -96,41 +115,15 @@ const displayProducts = showAllProducts ? productItems : productItems.slice(0, 6
 
     <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12" id="productsGrid">
-      {displayProducts.map((product: any, index: number) => (
-        <div 
-          class="product-card group cursor-pointer" 
-          data-category={getProductCategory(product)}
-        >
-          <!-- Product Image Container -->
-          <div class="relative h-[320px] md:h-[400px] mb-4 overflow-hidden rounded-lg">
-            <!-- Background Color -->
-            <div 
-              class="absolute inset-0 rounded-lg transition-all duration-300 group-hover:scale-105" 
-              style={`background-image: url('${product.bgColor}'`}
-            ></div>
-            
-            <!-- Product Image -->
-            <div 
-              class="absolute bg-center bg-cover bg-no-repeat w-[70%] h-[80%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group-hover:scale-110 shadow-lg rounded"
-              style={`background-image: url('${product.image || '/images/products/placeholder.jpg'}')`}
-            ></div>
-            
-            <!-- Hover Overlay -->
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-lg"></div>
-          </div>
-          
-          <!-- Product Title -->
-          <div class="text-center">
-            <h3 class="font-sans text-lg md:text-xl font-medium text-black tracking-[-0.5px] leading-tight">
-              {product.title || product.name}
-            </h3>
-            {product.description && (
-              <p class="text-gray-600 text-sm mt-2 line-clamp-2">
-                {product.description}
-              </p>
-            )}
-          </div>
-        </div>
+      {displayProducts.map((product: any) => (
+        <a href={productHref(product)} class="product-card group cursor-pointer block" data-category={getProductCategory(product)}>
+          <ProductCard 
+            title={product.title || product.name}
+            image={product.image || '/images/products/placeholder.jpg'}
+            bgImage={product.bgColor}
+            description={product.description}
+          />
+        </a>
       ))}
     </div>
 
@@ -143,7 +136,7 @@ const displayProducts = showAllProducts ? productItems : productItems.slice(0, 6
     {!showAllProducts && productItems.length > 6 && (
       <div class="text-center mt-12">
         <a 
-          href={`/${currentLang === 'es' ? 'es' : 'en'}/productos`}
+          href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}`}
           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300 text-lg"
         >
           Ver Todos los Productos

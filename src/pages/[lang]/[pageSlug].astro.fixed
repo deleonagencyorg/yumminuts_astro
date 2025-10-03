@@ -117,8 +117,7 @@ if (!isRecipeDetail) {
   // Por lo tanto, '@/' se traduce a '../../' desde la perspectiva de [pageSlug].astro para llegar a la raíz de src/
   const targetModulePath = currentRoute.contentComponent.replace('@/', '../../');
 
-  // DEBUG: Log de la ruta del módulo que se busca
-  console.log(`Buscando módulo con ruta: ${targetModulePath} para la ruta ID: ${currentRoute.id}`);
+
 
   const moduleLoader = modules[targetModulePath]; // modules es Record<string, () => Promise<any>>
 

@@ -40,7 +40,7 @@ export const headerColors: HeaderColors = {
   nosotros: {
     textColor: 'text-primary',
     backgroundColor: 'bg-white',
-    hoverTextColor: 'hover:text-white',
+    hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: true,
   },
@@ -48,27 +48,27 @@ export const headerColors: HeaderColors = {
   // Configuración para la página de brands
   brands: {
     textColor: 'text-primary',
-    backgroundColor: 'bg-transparent',
+    backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
-    hoverBackgroundColor: 'hover:bg-blue-800',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: false,
   },
   
   // Configuración para la página de blog
   blog: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-transparent',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
-    hoverBackgroundColor: 'hover:bg-gray-100',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: false,
   },
   
   // Configuración para la página de productos
   products: {
     textColor: 'text-primary',
-    backgroundColor: 'bg-blue-900',
-    hoverTextColor: 'hover:text-gray-300',
-    hoverBackgroundColor: 'hover:bg-blue-800',
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: true,
   },
   
@@ -85,8 +85,8 @@ export const headerColors: HeaderColors = {
   contact: {
     textColor: 'text-primary',
     backgroundColor: 'bg-white',
-    hoverTextColor: 'hover:text-gray-300',
-    hoverBackgroundColor: 'hover:bg-blue-800',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: true,
   },
   
