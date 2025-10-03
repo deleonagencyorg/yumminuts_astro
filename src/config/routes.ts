@@ -44,6 +44,13 @@ export const routesConfig: RouteConfig[] = [
     metaDescriptionKey: 'meta.products.description',
   },
   {
+    id: 'health',
+    slugs: { es: 'salud', en: 'health' },
+    contentComponent: '@/views/Health/index.astro',
+    metaTitleKey: 'meta.health.title',
+    metaDescriptionKey: 'meta.health.description',
+  },
+  {
     id: 'brands',
     slugs: { es: 'marcas', en: 'brands' },
     contentComponent: '@/views/Brands/index.astro',

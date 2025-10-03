@@ -1,0 +1,76 @@
+---
+import SocialShareReact from './SocialShare.jsx';
+
+interface Props {
+  url?: string;
+  title: string;
+  description?: string;
+  hashtags?: string[];
+  iconSize?: number;
+  round?: boolean;
+  className?: string;
+  buttonClassName?: string;
+  platforms?: ('facebook' | 'twitter' | 'whatsapp' | 'telegram')[];
+  labels?: {
+    facebook?: string;
+    twitter?: string;
+    whatsapp?: string;
+    telegram?: string;
+  };
+  showLabels?: boolean;
+}
+
+const {
+  url,
+  title,
+  description = '',
+  hashtags = [],
+  iconSize = 32,
+  round = true,
+  className = '',
+  buttonClassName = '',
+  platforms = ['facebook', 'twitter', 'whatsapp', 'telegram'],
+  labels,
+  showLabels = false
+} = Astro.props;
+
+// Si no se proporciona una URL, usar la URL actual
+const shareUrl = url || Astro.url.href;
+
+// Determinar el idioma actual basado en la URL
+const currentLang = Astro.url.pathname.split('/')[1] || 'es';
+
+// Configurar etiquetas predeterminadas según el idioma
+const defaultLabels = {
+  es: {
+    facebook: 'Facebook',
+    twitter: 'Twitter',
+    whatsapp: 'WhatsApp',
+    telegram: 'Telegram'
+  },
+  en: {
+    facebook: 'Facebook',
+    twitter: 'Twitter',
+    whatsapp: 'WhatsApp',
+    telegram: 'Telegram'
+  }
+};
+
+// Usar etiquetas proporcionadas o las predeterminadas según el idioma
+const finalLabels = labels || defaultLabels[currentLang as 'es' | 'en'];
+---
+
+<SocialShareReact
+  client:load
+  url={shareUrl}
+  title={title}
+  description={description}
+  hashtags={hashtags}
+  iconSize={iconSize}
+  round={round}
+  className={className}
+  buttonClassName={buttonClassName}
+  platforms={platforms}
+  labels={finalLabels}
+  showLabels={showLabels}
+/>

@@ -31,12 +31,16 @@ let textColorValue = '#6b7280'; // Default gray-500
 if (textColor === 'text-white') textColorValue = 'white';
 else if (textColor === 'text-gray-600') textColorValue = '#4b5563';
 else if (textColor === 'text-gray-500') textColorValue = '#6b7280';
+else if (textColor === 'text-primary') textColorValue = 'var(--color-primary)';
+else if (textColor === 'text-secondary') textColorValue = 'var(--color-secondary)';
 
 // Convert hover color classes to actual colors
 let hoverColorValue = '#1f2937'; // Default gray-800
 if (hoverColor === 'hover:text-white') hoverColorValue = 'white';
 else if (hoverColor === 'hover:text-gray-900') hoverColorValue = '#111827';
 else if (hoverColor === 'hover:text-gray-800') hoverColorValue = '#1f2937';
+else if (hoverColor === 'hover:text-primary') hoverColorValue = 'var(--color-primary)';
+else if (hoverColor === 'hover:text-secondary') hoverColorValue = 'var(--color-secondary)';
 
 // Get current locale
 const currentLocale: Locale = getLocale();
@@ -79,7 +83,7 @@ const homeUrl = `/`;
 
 ---
 
-<nav class="breadcrumb-container pt-8 mt-[2rem]" style={`background-color: ${backgroundColor};`} aria-label="Breadcrumb">
+<nav class="breadcrumb-container pt-8 mt-[2rem]" style={`background-color: ${backgroundColor}; --breadcrumb-text-color: ${textColorValue}; --breadcrumb-hover-color: ${hoverColorValue};`} aria-label="Breadcrumb">
   <div class="breadcrumb-wrapper">
     <ol class="breadcrumb-list">
       <!-- Home link always present -->
@@ -91,7 +95,6 @@ const homeUrl = `/`;
           </svg>
         </a>
       </li>
-      
       <!-- Current section if not home -->
       {section && (
         <li class="breadcrumb-item" style={`color: ${textColorValue};`}>
@@ -122,5 +125,17 @@ const homeUrl = `/`;
     </ol>
   </div>
 </nav>
+
+<style>
+  .breadcrumb-link:hover,
+  .home-link:hover {
+    color: var(--breadcrumb-hover-color);
+  }
+  .breadcrumb-item,
+  .breadcrumb-link,
+  .home-link {
+    color: var(--breadcrumb-text-color);
+  }
+</style>
 
 <script src="./script.js"></script>

@@ -1,0 +1,201 @@
+---
+// src/components/common/RelatedProducts/index.astro
+import LazyImage from '../LazyImage.astro';
+
+interface Product {
+  id: string;
+  name: string;
+  category?: string;
+  image: string;
+  background_color?: string;
+  header_text_color?: string;
+  color_button?: string;
+}
+
+export interface Props {
+  products: Product[];
+  currentLang: string;
+  title?: string;
+  titleColor?: string;
+  className?: string;
+}
+
+const {
+  products = [],
+  currentLang = 'es',
+  title = currentLang === 'es' ? 'Productos Relacionados' : 'Related Products',
+  titleColor = 'primary',
+  className = ''
+} = Astro.props;
+
+// Ensure we only show up to 2 products (as shown in Figma design)
+const relatedProducts = products.slice(0, 2);
+
+// Texts based on language
+const texts = {
+  es: {
+    viewProduct: 'Ver Producto'
+  },
+  en: {
+    viewProduct: 'View Product'
+  }
+};
+
+const currentTexts = texts[currentLang as keyof typeof texts];
+---
+
+{relatedProducts.length > 0 && (
+  <section class={`related-products ${className}`}>
+    <div class="container mx-auto px-4">
+      <h2 
+        class="text-2xl md:text-3xl font-bold mb-8 text-center"
+        style={{ color: titleColor }}
+      >
+        {title}
+      </h2>
+      
+      <div class="flex items-center justify-center gap-8 flex-wrap md:flex-nowrap">
+        {relatedProducts.map((product) => (
+          <div class="related-product-card relative">
+            {/* Background shape matching Figma design */}
+            <div 
+              class="product-background"
+              style={{ 
+                backgroundColor: product.color_button || 'skyblue',
+              }}
+            >
+            </div>
+            
+            {/* Product image */}
+            <div class="product-image-container">
+              <LazyImage 
+                src={product.image} 
+                alt={product.name}
+                class="product-image"
+                width={200}
+                height={200}
+              />
+            </div>
+            
+            {/* Product info overlay */}
+            
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .related-products {
+    padding: 2rem 0;
+  }
+
+  .related-product-card {
+    position: relative;
+    width: 290px;
+    height: 180px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .related-product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .related-product-card:hover .product-background {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .product-image-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 150px;
+    z-index: 2;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    transition: all 0.3s ease;
+  }
+
+  .related-product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  .product-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    text-align: center;
+    z-index: 3;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .view-product-btn {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+  }
+
+  .view-product-btn:hover {
+    background-color: transparent;
+    color: primary;
+    border-color: blue;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .related-product-card {
+      width: 250px;
+      height: 160px;
+      margin-bottom: 1rem;
+    }
+
+    .product-image-container {
+      width: 100px;
+      height: 130px;
+    }
+
+    .product-name {
+      font-size: 0.8rem;
+    }
+
+    .view-product-btn {
+      font-size: 0.7rem;
+      padding: 0.3rem 0.8rem;
+    }
+  }
+</style>

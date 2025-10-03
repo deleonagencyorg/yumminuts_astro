@@ -1,4 +1,3 @@
-<!-- src/views/Home/index.astro -->
 ---
 import LazyImage from '../../components/common/LazyImage.astro';
 // Component Imports
@@ -10,6 +9,9 @@ import PixelGrid from '../../components/atoms/PixelGrid.astro';
 import AnimHeart from '../../components/common/AnimHeart/index.astro';
 import SocialMediaIcons from '../../components/common/SocialMediaIcons/index.astro';
 import Newsletter from '../../components/common/Newsletter/index.astro';
+import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
+import Categories from '../../components/common/Categories/index.astro';
+import Discover from '../../components/common/Discover/index.astro';
 
 // Style Imports
 import './styles.css';
@@ -36,8 +38,8 @@ const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const products = t('items', { namespace: 'products', locale: currentLang }) || [];
 const brandsList = brandsAssets.brands || [];
-const zibasBrand = brandsList.find((brand: any) => brand.id === 'zibas');
-const zibasProducts = zibasBrand?.products || [];
+const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
+const nutsCategories = nutsBrand?.categories || [];
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
 const slides = Array.isArray(commonAssets) 
@@ -53,13 +55,13 @@ const slides = Array.isArray(commonAssets)
     }))
   : [];
 
-
+const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
     <!-- Slider Section con máscara -->
-    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[21/9] lg:h-[66vh]">
+    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[21/9] lg:h-[66vh] reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
      
 
       <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[72vh] md:flex md:items-center md:justify-center">
@@ -67,60 +69,55 @@ const slides = Array.isArray(commonAssets)
       </div>
     </div>
     
-    <!-- Sección de Productos Zibas -->
-    {zibasProducts.length > 0 && (
-      <section class="w-full py-4 bg-blue pt-16">
-        <div class="container mx-auto px-4">
-          {brandsAssets.home?.title && (
-          <div class="text-center mb-2 relative z-20" >
-            <h2 class="text-3xl md:text-4xl italic font-bold mb-3" style={`color: white`}>
-              {brandsAssets.home?.title}
-            </h2>
-            {brandsAssets.home?.subtitle && (
-              <h1 class="text-6xl md:text-9xl italic font-bold " style={`color: white`}>
-                {brandsAssets.home?.subtitle}
-              </h1>
-            )}
-          </div>
-        )}
-          <ProductsCarousel 
-            products={products}
-            color={'white'}
-            autoplay={true}
-            speed={4000}
-            slidesPerView={3}
-            spaceBetween={30}
-            loop={true}
-            className="max-w-7xl mx-auto mb-8"
+    <!-- Sección de Información -->
+    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <HealthInfoSection />
+    </div>
+
+    <!-- Sección de Productos Nuts -->
+    {nutsCategories.length > 0 && (
+      <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+        <div class="container mx-autxo px-4">
+          <Categories 
+            products={nutsCategories}
+            title={currentLang === 'es' ? 'Categorías' : 'Categories'}
           />
         </div>
       </section>
     )}
-    <!-- Sección de recetas con carrusel -->
-    <!-- <section id="recipes" class="w-full py-12" transition:animate="slide">
-      <div class="container mx-auto px-4">
+
+    <!-- Sección de video -->
+    <section id="video" class="w-full  bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <video height="100%" width="100%" muted playsinline preload="metadata" data-autoplay-on-view controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
+        <source src="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <!-- Sección de Recetas -->
+    <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
+      <div class="container mx-auto px-4 bg-white">
         {recipesAssets.home?.title && (
-          <div class="text-center mb-16 relative z-20" >
-            <h2 class="text-3xl md:text-4xl italic font-bold mb-4" style={`color: #5B3F2E`}>
+          <div class="text-left mb-16 relative z-20" >
+            <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
               {recipesAssets.home?.title}
             </h2>
-            {recipesAssets.home?.subtitle && (
-              <h1 class="text-6xl md:text-9xl italic font-bold mb-4" style={`color: #5B3F2E`}>
-                {recipesAssets.home?.subtitle}
-              </h1>
-            )}
+            
           </div>
         )}
         <RecipesCarousel 
           recipes={recipesAssets.items || []} 
-          title={recipesAssets.home?.title || 'DESCUBRE NUEVOS SABORES CON NUESTRAS'}
+          title={recipesAssets.home?.title || 'Recetas'}
           textButton={recipesAssets.home?.view_more || 'Ver Todas'}
         />
       </div>
-    </section> -->
+    </section>
 
+    <!-- Sección Descubrenos -->
+    <section id="discover" class="w-container mx-auto px-4 bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+    </section>
 
-    <!-- Sección Gallery -->
+    <!-- Sección Gallery 
     <section id="gallery" class="bg-pink w-full py-12" transition:animate="slide">
       <div class="container mx-auto px-4">
         {Array.isArray(galleryAssets.images) && galleryAssets.images.length > 0 && (
@@ -133,7 +130,7 @@ const slides = Array.isArray(commonAssets)
         )}
       </div>
     </section>
-
+    -->
 
 
 
@@ -203,4 +200,64 @@ const slides = Array.isArray(commonAssets)
 
 
 
+    <style>
+      /* Hide any native media controls UI if a browser tries to show them */
+      #video video::-webkit-media-controls { display: none !important; }
+      #video video::-webkit-media-controls-enclosure { display: none !important; }
+      #video video::-moz-media-controls { display: none !important; }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
+
+        const show = (el) => {
+          el.classList.remove('opacity-0', 'translate-y-6');
+          el.classList.add('opacity-100', 'translate-y-0');
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              // Stagger children if present
+              const children = el.querySelectorAll('[data-reveal-child]');
+              if (children.length) {
+                children.forEach((child, idx) => {
+                  child.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+                  child.classList.remove('opacity-0', 'translate-y-6');
+                  child.classList.add('opacity-100', 'translate-y-0');
+                });
+              }
+              show(el);
+              observer.unobserve(el);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+
+        revealElements.forEach((el) => observer.observe(el));
+
+        // Auto-play/pause video when the section is in view
+        const autoPlayVideos = Array.from(document.querySelectorAll('video[data-autoplay-on-view]'));
+        if (autoPlayVideos.length) {
+          const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              const vid = entry.target;
+              if (!(vid instanceof HTMLVideoElement)) return;
+              if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                // Ensure muted for autoplay policies
+                vid.muted = true;
+                const playPromise = vid.play();
+                if (playPromise && typeof playPromise.then === 'function') {
+                  playPromise.catch(() => {/* swallow autoplay rejection */});
+                }
+              } else {
+                vid.pause();
+              }
+            });
+          }, { threshold: [0, 0.5, 1] });
+
+          autoPlayVideos.forEach((v) => videoObserver.observe(v));
+        }
+      });
+    </script>
   </main>

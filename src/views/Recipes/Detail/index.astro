@@ -1,31 +1,48 @@
 ---
 // src/views/Recipes/Detail/index.astro
-import { t } from '../../../i18n/i18n';
-import type { Locale } from '../../../i18n/i18n';
+import { getLocale } from '../../../i18n/i18n';
 import './styles.css';
 import RecipeCard from '../../../components/recipes/RecipeCard.astro';
+import RelatedRecipesCarousel from '../../../components/recipes/RelatedRecipesCarousel.astro';
+import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
+import LazyImage from '../../../components/common/LazyImage.astro';
+import { div } from 'framer-motion/m';
+import IngredientsCarousel from '../../../components/recipes/IngredientsCarousel.astro';
+import ShareModal from '../../../components/common/ShareModal.astro';
 
 interface RecipeItem {
   id: string;
   title: string;
   description: string;
   ingredients: string[];
-  instructions: string;
+  instructions: string[];
   preparation_time: number;
   servings: number;
   image?: string;
   tags?: string[];
+  product_image?: string;
 }
 
 const { currentLang, recipeId } = Astro.props;
 
-// Obtener datos desde traducciones
-const recipesAssets = t('home', { namespace: 'recipes', locale: currentLang }) || {};
-const recipes = t('items', { namespace: 'recipes', locale: currentLang as Locale }) || [];
-const recipe = recipes.find((item: RecipeItem) => item.id === recipeId);
+// Import all recipe files with static glob and filter by language
+const recipeModules = import.meta.glob<{ default: RecipeItem }>("../../../locales/*/recipes/*.json");
+const allRecipes: RecipeItem[] = [];
+for (const path in recipeModules) {
+  // Path format: ../../../locales/es/recipes/file.json
+  const pathParts = path.split('/');
+  const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
+  if (lang === currentLang) {
+    const mod = await recipeModules[path]();
+    allRecipes.push(mod.default);
+  }
+}
 
-// Obtener recetas relacionadas
-const relatedRecipes = recipes
+// Find current recipe
+const recipe = allRecipes.find((item: RecipeItem) => item.id === recipeId);
+
+// Get related recipes (filter current and limit to 3)
+const relatedRecipes = allRecipes
   .filter((item: RecipeItem) => item.id !== recipeId)
   .slice(0, 3);
 
@@ -33,11 +50,18 @@ if (!recipe) {
   throw new Error(`Recipe with id ${recipeId} not found`);
 }
 
-function formatTime(minutes: number, locale: Locale): string {
+// Load shared recipe assets (titles, labels etc)
+const recipesAssets = {
+  recipes: currentLang === 'es' ? 'Ingredientes' : 'Ingredients',
+  preparation: currentLang === 'es' ? 'Preparación' : 'Preparation',
+  related_recipes: currentLang === 'es' ? 'Recetas relacionadas' : 'Related recipes'
+};
+
+function formatTime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   
-  if (locale === 'es') {
+  if (currentLang === 'es') {
     return hours > 0 
       ? `${hours}h ${mins}min` 
       : `${mins}min`;
@@ -48,13 +72,27 @@ function formatTime(minutes: number, locale: Locale): string {
   }
 }
 ---
-<div id="hero" class="flex flex-col pt-8 md:pt-12 md:flex-row justify-center items-center md:h-[43rem] pb-8" transition:animate="slide">
-  <div class="w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-8">
+<div class="bg-white">
+  <div class="w-full max-w-6xl mx-auto px-4 pt-4">
+    <Breadcrumb 
+    bgColor="bg-transparent" textColor="text-black" hoverColor="hover:text-black" />
+  </div>
+<section id="hero" class="pt-8 md:pt-12 pb-6" transition:animate="slide">
+  <div class="w-full max-w-6xl mx-auto px-4 py-4">
+    <h1 class="font-heading md:text-4xl text-xl font-bold text-black text-left uppercase italic mb-4">{recipe.title}</h1>
+  </div>
+  
+</section>
+
+<!-- Imagen e Instrucciones: dos columnas (stack en mobile) -->
+<section id="recipe-content" class="pb-8">
+  <div class="w-full max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+    <!-- Columna Izquierda: Imagen -->
     {recipe.image && (
-      <div class="w-full md:w-1/2 flex justify-center">
-        <div class="relative rounded-lg overflow-hidden h-80 lg:h-96 w-80 max-w-lg">
-          <img 
-            src={recipe.image} 
+      <div class="w-full">
+        <div class="relative rounded-2xl overflow-hidden w-full aspect-[4/3]">
+          <LazyImage
+            src={recipe.image}
             alt={recipe.title}
             class="w-full h-full object-cover"
             onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
@@ -63,107 +101,60 @@ function formatTime(minutes: number, locale: Locale): string {
         </div>
       </div>
     )}
-    
-    <div class="w-[80%] md:w-1/2 flex flex-col gap-4 bg-white md:p-8 p-4 rounded-lg">
-      <h1 class=" font-heading md:text-3xl text-2xl font-bold text-gray-800 mb-2 text-center md:text-left">{recipe.title}</h1>
-      <div class="flex items-center justify-center md:justify-start">
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          class="h-5 w-5 md:h-6 md:w-6 text-gray-500" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
-          />
-        </svg>
-        <span class="ml-2 md:ml-5 text-gray-500 font-heading text-base md:text-xl">
-          {recipe.preparation_time} MINS
-        </span>
-      </div>
+
+    <!-- Columna Derecha: Ingredientes -->
+    <div class="w-full">
+      <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left mb-4 uppercase italic">
+        {recipesAssets.recipes}
+      </h2>
+      <section class="mb-4 text-black">
+        <ul class="list-disc list-inside space-y-2 text-black">
+          {recipe.ingredients.map((ing: string) => (
+            <li class="text-lg">{ing}</li>
+          ))}
+        </ul>
+      </section>
     </div>
   </div>
-</div>
-<div id="ingredients" class=" flex flex-col justify-center items-center    mb-8 py-16 ">
+</section>
+
+<div id="ingredients" class=" flex flex-col justify-center items-center    mb-4 py-4 ">
   <div class="w-full max-w-6xl px-4">
-    <h1 class="font-heading font-bold md:text-4xl text-2xl text-white text-center mb-8 ">
-      {recipesAssets.recipes}
-    </h1>
+    <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left  uppercase italic ">
+      {recipesAssets.preparation}
+    </h2>
     
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8">
-      {recipe.image && (
-        <div class="w-full md:w-1/2 flex justify-center">
-          <div class="relative rounded-lg overflow-hidden h-80 lg:h-96 w-80 max-w-lg">
-            <img 
-              src={recipe.product_image} 
-              alt={recipe.title}
-              class="w-full h-full object-cover"
-              onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
-            />
-          </div>
-        </div>
-      )}
-      
-      <div class="w-[80%] md:w-1/2 flex flex-col gap-4 md:p-8 p-4 rounded-lg text-white">
-       
-        <section class="mb-8 text-white">
-          <ul class="list-disc list-inside space-y-2 text-white">
-            {recipe.ingredients.map((ingredient: string) => (
-              <li class="text-white">
-                {ingredient}
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="instructions" class="mt-[-2rem]  md:mt-[-2rem] flex flex-col md:flex-row justify-center items-center md:h-[43rem] mb-8">
-
-  <div class="w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-8">
-    <div class="w-[80%]  flex items-center justify-center flex-col gap-4  md:p-0 p-4 rounded-lg text-white">
-      <h1 class="font-heading font-bold md:text-4xl text-2xl text-gray-600 text-center mb-8">
-        {recipesAssets.preparation}
-      </h1>
-      <section class="mb-8 text-white">
-        <ul class="list-disc list-inside space-y-2 text-gray-600">
+    <div class="w-full md:w-full flex flex-col gap-4 md:p-8 p-4 rounded-lg">
+      <section class="mb-4 text-black">
+        <ul class="list-disc list-inside space-y-2 text-black">
           {recipe.instructions.map((instruction: string) => (
-            <li class="text-gray-600">
-              {instruction}
-            </li>
+            <li class="text-lg">{instruction}</li>
           ))}
         </ul>
       </section>
     </div>
   </div>
 </div>
-<div id="suggestions_related" class="mt-[-2rem] flex flex-col justify-center items-center py-12 bg-white" transition:animate="fade">
-  <div class="w-full max-w-6xl px-4">
-    <h2 class="pb-8 text-3xl md:text-4xl font-bold text-gray-600 mb-8 text-center font-heading">
-      {recipesAssets.related_recipes}
+
+<!-- Sección de instrucciones separada eliminada; contenido movido a recipe-content -->
+<div id="suggestions_related" class="mt-[-2rem] flex flex-col justify-center items-center pt-12 pb-16 " transition:animate="fade">
+  <div class="w-full max-w-6xl px-4 py-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-black mb-8 text-start font-heading">
+      {currentLang === 'es' ? 'Ver otras recetas similares' : 'View More Recipes'}
     </h2>
-    
-    <div class="w-full mx-auto grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-16">
-      {relatedRecipes.map((related: RecipeItem) => (
-        <RecipeCard
-          image={related.image || '/images/recipes/placeholder.jpg'}
-          title={related.title}
-          time={`${related.preparation_time} ${currentLang === 'es' ? 'min' : 'mins'}`}
-          id={related.id}
-          textColor="text-gray-800"
-          iconColor="text-gray-500"
-        />
-      ))}
+
+    <!-- Carousel reutilizable con la lista de recetas sugeridas (usa RecipeCard) -->
+    <div class="w-full">
+      {relatedRecipes.length > 0 && (
+        <RelatedRecipesCarousel items={relatedRecipes} />
+      )}
     </div>
   </div>
 </div>
 
+
+<!-- Close background wrapper -->
+</div>
 
 <script>
   // Este script se ejecuta solo en el navegador
@@ -179,3 +170,19 @@ function formatTime(minutes: number, locale: Locale): string {
     });
   });
 </script>
+
+<!-- Share Modal instance -->
+<ShareModal
+  id="shareModal-recipe"
+  url={Astro.url.href}
+  title={recipe.title}
+  description={recipe.description}
+  hashtags={recipe.tags || []}
+  showLabels={false}
+  iconSize={40}
+  round={true}
+  openTextEs="Comparte esta receta en tus redes sociales"
+  openTextEn="Share this recipe on your social networks"
+  acceptTextEs="Aceptar"
+  acceptTextEn="Accept"
+/>

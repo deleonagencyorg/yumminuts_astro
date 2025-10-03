@@ -13,6 +13,9 @@ interface Props {
   iconColor?: string;
   hoverImage?: string;
   currentLang?: string;
+  summary?: string;
+  minutes?: number;
+  isNew?: boolean;
 }
 
 const { 
@@ -23,7 +26,10 @@ const {
   textColor = 'text-blue-900',
   iconColor = 'text-blue-900',
   hoverImage = image,
-  currentLang = getLocale()
+  currentLang = getLocale(),
+  summary,
+  minutes,
+  isNew = false
 } = Astro.props;
 
 const blogLink = `/${currentLang}/blog/${slug || id}`;
@@ -32,52 +38,39 @@ const viewBlogText = currentLang === 'es' ? 'Leer más' : 'Read more';
 
 <a 
   href={blogLink} 
-  class="block group relative overflow-hidden rounded-[2rem] transition-all duration-300 ease-in-out h-[350px] md:h-[450px] hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+  class="block group relative transition-all duration-300 ease-in-out w-full"
   transition:animate="fade"
 >
-  <!-- Imagen de fondo (siempre visible) -->
-  <div class="absolute inset-0 w-full h-full">
-    <LazyImage
-      src={image}
-      alt={title}
-      class="w-full h-full object-cover"
-      transition:name={`blog-image-${id}`}
-    />
-  </div>
-  
-  <!-- Overlay con gradiente para el estado normal -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-100 group-hover:opacity-0 transition-opacity duration-300"></div>
-  
-  <!-- Información en estado normal -->
-  <div class="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 group-hover:opacity-0 transition-opacity duration-300">
-    <h3 class="font-sans text-sm md:text-lg font-bold text-primary text-center mb-3">{title}</h3>
-    <div class="flex justify-center">
-      <div class="border-2 border-primary bg-white text-primary py-2 px-8 rounded-full text-center text-sm font-medium">
-        {viewBlogText}
-      </div>
+  <div class="flex flex-col relative w-full">
+    <div class="relative overflow-hidden w-full aspect-[4/3] rounded-xl">
+      <LazyImage
+        src={image}
+        alt={title}
+        class="w-full h-full object-cover"
+        transition:name={`blog-image-${id}`}
+      />
     </div>
-  </div>
-  
-  <!-- Overlay para hover -->
-  <div class="absolute inset-0 bg-gradient-to-t from-blue-900 to-blue-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-  
-  <!-- Información en hover -->
-  <div class="absolute inset-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <!-- Toda la información en la parte inferior -->
-    <div class="p-5 flex flex-col gap-3">
-      <!-- Título en hover (al inicio de la información) -->
-      <h3 class="font-sans text-lg font-bold text-white text-center mb-3">{title}</h3>
-      
-      <!-- Botón de leer más -->
-      <div class="flex justify-center mt-4">
-        <div class="border-2 border-white bg-transparent text-white py-2 px-8 rounded-full text-center text-sm font-medium">
-          {viewBlogText}
+
+    <div class="pt-2 md:pt-3">
+      <h3 class="font-sans font-bold text-black text-sm md:text-xl leading-snug mt-2 break-words overflow-hidden line-clamp-2">{title}</h3>
+      {summary && (
+        <p class="mt-2 text-gray-700 text-sm md:text-base leading-snug line-clamp-2">{summary}</p>
+      )}
+      {(isNew || minutes) && (
+        <div class="mt-2 flex items-center gap-3 text-sm">
+          {isNew && (
+            <span class="text-red-600 font-semibold">{currentLang === 'es' ? 'Nuevo' : 'New'}</span>
+          )}
+          {isNew && minutes ? <span>•</span> : null}
+          {minutes && (
+            <span class="text-gray-500">{currentLang === 'es' ? `${minutes} minutos de lectura` : `${minutes} min read`}</span>
+          )}
         </div>
-      </div>
+      )}
     </div>
   </div>
 </a>
 
 <style>
-  /* Mantener los mismos estilos que RecipeCard */
+  /* Estructura alineada con RecipeCard: imagen 4/3 + título clamp 2 líneas */
 </style>

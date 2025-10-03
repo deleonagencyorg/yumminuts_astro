@@ -6,8 +6,19 @@
   "home": {
     "title": "Descubre la variedad de nuestros",
     "subtitle": "Productos",
-    "textButton": "Conoce más"
-},
+    "textButton": "Conoce más",
+    "slider": [
+      {
+        "id": "slide1",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "alt": "Home Yumminuts",
+        "title": "",
+        "description": "",
+        "link": "https://www.yumminuts.com"
+      }
+    ]
+  },
   "stockist":[
     {
       "id": "sompopopoapp",
@@ -24,15 +35,16 @@
   ],
   "items": [
     {
-      "id": "zibas-clasicas",
-      "name": "Ziba's Clásicas",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-clasicas-2.webp",
-      "background_color": "#FDE820",
+      "id": "yumminuts-mani-con-sal",
+      "name": "Yumminuts Mani con Sal",
+      "category": "Maní",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
+      "background_color": "white",
       "header_color": "#FDE820",
-      "text_color":"#FDE820",
-      "header_background": "#FDE820",
-      "header_text_color": "#5B3F2E",
-      "color_button": "#FDE820",
+      "text_color":"primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#95CFF2",
       "description": "Hojuelas de Papa Fritas con sabor a Queso.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/zibas-grande2.webp",

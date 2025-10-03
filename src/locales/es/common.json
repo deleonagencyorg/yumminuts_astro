@@ -1,8 +1,8 @@
 {
   "meta": {
     "home": {
-      "title": "Ziba's - Disfruta tus Ziba's en todo momento",
-      "description": "Tus hojuelas de papa frita favoritas llegan con sabores naturalmente auténticos para todos los gustos."
+      "title": "Yummi Nuts - Disfruta tus Yummi Nuts en todo momento",
+      "description": "abemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas."
     },
     "contact": {
       "title": "Contacto",
@@ -10,51 +10,45 @@
     },
     "recipes": {
       "title": "Recetas",
-      "description": "Descubre deliciosas recetas con Ziba's. Desde platos tradicionales hasta creaciones innovadoras."
+      "description": "Descubre deliciosas recetas con Yummi Nuts. Desde platos tradicionales hasta creaciones innovadoras."
     },
     "news": {
       "title": "Noticias",
-      "description": "Mantente al día con las últimas noticias y eventos de Ziba's."
+      "description": "Mantente al día con las últimas noticias y eventos de Yummi Nuts."
     },
     "products": {
       "title": "Productos",
-      "description": "Descubre nuestra línea completa de productos Ziba's. Sabor auténtico para toda la familia."
+      "description": "Descubre nuestra línea completa de productos Yummi Nuts. Sabor auténtico para toda la familia."
+    },
+    "health": {
+      "title": "Beneficios para la Salud - Yummi Nuts",
+      "description": "Descubre los beneficios para la salud de nuestros snacks nutritivos. Altos en proteína, fibra, y opciones sin gluten para un estilo de vida saludable."
     },
     "brands": {
       "title": "Nuestras Marcas de Snacks",
-      "description": "Descubre Ziba's, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
+      "description": "Descubre Yummi Nuts, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
     },
     "about_us": {
       "title": "Nosotros - Historia y Valores",
-      "description": "Conoce la historia de Ziba's, empresa líder en snacks de Centroamérica desde 1990. Nuestra misión, valores y compromiso con la calidad."
+      "description": "Conoce la historia de Yummi Nuts, empresa líder en snacks de Centroamérica desde 1990. Nuestra misión, valores y compromiso con la calidad."
     },
     "yummiesone": {
-      "title": "Ziba's One",
-      "description": "Descubre Ziba's One, nuestra nueva plataforma exclusiva para los verdaderos amantes de los snacks."
-    },
-    "zibas_creators": {
-      "title": "Ziba's Creators - Concurso de Creatividad",
-      "description": "Participa en el concurso de creatividad de Ziba's. Sube tu contenido en video, baile, música, arte, memes e inteligencia artificial y gana premios increíbles."
+      "title": "Yummi Nuts One",
+      "description": "Descubre Yummi Nuts One, nuestra nueva plataforma exclusiva para los verdaderos amantes de los snacks."
     }
   },
   "social_media": {
    "facebook": {
       "name": "Facebook",
-      "url": "https://www.facebook.com/yummi.nuts",
+      "url": "https://www.facebook.com/yummi.nuts/",
       "alt": "Facebook de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/facebook.svg"
     },
     "instagram": {
       "name": "Instagram",
-      "url": "https://www.instagram.com/yummi.nuts",
+      "url": "https://www.instagram.com/yummi.nuts/",
       "alt": "Instagram de Yummi Nuts",
       "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/instagram.svg"
-    },
-    "tiktok": {
-      "name": "TikTok",
-      "url": "https://www.tiktok.com/@yummi.nuts",
-      "alt": "TikTok de Yummi Nuts",
-      "iconUrl": "https://snack.yummiespromociones.com/snacksyummies/tiktok.svg"
     }
   },
   "cookie_consent": {
@@ -72,34 +66,148 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/zibas/banner.webp",
-        "mobile": "https://snack.yummiespromociones.com/zibas/banner-m.webp",
-        "alt": "Zambos",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
+        "alt": "Home Yumminuts",
         "title": "",
         "description": "",
-        "link": "https://www.zambos.com"
+        "link": "https://www.yumminuts.com"
       }
-    ]
+    ],
+    "healthInfo": [
+      {
+        "id": "info1",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg",
+        "alt": "Alto en proteina",
+        "text": "Alto en Proteína"
+      },
+      {
+        "id": "info2",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg",
+        "alt": "Alto en fibra",
+        "text": "Alto en Fibra"
+      },
+      {
+        "id": "info3",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/azucar.svg",
+        "alt": "Bajo en azúcares",
+        "text": "Bajo en Azúcares"
+      },
+      {
+        "id": "info4",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg",
+        "alt": "Alto en energía",
+        "text": "Alto en Energía"
+      }
+    ],
+    "discoverSection": {
+      "title": "Descúbrenos",
+      "images": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
+          "alt": "imagen1",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide2",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
+          "alt": "imagen2",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide3",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
+          "alt": "imagen3",
+          "title": "",
+          "description": "",
+          "link": "#"
+        },
+        {
+          "id": "slide4",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
+          "alt": "imagen4",
+          "title": "",
+          "description": "",
+          "link": "#"
+        }
+      ]
+    },
+    "healthPage": {
+      "title": "Activa tu mente y cuerpo con Yummi Nuts",
+      "description": "Descubre los beneficios de nuestros snacks para tu salud.",
+      "link": "/es/salud",
+      "image": "https://snack.yummiespromociones.com/yumminuts/home-salud.png",
+      "slider": [
+        {
+          "id": "slide1",
+          "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "alt": "Home Yumminuts",
+          "title": "",
+          "description": "",
+          "link": "https://www.yumminuts.com"
+        }
+      ],
+      "videosSection": {
+        "title": "Tips para mantener tu cuerpo siempre saludable",
+        "description": "Explora más sobre Yummi Nuts a través de nuestros videos."
+      },
+      "videos": [
+        {
+          "id": "video1",
+          "url": "https://www.youtube.com/embed/lDQWoYSB9xg",
+          "thumbnail": "https://img.youtube.com/vi/lDQWoYSB9xg/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #1"
+        },
+        {
+          "id": "video2",
+          "url": "https://www.youtube.com/embed/rhqXNtfKk8s",
+          "thumbnail": "https://img.youtube.com/vi/rhqXNtfKk8s/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #2"
+        },
+        {
+          "id": "video3",
+          "url": "https://www.youtube.com/embed/OY3AoQ4eqqU",
+          "thumbnail": "https://img.youtube.com/vi/OY3AoQ4eqqU/maxresdefault.jpg",
+          "title": "Tips de Vida Saludable #3"
+        }
+      ]
+    }
   },
   "menu_labels": {
     "open_main_menu": "Abrir menú principal",
     "explore": "Explorar"
   },
   "menu_items": [
-    {
-      "id": "zibas-creators",
-      "text": "Ziba's Creators",
-      "href": "/es/zibas-creators"
-    },
+    
     {
       "id": "products",
       "text": "Productos",
       "href": "/es/#products"
     },
     {
-      "id": "gallery",
-      "text": "Galería",
-      "href": "/es/#gallery"
+      "id": "recipes",
+      "text": "Recetas",
+      "href": "/es/recetas"
+    },
+    {
+      "id": "health",
+      "text": "Salud",
+      "href": "/es/salud"
+    },
+    {
+      "id": "news",
+      "text": "Noticias",
+      "href": "/es/blog"
     },
     {
       "id": "contact",
@@ -113,6 +221,47 @@
     "subtitle": "Historia",
     "content": [
       "Las mejores papas en un solo lugar."
+    ]
+  },
+  "discover": {
+    "title": "Descúbrenos",
+    "images": [
+      {
+        "id": "slide1",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "imagen1",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide2",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "imagen2",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide3",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "imagen3",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      },
+      {
+        "id": "slide4",
+        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
+        "alt": "imagen4",
+        "title": "",
+        "description": "",
+        "link": "https://www.zambos.com"
+      }
     ]
   },
   "home": {
@@ -156,17 +305,31 @@
     "email": "ayudacliente@zibas.com",
     "copyright": "Copyright 2025. Ziba's. Todos los derechos reservados.",
     "privacy_policy_text": "Política de Privacidad",
-    "privacy_policy_url": "/es/politica-privacidad"
+    "privacy_policy_url": "/es/politica-privacidad",
+    "newsletter": "NOVEDADES",
+    "newsletter_description": "Sé el primero en conocer nuevos productos, eventos y sorpresas.",
+    "email_placeholder": "INGRESAR CORREO ELECTRÓNICO",
+    "home": "INICIO",
+    "products": "Nuestros Productos",
+    "health": "Salud & Bienestar",
+    "latest_news": "Últimas Noticias",
+    "contact": "Contáctanos",
+    "support": "SOPORTE",
+    "privacy_policy": "Políticas de privacidad",
+    "cookie_policy": "Políticas de Cookies",
+    "terms_conditions": "Términos y condiciones",
+    "complaints_book": "Libro de reclamaciones",
+    "help": "AYUDA"
   },
   "messagetop":[
     {
       "id":"1",
-      "title":"😎​ ¡Bienvenidos a Snacks Yummies! Si se te antoja un snack, estás en el lugar correcto 🎉",
+      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
       "link":""
     },
     {
       "id":"2",
-      "title":"😎​ ¡Bienvenidos a Snacks Yummies! Si se te antoja un snack, estás en el lugar correcto 🎉",
+      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
       "link":""
     }
   ],

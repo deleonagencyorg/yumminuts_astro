@@ -4,26 +4,30 @@ import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 
-export function getStaticPaths() {
-  // Incluir ambos idiomas
-  const locales = ['en', 'es'];
-  const paths = [];
-
-  for (const locale of locales) {
-    // Obtener recetas para este idioma
-    const recipes = t('items', { namespace: 'recipes', locale: locale as Locale }) || [];
-    console.log(`Found ${recipes.length} recipes for language ${locale}`);
-    
-    // Para cada receta, crear una ruta
-    for (const recipe of recipes) {
-      paths.push({
-        params: { lang: locale, recipeId: recipe.id },
-        props: { recipe, currentLang: locale }
-      });
-    }
+export async function getStaticPaths() {
+  const paths: any[] = [];
+  // Cargar recetas EN
+  const enModules = import.meta.glob('../../../locales/en/recipes/*.json', { eager: true });
+  const enFiles = Object.values(enModules) as any[];
+  for (const mod of enFiles) {
+    const recipe = (mod as any).default;
+    if (!recipe?.id) continue;
+    paths.push({
+      params: { lang: 'en', recipeId: recipe.id },
+      props: { recipe, currentLang: 'en' }
+    });
   }
-
-  console.log(`Generated ${paths.length} recipe routes`);
+  // Cargar recetas ES
+  const esModules = import.meta.glob('../../../locales/es/recipes/*.json', { eager: true });
+  const esFiles = Object.values(esModules) as any[];
+  for (const mod of esFiles) {
+    const recipe = (mod as any).default;
+    if (!recipe?.id) continue;
+    paths.push({
+      params: { lang: 'es', recipeId: recipe.id },
+      props: { recipe, currentLang: 'es' }
+    });
+  }
   return paths;
 }
 
@@ -32,10 +36,8 @@ const { lang, recipeId } = Astro.params;
 
 // Establecer el idioma para las traducciones
 setLocale(lang as Locale);
-
-console.log(`Rendering recipe: ${recipeId} in language: ${lang}`);
 ---
 
-<MainLayout title={recipe.title} currentLang={currentLang}>
+<MainLayout title={recipe.title}>
   <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
 </MainLayout>

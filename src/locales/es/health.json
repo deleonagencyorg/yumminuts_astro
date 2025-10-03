@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "title": "Beneficios para la Salud - Yummi Nuts",
+    "description": "Descubre los beneficios para la salud de nuestros snacks nutritivos. Altos en proteína, fibra, y opciones sin gluten para un estilo de vida saludable."
+  },
+  "title": "Activa tu mente y cuerpo con Yummi Nuts",
+  "subtitle": "Nutritivos y Deliciosos",
+  "home": {
+    "title": "Activa tu mente y cuerpo con Yummi Nuts",
+    "subtitle": "Para tu Salud",
+    "textButton": "Conoce más",
+    "slider": [
+      {
+        "id": "slide1",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "alt": "Home Yumminuts",
+        "title": "",
+        "description": "",
+        "link": "https://www.yumminuts.com"
+      }
+    ]
+  },
+  "benefits": {
+    "protein": {
+      "title": "Alto en Proteína",
+      "description": "Nuestros snacks están llenos de proteínas de origen vegetal que ayudan a construir y mantener la masa muscular, proporcionando energía sostenida durante todo el día.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg"
+    },
+    "fiber": {
+      "title": "Rico en Fibra",
+      "description": "El alto contenido de fibra promueve la salud digestiva, ayuda a mantener niveles estables de azúcar en sangre y te mantiene satisfecho por más tiempo.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg"
+    },
+    "gluten_free": {
+      "title": "Opciones Sin Gluten",
+      "description": "Perfectos para personas con enfermedad celíaca o sensibilidad al gluten, nuestros snacks sin gluten no comprometen el sabor ni la nutrición.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/sin-gluten.svg"
+    },
+    "natural": {
+      "title": "Ingredientes Naturales",
+      "description": "Elaborados con ingredientes naturales cuidadosamente seleccionados, libres de conservantes artificiales y aditivos dañinos.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/natural.svg"
+    },
+    "antioxidants": {
+      "title": "Rico en Antioxidantes",
+      "description": "Llenos de antioxidantes que ayudan a combatir los radicales libres y apoyan tu sistema inmunológico para una mejor salud general.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/antioxidantes.svg"
+    },
+    "energy": {
+      "title": "Energía Sostenida",
+      "description": "El equilibrio perfecto de nutrientes proporciona energía duradera sin la caída asociada con los snacks azucarados.",
+      "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg"
+    }
+  },
+  "categories": {
+    "protein_rich": "Alto en Proteína",
+    "fiber_rich": "Alto en Fibra",
+    "gluten_free": "Sin Gluten",
+    "natural": "Natural",
+    "low_sodium": "Bajo en Sodio",
+    "heart_healthy": "Saludable para el Corazón"
+  },
+  "nutrition_facts": {
+    "title": "Información Nutricional",
+    "serving_size": "Tamaño de Porción",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "fiber": "Fibra",
+    "sodium": "Sodio",
+    "carbs": "Carbohidratos Totales"
+  }
+}

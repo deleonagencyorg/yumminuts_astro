@@ -1,0 +1,165 @@
+---
+import CardIngredient from './CardIngredient.astro';
+
+export interface IngredientItem {
+  icon?: string | null;
+  text?: string | null;
+}
+
+export interface Props {
+  items: IngredientItem[];
+}
+
+const { items = [] } = Astro.props as Props;
+---
+
+{items.length === 0 ? (
+  <div class="w-full text-center text-gray-200 py-6"></div>
+) : (
+  <div class="w-full" data-ingredients-carousel>
+    <!-- Desktop track -->
+    <div class="hidden md:block">
+      <div class="overflow-hidden">
+        <div id="ingTrackDesktop" class="flex gap-4 md:gap-6 transition-transform duration-300 will-change-transform">
+          {items.map((item) => (
+            <div class="w-[260px] flex-shrink-0">
+              <CardIngredient icon={item.icon} text={item.text} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile track -->
+    <div class="md:hidden">
+      <div class="overflow-hidden -mx-2">
+        <div id="ingTrackMobile" class="flex gap-0 transition-transform duration-300 will-change-transform touch-pan-y">
+          {items.map((item) => (
+            <div class="w-full flex-shrink-0 px-2">
+              <CardIngredient icon={item.icon} text={item.text} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom controls (both breakpoints) -->
+    <div class="mt-4 flex items-center justify-center gap-3">
+      <button id="ingPrev" class="flex items-center justify-center bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow" aria-label="Prev">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      <button id="ingNext" class="flex items-center justify-center bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow" aria-label="Next">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
+  </div>
+)}
+
+<script>
+  /**
+   * @param {HTMLElement} root
+   */
+  function initIngredientsCarousel(root) {
+    if (!root || root._ingInit) return;
+    root._ingInit = true;
+
+    // Desktop
+    const trackD = root.querySelector('#ingTrackDesktop');
+    const prevBtn = root.querySelector('#ingPrev');
+    const nextBtn = root.querySelector('#ingNext');
+
+    let indexD = 0;
+    const stepD = 276; // 260 card + ~16 gap
+    function visibleCountD() {
+      const container = trackD?.parentElement;
+      if (!container) return 3;
+      return Math.max(1, Math.floor(container.clientWidth / stepD));
+    }
+    function updateD() {
+      if (!trackD) return;
+      const maxIndex = Math.max(0, trackD.children.length - visibleCountD());
+      if (indexD > maxIndex) indexD = maxIndex;
+      trackD.style.transform = `translateX(-${indexD * stepD}px)`;
+    }
+    if (trackD && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => { indexD = Math.max(0, indexD - 1); updateD(); });
+      nextBtn.addEventListener('click', () => { indexD = Math.min(Math.max(0, trackD.children.length - visibleCountD()), indexD + 1); updateD(); });
+      window.addEventListener('resize', updateD);
+      updateD();
+    }
+
+    // Mobile
+    const trackM = root.querySelector('#ingTrackMobile');
+    // Reuse bottom buttons on mobile
+
+    let indexM = 0;
+    function updateM() {
+      if (!trackM) return;
+      trackM.style.transform = `translateX(-${indexM * 100}%)`;
+    }
+    if (trackM && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => { indexM = Math.max(0, indexM - 1); updateM(); });
+      nextBtn.addEventListener('click', () => { indexM = Math.min(Math.max(0, trackM.children.length - 1), indexM + 1); updateM(); });
+
+      // Swipe support
+      let startX = 0;
+      let currentX = 0;
+      let isTouching = false;
+      const threshold = 40; // px
+
+      const onTouchStart = (e) => {
+        isTouching = true;
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
+      };
+      const onTouchMove = (e) => {
+        if (!isTouching) return;
+        currentX = e.touches ? e.touches[0].clientX : e.clientX;
+      };
+      const onTouchEnd = () => {
+        if (!isTouching) return;
+        const delta = currentX - startX;
+        if (Math.abs(delta) > threshold) {
+          if (delta < 0) {
+            // swipe left -> next
+            indexM = Math.min(Math.max(0, trackM.children.length - 1), indexM + 1);
+          } else {
+            // swipe right -> prev
+            indexM = Math.max(0, indexM - 1);
+          }
+          updateM();
+        }
+        isTouching = false;
+        startX = 0;
+        currentX = 0;
+      };
+
+      // Bind to the parent of track for wider area
+      const containerM = trackM.parentElement;
+      if (containerM) {
+        containerM.addEventListener('touchstart', onTouchStart, { passive: true });
+        containerM.addEventListener('touchmove', onTouchMove, { passive: true });
+        containerM.addEventListener('touchend', onTouchEnd);
+
+        // optional mouse drag for desktop testing
+        containerM.addEventListener('mousedown', onTouchStart);
+        containerM.addEventListener('mousemove', onTouchMove);
+        containerM.addEventListener('mouseup', onTouchEnd);
+        containerM.addEventListener('mouseleave', onTouchEnd);
+      }
+
+      updateM();
+    }
+  }
+
+  function initAll() {
+    document.querySelectorAll('[data-ingredients-carousel]').forEach((el) => initIngredientsCarousel(el));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('astro:page-load', initAll);
+  document.addEventListener('astro:after-swap', initAll);
+</script>

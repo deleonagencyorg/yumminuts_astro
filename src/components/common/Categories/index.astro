@@ -1,0 +1,91 @@
+---
+// Products component similar to categories section, using zibasProducts as input
+interface Product {
+  id: string;
+  title: string;
+  image: string;
+  bgColor: string; // Now represents a background image URL instead of hex color
+}
+
+export interface Props {
+  products: Product[];
+  title?: string;
+}
+
+import { getLocale } from '../../../i18n/i18n';
+
+const {
+  products = [],
+  title = 'Productos'
+} = Astro.props;
+
+// Limit to 3 products as per Figma design
+const displayProducts = products.slice(0, 3);
+
+const currentLang = getLocale();
+function slugify(input: string): string {
+  return (input || '')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+function productHref(p: Product): string {
+  const lang = currentLang === 'es' ? 'es' : 'en';
+  const seg = currentLang === 'es' ? 'productos' : 'products';
+  // prefer p.slug if exists via any prop; fallback id/title
+  const anyP = p as any;
+  const slug = anyP.slug || p.id || slugify(p.title);
+  return `/${lang}/${seg}/${slug}`;
+}
+---
+
+<div class="box-border content-stretch flex flex-col gap-[50px] items-start justify-start  py-0 relative size-full">
+  <div class="font-sans leading-[0] not-italic relative shrink-0 text-black text-[55px] text-nowrap tracking-[-2px] font-extrabold" data-reveal-child>
+    <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+      {title}</h2>
+  </div>
+
+  <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
+    <div class="relative w-full">
+      <!-- Products container with justify-between -->
+      <div class="content-stretch flex items-center justify-between  relative shrink-0 w-full">
+        {displayProducts.map((product, index) => (
+          <a href={productHref(product)} class="content-stretch flex flex-col  h-[421px] items-start justify-start relative shrink-0 w-[350px] opacity-0 translate-y-6 transition-all duration-700 ease-out" data-reveal-child>
+            <div class="h-[374.054px] overflow-clip relative shrink-0 w-[275px]">
+              <div class="absolute inset-0 rounded-lg bg-center bg-cover bg-no-repeat" style={`background-image: url('${product.bgColor}')`}></div>
+              <div class="absolute bg-center bg-cover bg-no-repeat h-[344.27px] shadow-[8.262px_4.957px_8.51px_0px_rgba(22,22,22,0.03)] translate-x-[-50%] translate-y-[-50%] w-[181.064px] hover:scale-110 transition-all duration-300" style={{ top: "calc(50% + 0.143px)", left: "calc(50% - 0.158px)", backgroundImage: `url('${product.image}')` }}></div>
+            </div>
+            <div class="font-sans leading-[0] min-w-full not-italic relative shrink-0 text-black text-lg tracking-[-1.5px]" style={{ width: "min-content" }}>
+              <p class="leading-[25.465px]">{product.title}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Arrow positioned absolutely to the RIGHT of the entire product row -->
+      <!-- This is now placed outside the flex container, but still within the relative parent -->
+      <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-0">
+        <div class="flex items-center justify-center ml-4">
+          <div class="flex-none">
+            <div class="relative size-[50.935px]">
+              <div class="absolute backdrop-blur-[11.016px] backdrop-filter bg-primary left-0 rounded-[11.938px] size-[50.935px] top-0">
+                <div aria-hidden="true" class="absolute border-blue border-[0.796px] border-solid inset-0 pointer-events-none rounded-[11.938px]"></div>
+              </div>
+              <div class="absolute flex h-[20.828px] items-center justify-center top-1/2 translate-x-[-50%] translate-y-[-50%] w-[20.828px]" style={{ left: "calc(50% - 0.004px)" }}>
+                <div class="flex-none rotate-[0deg]">
+                  <div class="relative size-[20.837px]">
+                    <svg class="block max-w-none size-full" viewBox="0 0 21 21" fill="none">
+                      <path d="M7.5 14L12.5 9.5L7.5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

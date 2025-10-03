@@ -1,0 +1,86 @@
+---
+// src/components/common/ProductBenefits/index.astro
+export interface Benefit {
+  icon: string;
+  text: string;
+  alt?: string;
+}
+
+export interface Props {
+  title?: string;
+  benefits: Benefit[];
+  titleColor?: string;
+  textColor?: string;
+  className?: string;
+}
+
+const { 
+  title = "Beneficios", 
+  benefits, 
+  titleColor = "black", 
+  textColor = "primary",
+  className = ""
+} = Astro.props;
+---
+
+<div class={`product-benefits flex flex-col gap-4 ${className}`} data-component="product-benefits">
+  {/* Title */}
+  <div class="w-full">
+    <h3 
+      class="font-serif font-bold text-xl leading-none tracking-tight"
+      style={{ color: titleColor }}
+    >
+      {title}
+    </h3>
+  </div>
+  
+  {/* Benefits Grid */}
+  <div class="flex items-center justify-between w-full gap-4">
+    {benefits.map((benefit, index) => (
+      <div class="flex flex-col items-center gap-3 flex-1" data-node-id={`benefit-${index}`}>
+        {/* Icon */}
+        <div class="w-11 h-11 flex items-center justify-center">
+          <img 
+            alt={benefit.alt || `${benefit.text} icon`}
+            class="block w-full h-full object-contain" 
+            src={benefit.icon}
+            loading="lazy"
+          />
+        </div>
+        
+        {/* Text */}
+        <div class="text-center">
+          <p 
+            class="font-serif font-medium text-xs leading-4 tracking-tight whitespace-nowrap"
+            style={{ color: textColor }}
+          >
+            {benefit.text}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .product-benefits {
+    /* Ensure proper spacing and alignment */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .product-benefits .flex-1 {
+      min-width: 0; /* Allow flex items to shrink */
+    }
+    
+    .product-benefits p {
+      font-size: 0.625rem; /* 10px */
+      line-height: 1.2;
+    }
+    
+    .product-benefits .w-11 {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+</style>

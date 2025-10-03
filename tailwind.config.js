@@ -24,17 +24,17 @@ module.exports = {
         white: '#FFFFFF',
         brown: '#847174',
         blue: '#385CAD',
-         green: '#C3DDA1',
+        green: '#C3DDA1',
         orange: '#FD6600',
         yellow: '#FDE820',
-        pink: '#FF4DFF',
-        
-    
+        pink: '#F0ABB8',
+        skyblue: '#B7E4FF',
+
       },
       fontFamily: {
         sans: ['bespoke-serif', 'sans-serif'],
         title: ['a-love-of-thunder', 'serif'],
-        heading: ['bespoke-serif', 'sans-serif'],
+        heading: ['bespoke-bold', 'sans-serif'],
         text: ['bespoke-serif', 'sans-serif']
       },
       animation: {
