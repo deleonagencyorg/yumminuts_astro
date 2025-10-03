@@ -29,14 +29,8 @@ const { blogPosts, currentLang, isLoading = false } = Astro.props;
   <BlogCarouselHero news={blogPosts} currentLang={currentLang} />
   
   <div class="container mx-auto px-4 pt-6">
-    <Breadcrumb bgColor="bg-primary" textColor="text-white" hoverColor="hover:text-white" />
     
-    <div class="text-center mb-12" transition:animate={fade({ duration: '0.5s' })}>
-      <h1 class="font-sans text-4xl font-bold mb-4 text-white">Blog</h1>
-      <p class="text-xl text-gray-600 max-w-2xl mx-auto text-white">
-        Stay updated with our latest news and articles
-      </p>
-    </div>
+    
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 py-6 mx-auto max-w-7xl">
       {isLoading

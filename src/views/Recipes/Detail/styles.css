@@ -1,51 +1,88 @@
-/* Estilos para la página de detalle de recetas */
-.recipe-detail {
-  margin-bottom: 2rem;
+/* Recipe Detail Styles - Clean Figma Design */
+.recipe-detail-container {
+  font-family: var(--font-text);
 }
 
-.recipe-ingredients {
-  list-style-type: none;
-  padding-left: 0;
+/* Related Recipes Section - Figma Specific Styling */
+.related-recipes-section {
+  background: white;
 }
 
-.recipe-ingredients li {
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: flex-start;
+.related-recipes-title {
+  font-family: var(--font-heading);
+  color: black;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
 }
 
-.recipe-instructions {
-  margin-top: 2rem;
+.related-recipe-card {
+  max-width: 283px;
 }
 
-.recipe-instructions .prose {
-  max-width: 100%;
+.related-recipe-image {
+  aspect-ratio: 1;
+  border-radius: 18px;
+  overflow: hidden;
 }
 
-.recipe-instructions .prose ol,
-.recipe-instructions .prose ul {
-  margin-bottom: 1rem;
-  margin-left: 1.5rem;
+.related-recipe-title {
+  font-family: var(--font-text);
+  color: black;
+  line-height: 25px;
+  letter-spacing: -1.5px;
+  font-weight: 500;
 }
 
-.recipe-instructions .prose li {
-  margin-bottom: 0.5rem;
+/* Clean list styling for instructions matching Figma design */
+.recipe-detail-container ol {
+  counter-reset: item;
 }
 
-
-#hero{
-  background: #ffbb3c;
-  background: linear-gradient(90deg,rgba(255, 187, 60, 1) 0%, rgba(255, 105, 39, 1) 100%);
-
+.recipe-detail-container ol li {
+  display: block;
+  margin-bottom: 0.3rem;
 }
 
-#instructions{
-  background: #ffffff;
-
+.recipe-detail-container ol li:before {
+  content: counter(item, decimal) ". ";
+  counter-increment: item;
+  font-weight: bold;
+  color: black;
 }
 
-#ingredients{
-  background-image: url('https://snack.yummiespromociones.com/taqueritos/RECETAS2.webp');
-  background-size: cover;
-  background-position: center;
+/* Smooth transitions for better UX */
+.recipe-detail-container img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.recipe-detail-container img:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive typography adjustments */
+@media (max-width: 768px) {
+  .recipe-detail-container h1 {
+    font-size: 2rem !important;
+    line-height: 1.1;
+  }
+  
+  .recipe-detail-container h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.2;
+  }
+  
+  .related-recipes-title {
+    font-size: 2rem !important;
+  }
+  
+  .related-recipe-title {
+    font-size: 1.125rem !important;
+  }
+}
+
+/* Remove any existing background styles */
+#hero, #ingredients, #instructions {
+  background: none !important;
+  background-image: none !important;
 }

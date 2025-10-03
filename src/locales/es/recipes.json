@@ -13,7 +13,7 @@
   "home": {
     "title": "Recetas",
     "subtitle": "RECETAS",
-    "related_recipes": "Recetas relacionadas",
+    "related_recipes": "Ver otras recetas",
     "recipes": "Ingredientes",
     "preparation" : "Preparación",
     "view_more": "Ver Todas",
@@ -51,7 +51,7 @@
     "cooking_time": "Tiempo de cocción",
     "servings": "Porciones",
     "difficulty": "Dificultad",
-    "related_recipes": "Recetas relacionadas"
+    "related_recipes": "Ver otras recetas"
   },
   "difficulty": {
     "easy": "Fácil",

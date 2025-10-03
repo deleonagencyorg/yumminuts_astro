@@ -91,167 +91,176 @@ const options = dynamicOptions[locale];
   /* Estilo para las flechas de los selectores - hacerlas blancas */
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
-    background-position: right 1rem center;
+    background-position: right 1.5rem center;
     background-size: 1em;
-    padding-right: 2.5rem !important;
+    padding-right: 3rem !important;
   }
   
   /* Cambiar el color de la flecha cuando el select está en focus */
   select:focus {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+
+  /* Custom font family class */
+  .font-rockeby {
+    font-family: 'Roboto Condensed', 'Rockeby Condensed', sans-serif;
   }
 </style>
 
-<div class="bg-[#F04F00] rounded-2xl p-8" transition:name="contact-form">
-  <h2 class="text-white text-center md:text-2xl uppercase font-sans text-2xl font-bold mb-6">
-    {contact.form.title}
-  </h2>
+<div class="bg-cover bg-center bg-no-repeat rounded-2xl p-8" style="background-image: url('https://snack.yummiespromociones.com/yumminuts/form-bg.png')" transition:name="contact-form">
 
-  <form class="space-y-6 shadow-md" id="contactForm">
-  <!-- Fila para Contact Reason y Country -->
-  <div class="flex flex-col md:flex-row gap-6">
-    <!-- Contact Reason Dropdown -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {contact.form.contactReason.label} *
-      </label>
-      <select 
-        name="contactReason" 
-        id="contactReasonSelect"
-        required
-        class="w-full font-semibold uppercase flex justify-center text-white items-center gap-5 p-[15px_20px] border-[1.5px] border-white rounded-full bg-[#F04F00] focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      >
-        <option value="">{contactReasonPlaceholder}</option>
-        {locale === 'es' ? (
-          // En español, mostrar todas las opciones incluido "Soy un ganador"
-          dynamicOptions.es.contactReason.map((reason) => (
-            <option value={reason}>{reason}</option>
-          ))
-        ) : (
-          // En inglés, mostrar solo las opciones que tienen texto (filtrar vacías)
-          dynamicOptions.en.contactReason.map((reason, index) => {
-            if (reason) { // Solo mostrar si tiene texto
-              return <option value={dynamicOptions.es.contactReason[index]}>{reason}</option>;
-            }
-            return null;
-          })
-        )}
-      </select>
+  <div class="flex flex-col gap-10 items-start w-full">
+    <!-- Header -->
+    <div class="flex flex-col gap-6 items-center w-full">
+      <h2 class="font-rockeby font-black text-primary text-2xl md:text-3xl text-center uppercase leading-tight">
+        ¿Tienes preguntas? ¡estamos aquí para tí!
+      </h2>
     </div>
 
-    <!-- Country Selector -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {countryLabel} *
-      </label>
-      <select 
-        name="country" 
-        id="countrySelect"
-        required
-        class="w-full font-semibold uppercase flex justify-center text-white items-center gap-5 p-[15px_20px] border-[1.5px] border-white rounded-full bg-[#F04F00] focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      >
-        <option value="">{countryPlaceholder}</option>
-      </select>
-    </div>
-  </div>
+    <form class="flex flex-col gap-5 w-full" style="backgrou" id="contactForm">
+      <!-- Fila para Contact Reason y Country -->
+      <div class="flex flex-col md:flex-row gap-5">
+        <!-- Contact Reason Dropdown -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {contact.form.contactReason.label} *
+          </label>
+          <select 
+            name="contactReason" 
+            id="contactReasonSelect"
+            required
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          >
+            <option value="">{contactReasonPlaceholder}</option>
+            {locale === 'es' ? (
+              // En español, mostrar todas las opciones incluido "Soy un ganador"
+              dynamicOptions.es.contactReason.map((reason) => (
+                <option value={reason}>{reason}</option>
+              ))
+            ) : (
+              // En inglés, mostrar solo las opciones que tienen texto (filtrar vacías)
+              dynamicOptions.en.contactReason.map((reason, index) => {
+                if (reason) { // Solo mostrar si tiene texto
+                  return <option value={dynamicOptions.es.contactReason[index]}>{reason}</option>;
+                }
+                return null;
+              })
+            )}
+          </select>
+        </div>
 
-  <!-- Fila para City y Name -->
-  <div class="flex flex-col md:flex-row gap-6">
-    <!-- City Selector -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {cityLabel} *
-      </label>
-      <select 
-        name="city" 
-        id="departmentSelect"
-        required
-        disabled
-        class="w-full font-semibold uppercase flex justify-center text-white items-center gap-5 p-[15px_20px] border-[1.5px] border-white rounded-full bg-[#F04F00] focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      >
-        <option value="">{departmentPlaceholder}</option>
-      </select>
-    </div>
-    
-    <!-- Name -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {contact.form.fullName.label} *
-      </label>
-      <input 
-        type="text" 
-        name="name" 
-        required
-        placeholder={contact.form.fullName.placeholder}
-        class="w-full font-semibold uppercase placeholder:text-white flex justify-center text-white items-center gap-5 p-[15px_20px] border-[1.5px] border-white rounded-full bg-[#F04F00] focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      />
-    </div>
-  </div>
-  
-  <!-- Fila para Email y Phone -->
-  <div class="flex flex-col md:flex-row gap-6">
-    <!-- Email -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {contact.form.email.label} *
-      </label>
-      <input 
-        type="email" 
-        name="email" 
-        required
-        placeholder={contact.form.email.placeholder}
-        class="w-full px-4 py-3 placeholder:text-white bg-[#F04F00] text-white uppercase border-[1.5px] border-white rounded-full focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      />
-    </div>
-    
-    <!-- Phone -->
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {contact.form.phone.label}
-      </label>
-      <input 
-        type="number" 
-        name="phone" 
-        placeholder={contact.form.phone.placeholder}
-        class="w-full px-4 py-3 border-[1.5px] border-white rounded-full placeholder:text-white bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-      />
-    </div>
-  </div>
+        <!-- Country Selector -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {countryLabel} *
+          </label>
+          <select 
+            name="country" 
+            id="countrySelect"
+            required
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          >
+            <option value="">{countryPlaceholder}</option>
+          </select>
+        </div>
+      </div>
 
-  <!-- Fila para comentario -->
-  <div class="flex flex-col md:flex-row gap-6">
-    <div class="flex-1">
-      <label class="block text-white uppercase font-semibold  mb-2">
-        {contact.form.message.label} *
-      </label>
-      <textarea 
-        name="message" 
-        required
-        rows="4"
-        placeholder={contact.form.message.placeholder}
-        class="w-full px-4 py-3 border-[1.5px] border-white rounded-2xl bg-[#F04F00] text-white placeholder:text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
-      ></textarea>
-    </div>
-  </div>
+      <!-- Fila para City y Name -->
+      <div class="flex flex-col md:flex-row gap-5">
+        <!-- City Selector -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {cityLabel} *
+          </label>
+          <select 
+            name="city" 
+            id="departmentSelect"
+            required
+            disabled
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all disabled:opacity-50"
+          >
+            <option value="">{departmentPlaceholder}</option>
+          </select>
+        </div>
+        
+        <!-- Name -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {contact.form.fullName.label} *
+          </label>
+          <input 
+            type="text" 
+            name="name" 
+            required
+            placeholder={contact.form.fullName.placeholder}
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          />
+        </div>
+      </div>
+      
+      <!-- Fila para Email y Phone -->
+      <div class="flex flex-col md:flex-row gap-5">
+        <!-- Email -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {contact.form.email.label} *
+          </label>
+          <input 
+            type="email" 
+            name="email" 
+            required
+            placeholder={contact.form.email.placeholder}
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          />
+        </div>
+        
+        <!-- Phone -->
+        <div class="flex-1">
+          <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
+            {contact.form.phone.label}
+          </label>
+          <input 
+            type="number" 
+            name="phone" 
+            placeholder={contact.form.phone.placeholder}
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          />
+        </div>
+      </div>
 
-  <!-- Dynamic Fields Container -->
-  <div id="dynamicFields" class="space-y-6">
-    <!-- Dynamic fields will be inserted here -->
+      <!-- Fila para comentario -->
+      <div class="flex flex-col gap-2.5">
+        <label class="block font-rockeby font-bold text-primary text-base uppercase">
+          {contact.form.message.label} *
+        </label>
+        <textarea 
+          name="message" 
+          required
+          rows="4"
+          placeholder={contact.form.message.placeholder}
+          class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Dynamic Fields Container -->
+      <div id="dynamicFields" class="flex flex-col gap-5">
+        <!-- Dynamic fields will be inserted here -->
+      </div>
+      
+      <!-- Submit Button -->
+      <div class="mt-4">
+        <button 
+          type="submit"
+          id="submitButton"
+          class="w-full bg-primary border-[1.5px] border-skyblue font-rockeby font-bold text-white text-2xl uppercase py-2 px-4 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+        >
+          {contact.form.submit}
+        </button>
+      </div>
+    </form>
   </div>
-  
-  <!-- Submit Button -->
-  <div>
-    <button 
-      type="submit"
-      id="submitButton"
-      class="w-full py-3 px-6 bg-[#FE5A00] text-white rounded-xl uppercase font-bold text-2xl hover:bg-primary-dark transition-all"
-    >
-      {contact.form.submit}
-    </button>
-  </div>
-</form>
 </div>
 
 <!-- Success Modal -->
@@ -634,24 +643,24 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.clientCode}</label>
-        <input type="text" name="clientCode" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.clientCode}</label>
+        <input type="text" name="clientCode" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.areaOfInterest} *</label>
-        <select name="interestArea" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.areaOfInterest} *</label>
+        <select name="interestArea" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all">
           <option value="">${locale === 'es' ? 'Selecciona una opción' : 'Select an option'}</option>
           ${options.clientAreaOfInterest.map(option => `<option value="${option}">${option}</option>`).join('')}
         </select>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.message}</label>
-        <textarea name="message" rows="4" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.message}</label>
+        <textarea name="message" rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
   }
@@ -661,16 +670,16 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.requestType} *</label>
-        <select name="requestType" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.requestType} *</label>
+        <select name="requestType" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all">
           <option value="">${locale === 'es' ? 'Selecciona una opción' : 'Select an option'}</option>
           ${options.requestTypes.map(option => `<option value="${option}">${option}</option>`).join('')}
         </select>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
   }
@@ -680,8 +689,8 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.interest} *</label>
-        <select name="interest" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.interest} *</label>
+        <select name="interest" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all">
           <option value="">${locale === 'es' ? 'Selecciona una opción' : 'Select an option'}</option>
           ${options.exportInterests.map(option => `<option value="${option}">${option}</option>`).join('')}
         </select>
@@ -694,13 +703,13 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.areaOfInterestSupplier} *</label>
-        <input type="text" name="areaOfInterest" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.areaOfInterestSupplier} *</label>
+        <input type="text" name="areaOfInterest" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
   }
@@ -710,13 +719,13 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.question} *</label>
-        <textarea name="question" required rows="4" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.question} *</label>
+        <textarea name="question" required rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
   }
@@ -726,15 +735,15 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.areaOfInterest} *</label>
-        <select name="areaOfInterest" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.areaOfInterest} *</label>
+        <select name="areaOfInterest" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all">
           <option value="">${locale === 'es' ? 'Selecciona una opción' : 'Select an option'}</option>
           ${options.journalistAreas.map(option => `<option value="${option}">${option}</option>`).join('')}
         </select>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.question} *</label>
-        <textarea name="question" required rows="4" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.question} *</label>
+        <textarea name="question" required rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
       </div>
     `;
   }
@@ -744,14 +753,14 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.comments || 'Comentarios'} *</label>
-        <textarea name="message" required rows="4" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
-        <p class="text-sm text-white mt-1">${labels.ethicsLineHelp || 'Si eres empleado Dinant, especifica tu cargo.'}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.comments || 'Comentarios'} *</label>
+        <textarea name="message" required rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
+        <p class="text-sm text-primary mt-1">${labels.ethicsLineHelp || 'Si eres empleado Dinant, especifica tu cargo.'}</p>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file || 'Adjuntar archivo'}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp || 'Formatos permitidos: PDF, JPG, PNG (max 10MB)'}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file || 'Adjuntar archivo'}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp || 'Formatos permitidos: PDF, JPG, PNG (max 10MB)'}</p>
       </div>
     `;
   }
@@ -762,8 +771,8 @@ const options = dynamicOptions[locale];
     // Solo disponible en español
     if (locale !== 'es') {
       dynamicFields.innerHTML = `
-        <div class="alert alert-info">
-          <p>Esta opción solo está disponible en español.</p>
+        <div class="bg-blue-100 border border-blue-300 rounded-lg p-4">
+          <p class="text-primary font-rockeby font-bold">Esta opción solo está disponible en español.</p>
         </div>
       `;
       return;
@@ -771,12 +780,12 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">Dinámica o promoción en la que ganó *</label>
-        <input type="text" name="dynamicOrPromotion" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">Dinámica o promoción en la que ganó *</label>
+        <input type="text" name="dynamicOrPromotion" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">Premio adjudicado *</label>
-        <input type="text" name="award" required class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">Premio adjudicado *</label>
+        <input type="text" name="award" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
       </div>
     `;
   }
@@ -786,13 +795,13 @@ const options = dynamicOptions[locale];
     
     dynamicFields.innerHTML = `
       <div>
-        <label class="block text-white font-medium mb-2">${labels.message}</label>
-        <textarea name="message" rows="4" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.message}</label>
+        <textarea name="message" rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
       </div>
       <div>
-        <label class="block text-white font-medium mb-2">${labels.file}</label>
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border-[1.5px] border-white rounded-lg bg-[#F04F00] text-white focus:text-black focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all" />
-        <p class="text-sm text-white mt-1">${labels.fileHelp}</p>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
   }

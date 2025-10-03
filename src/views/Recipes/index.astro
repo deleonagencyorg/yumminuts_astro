@@ -5,30 +5,99 @@ import type { Locale } from '../../i18n/i18n';
 import { getLocale } from '../../i18n/i18n';
 import './styles.css';
 import RecipeCard from '../../components/recipes/RecipeCard.astro';
+import CategoryButton from '../../components/recipes/CategoryButton.astro';
+import Pagination from '../../components/recipes/Pagination.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
 
 const currentLang = getLocale();
-const recipes = t('items', { namespace: 'recipes', locale: currentLang });
----
-<div id="hero" class="w-full aspect-[4/3] md:h-[32rem] bg-cover bg-center" style="background-image: url('https://snack.yummiespromociones.com/taqueritos/banner_recetas.webp'); background-size: cover; background-position: center;" transition:animate="fade"></div>
-<div class="bg-white py-12">
+const allRecipes = t('items', { namespace: 'recipes', locale: currentLang });
 
+// Pagination settings
+const recipesPerPage = 4;
+const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
+const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+
+// Calculate recipes for current page
+const startIndex = (currentPage - 1) * recipesPerPage;
+const endIndex = startIndex + recipesPerPage;
+const recipes = allRecipes.slice(startIndex, endIndex);
+
+// Define recipe categories
+const categories = [
+  { 
+    id: 'breakfast', 
+    name: currentLang === 'es' ? 'Desayunos' : 'Breakfast',
+    active: true 
+  },
+  { 
+    id: 'snack', 
+    name: currentLang === 'es' ? 'Snack Energéticos' : 'Energy Snacks',
+    active: false 
+  },
+  { 
+    id: 'lunch', 
+    name: currentLang === 'es' ? 'Almuerzos' : 'Lunch',
+    active: false 
+  },
+  { 
+    id: 'dinner', 
+    name: currentLang === 'es' ? 'Cenas' : 'Dinner',
+    active: false 
+  }
+];
+---
+
+<div class="bg-white py-12">
   <div class="container mx-auto px-4 mt-12">
+    
+    <!-- Category Buttons Section -->
+    <div class="flex gap-3 md:gap-5 items-center mb-[60px] flex-wrap justify-center md:justify-start">
+      {categories.map((category) => (
+        <CategoryButton
+          id={category.id}
+          name={category.name}
+          active={category.active}
+        />
+      ))}
+    </div>
 
     {recipes.length === 0 ? (
       <p class="text-center text-gray-500">{t('page.no_recipes', { namespace: 'recipes' })}</p>
     ) : (
-      <div class="md:w-[80%] w-full mx-auto grid grid-cols-2 md:grid-cols-3 md:gap-32 gap-6" transition:animate="slide">
-        {recipes.map((recipe: any) => (
-          <RecipeCard
-            image={recipe.image || '/images/recipes/placeholder.jpg'}
-            title={recipe.title}
-            time={`${recipe.preparation_time}MIN`}
-            id={recipe.id}
-            textColor="text-gray-800"
-            iconColor="text-gray-800"
-          />
-        ))}
+      <div class="flex flex-col gap-2.5 w-full" transition:animate="slide">
+        {/* Display exactly 2 rows of 2 recipes each (4 total) */}
+        {Array.from({ length: 2 }, (_, rowIndex) => {
+          const rowRecipes = recipes.slice(rowIndex * 2, rowIndex * 2 + 2);
+          return rowRecipes.length > 0 ? (
+            <div class="flex flex-col md:flex-row items-start justify-between w-full max-w-[1260px] mx-auto gap-6">
+              {rowRecipes.map((recipe: any) => (
+                <RecipeCard
+                  image={recipe.image || '/images/recipes/placeholder.jpg'}
+                  title={recipe.title}
+                  time={`${recipe.preparation_time}MIN`}
+                  id={recipe.id}
+                  textColor="text-gray-800"
+                  iconColor="text-gray-800"
+                />
+              ))}
+              {/* Add empty div if only one recipe in the row to maintain layout */}
+              {rowRecipes.length === 1 && (
+                <div class="hidden md:block w-full max-w-[585px]"></div>
+              )}
+            </div>
+          ) : null;
+        })}
+      </div>
+    )}
+    
+    <!-- Pagination -->
+    {allRecipes.length > recipesPerPage && (
+      <div class="flex justify-center mt-[60px]">
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={totalPages}
+          baseUrl={`/${currentLang}/${currentLang === 'es' ? 'recetas' : 'recipes'}`}
+        />
       </div>
     )}
   </div>
@@ -41,6 +110,50 @@ const recipes = t('items', { namespace: 'recipes', locale: currentLang });
     images.forEach(img => {
       img.addEventListener('error', function() {
         this.src = '/images/recipes/placeholder.jpg';
+      });
+    });
+
+    // Category button functionality
+    const categoryButtons = document.querySelectorAll('[data-category]');
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Remove active classes from all buttons
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('bg-skyblue', 'text-primary', 'font-medium');
+          btn.classList.add('bg-white', 'text-black', 'font-normal');
+        });
+        
+        // Add active classes to clicked button
+        button.classList.remove('bg-white', 'text-black', 'font-normal');
+        button.classList.add('bg-skyblue', 'text-primary', 'font-medium');
+        
+        // Get selected category
+        const selectedCategory = button.getAttribute('data-category');
+        console.log('Selected category:', selectedCategory);
+        
+        // Reset to page 1 when changing categories
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('page', '1');
+        // TODO: Add category filtering parameter
+        // currentUrl.searchParams.set('category', selectedCategory);
+        
+        // For now, just reset to page 1
+        // In a full implementation, you would reload with the filtered results
+        window.history.pushState({}, '', currentUrl.toString());
+      });
+    });
+
+    // Add smooth transitions for pagination
+    const paginationLinks = document.querySelectorAll('a[href*="page="]');
+    paginationLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        // Add loading state or smooth transition here if needed
+        document.body.style.opacity = '0.8';
+        setTimeout(() => {
+          document.body.style.opacity = '1';
+        }, 200);
       });
     });
   });

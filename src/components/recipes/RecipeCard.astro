@@ -1,8 +1,6 @@
 ---
 import LazyImage from '../common/LazyImage.astro';
 import { getLocale } from '../../i18n/i18n';
-import { Image } from 'astro:assets';
-import { fade } from 'astro:transitions';
 
 interface Props {
   image: string;
@@ -11,10 +9,6 @@ interface Props {
   id: string;
   textColor?: string;
   iconColor?: string;
-  hoverImage?: string;
-  difficulty?: string;
-  servings?: number;
-  rating?: number;
 }
 
 const { 
@@ -22,107 +16,33 @@ const {
   title, 
   time = "---", 
   id,
-  textColor = 'text-blue-900',
-  iconColor = 'text-blue-900',
-  hoverImage = image,
-  difficulty = "---",
-  servings = 0,
-  rating = 0
+  textColor = 'text-black',
+  iconColor = 'text-blue-900'
 } = Astro.props;
 
 const currentLocale = getLocale();
 const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
-const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
 ---
 
 <a 
   href={recipeLink} 
-  class="block group relative overflow-hidden rounded-[2rem] transition-all duration-300 ease-in-out h-[350px] md:h-[450px] hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+  class="flex flex-col gap-6 items-start group relative transition-all duration-300 hover:scale-[1.02] w-full max-w-[585px]"
   transition:animate="fade"
 >
-  <!-- Imagen de fondo (siempre visible) -->
-  <div class="absolute inset-0 w-full h-full">
+  <!-- Recipe Image -->
+  <div class="h-[250px] md:h-[338px] w-full overflow-hidden relative rounded-[21px] group-hover:shadow-lg transition-shadow duration-300">
     <LazyImage
       src={image}
       alt={title}
-      class="w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-cover"
       transition:name={`recipe-image-${id}`}
     />
+    <!-- Dark overlay on hover -->
+    <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
   </div>
   
-  <!-- Overlay con gradiente para el estado normal -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-100 group-hover:opacity-0 transition-opacity duration-300"></div>
-  
-  <!-- Información en estado normal -->
-  <div class="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 group-hover:opacity-0 transition-opacity duration-300">
-    <h3 class="font-sans text-lg font-bold text-primary text-left mb-3">{title}</h3>
-    <div class="flex justify-center">
-      <div class="border-2 border-primary bg-white text-primary py-2 px-8 rounded-full text-center text-sm font-medium">
-        {viewRecipeText}
-      </div>
-    </div>
-  </div>
-  
-  <!-- Overlay para hover -->
-  <div class="absolute inset-0 bg-gradient-to-t from-blue-900 to-blue-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-  
-  <!-- Información en hover -->
-  <div class="absolute inset-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <!-- Toda la información en la parte inferior -->
-    <div class="p-5 flex flex-col gap-3">
-      <!-- Título en hover (al inicio de la información) -->
-      <h3 class="font-sans text-lg font-bold text-white text-left mb-3">{title}</h3>
-      
-      <!-- Datos de la receta -->
-      <!-- Estrellas de valoración -->
-      {rating > 0 && (
-        <div class="flex items-center">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              class={`h-5 w-5 ${i < rating ? 'text-yellow-400' : 'text-gray-400'}`} 
-              viewBox="0 0 20 20" 
-              fill="currentColor"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          ))}
-        </div>
-      )}
-      
-      <!-- Datos de la receta -->
-      <div class="grid grid-cols-2 gap-2 text-white">
-        <!-- Tiempo -->
-        <div class="flex items-center">
-          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="ml-2 text-sm">{time}</span>
-        </div>
-        
-        <!-- Porciones -->
-        <div class="flex items-center">
-          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          <span class="ml-2 text-sm">{servings > 0 ? `${servings} ${currentLocale === 'es' ? 'Personas' : 'Servings'}` : '---'}</span>
-        </div>
-        
-        <!-- Dificultad -->
-        <div class="flex items-center">
-          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          <span class="ml-2 text-sm">{difficulty}</span>
-        </div>
-      </div>
-      
-      <!-- Botón Ver Receta -->
-      <div class="mt-3 flex justify-center">
-        <div class="border-2 border-primary bg-white text-primary py-2 px-8 rounded-full text-center text-sm font-medium hover:shadow-md">
-          {viewRecipeText}
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Recipe Title -->
+  <h3 class={`font-text font-medium text-[20px] md:text-[28px] leading-[25px] md:leading-[35px] tracking-[-1.5px] ${textColor} group-hover:text-[#3e6dd7] transition-colors duration-300`}>
+    {title}
+  </h3>
 </a>

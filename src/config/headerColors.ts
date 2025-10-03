@@ -83,8 +83,8 @@ export const headerColors: HeaderColors = {
   
   // Configuración para la página de contacto
   contact: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-primary',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-gray-300',
     hoverBackgroundColor: 'hover:bg-blue-800',
     showMessageCarousel: true,
