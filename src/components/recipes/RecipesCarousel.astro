@@ -77,10 +77,10 @@ const filterLabels = currentLang === 'es'
   : { breakfast: 'Breakfast', snacks: 'Energy Snacks', lunch: 'Lunch', dinner: 'Dinner', all: 'All' };
 
 // Para desktop: mostrar 4 tarjetas por vista, avanzar de 1 en 1
-// Para mobile: 2 por slide (agrupadas de a 2)
+// Para mobile: 1 por slide (mejor ajuste a pantalla)
 const mobileGroups = [] as any[];
-for (let i = 0; i < recipeItems.length; i += 2) {
-  mobileGroups.push([recipeItems[i], recipeItems[i + 1]].filter(Boolean));
+for (let i = 0; i < recipeItems.length; i += 1) {
+  mobileGroups.push([recipeItems[i]].filter(Boolean));
 }
 
 ---
@@ -93,18 +93,18 @@ for (let i = 0; i < recipeItems.length; i += 2) {
     
     <!-- Botones de filtro -->
     {!providedMode && (
-    <div class="flex gap-2.5 mb-8 px-4 md:px-0 justify-start" id="recipesFilters">
-      <button type="button" data-filter="breakfast" class="px-4 py-2 text-md rounded-md border  bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
+    <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
+      <button type="button" data-filter="breakfast" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.breakfast}
       </button>
-      <button type="button" data-filter="snacks" class="px-4 py-2 text-md rounded-md border  bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
+      <button type="button" data-filter="snacks" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.snacks}
       </button>
-      <button type="button" data-filter="lunch" class="px-4 py-2 text-md rounded-md border  bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
+      <button type="button" data-filter="lunch" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.lunch}
       </button>
 
-      <button type="button" data-filter="all" class="px-4 py-2 text-md rounded-md border  bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
+      <button type="button" data-filter="all" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.all}
       </button>
     </div>
@@ -115,9 +115,9 @@ for (let i = 0; i < recipeItems.length; i += 2) {
       <div class="recipes-carousel-container overflow-hidden w-full">
         <div class="recipes-carousel-track flex items-start w-full gap-0 transition-transform duration-300" id="recipesTrackMobile" style="transform: translateX(0);">
           {mobileGroups.map((group, gIndex) => (
-            <div class="recipe-slide-group flex-shrink-0 w-full flex gap-4">
+            <div class="recipe-slide-group flex-shrink-0 w-full flex gap-4 px-2">
               {group.map((recipe: any) => (
-                <div class="recipe-slide w-1/2" data-category={getCategoryKey(recipe)}>
+                <div class="recipe-slide w-full" data-category={getCategoryKey(recipe)}>
                   <RecipeCardCarousel
                     image={recipe.image}
                     hoverImage={recipe.hover_image || recipe.image}

@@ -46,23 +46,7 @@ const readMoreTitle = currentLang === 'es' ? 'Otras Noticias' : 'Other News';
   <slot />
   
   <!-- Hero Section -->
-  <div class="relative w-full h-[60vh] overflow-hidden mt-[-100px]">
-    <div class="absolute inset-0 w-full h-full overflow-hidden">
-      <LazyImage
-        src={blogPost.image}
-        alt={blogPost.title}
-        class="w-full h-full object-cover animate-zoom"
-      />
-    </div>
-    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-    <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4 md:px-8">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight font-sans">
-          {blogPost.title}
-        </h1>
-      </div>
-    </div>
-  </div>
+
 
   <div class="container mx-auto px-4 py-12 max-w-4xl">
     {isLoading
@@ -73,7 +57,7 @@ const readMoreTitle = currentLang === 'es' ? 'Otras Noticias' : 'Other News';
             <div class="mb-8">
             
          
-              <h1 class="font-sans text-3xl font-bold mb-4" transition:name={`blog-title-${blogPost.id}`}>{blogPost.title}</h1>
+              <h1 class="font-heading md:text-4xl text-2xl font-bold mb-4" transition:name={`blog-title-${blogPost.id}`}>{blogPost.title}</h1>
             </div>
             
             <div class="blog-image-container w-full mb-8 rounded-lg overflow-hidden text-center flex justify-center" transition:animate={slide({ duration: '0.3s' })}>
@@ -93,7 +77,7 @@ const readMoreTitle = currentLang === 'es' ? 'Otras Noticias' : 'Other News';
           
           {suggestedPosts.length > 0 && (
             <section class="mt-16 mb-12" transition:animate={fade({ duration: '0.7s' })}>
-              <h2 class="text-gray-700 font-title text-4xl md:text-6xl font-bold text-left mb-8">{readMoreTitle}</h2>
+              <h2 class="text-black font-heading text-2xl md:text-5xl font-bold text-left mb-8">{readMoreTitle}</h2>
               <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
                 {suggestedPosts.map((post) => (
                   <BlogCard 
