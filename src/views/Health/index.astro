@@ -41,66 +41,25 @@ console.log('Health home:', healthHome.title);
   </div>
 
   <!-- Health Benefits Section -->
-  <section class="cotainer bg-white py-16">
-    <div class="box-border content-stretch flex gap-[20px] items-center px-[90px] py-0 relative w-full">
-      <div class="basis-0 content-stretch flex flex-col gap-4 md:gap-6 grow items-start justify-center leading-normal not-italic relative shrink-0 max-w-[620px]">
-        <div class="cotainer">
-          <h1 class="font-heading text-black text-3xl md:text-5xl font-bold mb-2 md:mb-3">{healthHome?.title || 'Activa tu mente y cuerpo con Yummi Nuts'}</h1>
-        </div>
-        <div class="w-full">
-          <p class="text-gray-600 text-base md:text-lg leading-relaxed md:leading-7">{currentLang === 'es' ? 'Sabemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas.' : 'We know that taking care of your body is not a trend, it is a lifestyle. That is why Yummi Nuts shares important information about your health and some tips to continue taking care of your body and enjoying your favorite seeds.' }</p>
-        </div>
+  <section class="container mx-auto px-4 pt-10 md:pt-14 pb-8 md:pb-12">
+    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      <!-- Left: Title + Description -->
+      <div class="w-full md:w-1/2 text-center md:text-left">
+        <h1 class="font-heading text-black text-3xl md:text-5xl font-bold mb-3">{healthHome?.title || 'Activa tu mente y cuerpo con Yummi Nuts'}</h1>
+        <p class="text-gray-600 text-base md:text-lg leading-relaxed">{currentLang === 'es' ? 'Sabemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas.' : 'We know that taking care of your body is not a trend, it is a lifestyle. That is why Yummi Nuts shares important information about your health and some tips to continue taking care of your body and enjoying your favorite seeds.' }</p>
       </div>
-      <div class="content-stretch flex flex-col gap-[27.972px] items-start relative shrink-0 w-[620px]">
-        <div class="h-[615.964px] overflow-clip relative shrink-0 w-[620.178px]">
-          <div class="absolute inset-0">
-            <LazyImage alt="Yummi Nuts Health" class="block max-w-none size-full object-cover" height="615.964" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} width="620.178" />
-          </div>
-          <div class="absolute content-stretch flex items-center justify-between translate-x-[-50%] translate-y-[-50%] w-[620.18px]" style="top: calc(50% + 0.485px); left: calc(50% + 0.001px);">
-            <div class="flex items-center justify-center relative shrink-0">
-              <div class="flex-none rotate-[180deg]">
-                <div class="opacity-60 hover:opacity-100 transition-opacity cursor-pointer relative size-[50.935px]">
-                  <div class="absolute bg-primary left-0 rounded-[8.103px] size-[50.935px] top-0">
-                    <div aria-hidden="true" class="absolute border-[0.796px] border-gray border-solid inset-0 pointer-events-none rounded-[8.103px]"></div>
-                  </div>
-                  <div class="absolute flex h-[20.828px] items-center justify-center top-1/2 translate-x-[-50%] translate-y-[-50%] w-[20.828px]" style="left: calc(50% - 0.004px);">
-                    <div class="flex-none rotate-[270deg]">
-                      <div class="relative size-[20.837px]">
-                        <svg class="size-full text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-center relative shrink-0">
-              <div class="flex-none scale-y-[-100%]">
-                <div class="relative size-[50.935px] cursor-pointer hover:scale-105 transition-transform">
-                  <div class="absolute backdrop-blur-[11.016px] backdrop-filter bg-primary left-0 rounded-[11.938px] size-[50.935px] top-0">
-                    <div aria-hidden="true" class="absolute border-secondary border-[0.796px] border-solid inset-0 pointer-events-none rounded-[11.938px]"></div>
-                  </div>
-                  <div class="absolute flex h-[20.828px] items-center justify-center top-1/2 translate-x-[-50%] translate-y-[-50%] w-[20.828px]" style="left: calc(50% - 0.004px);">
-                    <div class="flex-none rotate-[270deg]">
-                      <div class="relative size-[20.837px]">
-                        <svg class="size-full text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
+      <!-- Right: Simple responsive image -->
+      <div class="w-full md:w-1/2">
+        <div class="relative overflow-hidden rounded-2xl aspect-[4/3]">
+          <LazyImage alt="Yummi Nuts Health" class="w-full h-full object-cover" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} />
         </div>
       </div>
     </div>
   </section>
 
   <!-- Video Section -->
-<section id="videos" class="cotainer bg-white py-16">
+<section id="videos" class="container mx-auto px-4 pt-4 md:pt-6 pb-0">
   <VideoSection 
     title={videoSectionData?.title || 'Tips para mantener tu cuerpo siempre saludable'}
     description={videoSectionData?.description || 'Explora más sobre Yummi Nuts a través de nuestros videos.'}
@@ -109,7 +68,7 @@ console.log('Health home:', healthHome.title);
 </section>
 
   <!-- Discover Section -->
-  <section id="discover" class="cotainer bg-white py-16">
+  <section id="discover" class="container mx-auto px-4 py-10 md:py-14">
     <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
   </section>
 </main>

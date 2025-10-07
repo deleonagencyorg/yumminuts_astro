@@ -32,77 +32,63 @@ function convertToEmbedUrl(url: string): string {
 ---
 
 <section class="w-full bg-white py-16">
-  <div class="box-border content-stretch flex gap-[20px] items-center px-[90px] py-0 relative w-full">
-    <!-- Video Thumbnails Section -->
-    <div class="content-stretch flex h-[569px] items-center justify-between relative shrink-0 w-[620px]">
-      <div class="content-stretch flex flex-col gap-[14.394px] items-start relative shrink-0">
-        <!-- Large Video Thumbnail -->
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col gap-8 md:gap-12">
+      <!-- Videos row: main + two thumbnails -->
+      <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+        <!-- Main video thumbnail -->
         {videos[0] && (
-          <div class="h-[567.964px] relative shrink-0 w-[319.586px] cursor-pointer video-thumbnail group" 
+          <div class="w-full md:w-2/3 relative rounded-2xl overflow-hidden cursor-pointer video-thumbnail group"
                data-video-id={videos[0].id}
                data-video-url={videos[0].url}
                data-video-title={videos[0].title}>
-            <div class="absolute h-[567.964px] left-0 top-0 w-[319.586px] rounded-lg overflow-hidden">
-              <LazyImage  
+            <div class="relative w-full aspect-[16/9]">
+              <LazyImage 
                 alt={videos[0].title || 'Health video'} 
-                class="block max-w-none size-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                height="567.964" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                 src={videos[0].thumbnail || `https://img.youtube.com/vi/${getYouTubeId(videos[0].url)}/maxresdefault.jpg`}
-                width="319.586"
                 loading="lazy"
               />
               <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
-            </div>
-            <!-- Play Button -->
-            <div class="absolute bg-[rgba(0,0,0,0.6)] backdrop-blur-sm box-border content-stretch flex gap-[13.84px] items-center justify-center left-[231.42px] p-[16.608px] rounded-full size-[67.817px] top-[31.37px] group-hover:bg-[rgba(0,0,0,0.8)] group-hover:scale-110 transition-all duration-300">
-              <div class="relative shrink-0 size-[33.216px]">
-                <svg class="size-full text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/>
-                </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="bg-black/60 rounded-full p-4 group-hover:scale-110 transition-transform">
+                  <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                </div>
               </div>
             </div>
           </div>
         )}
-      </div>
-      
-      <!-- Small Video Thumbnails -->
-      <div class="content-stretch flex flex-col h-[567.964px] items-start justify-between leading-[0] relative shrink-0 w-[274.664px]">
-        {videos.slice(1, 3).map((video, index) => (
-          <div class="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 cursor-pointer video-thumbnail group"
-               data-video-id={video.id}
-               data-video-url={video.url}
-               data-video-title={video.title}>
-            <div class="[grid-area:1_/_1] h-[275.475px] ml-0 mt-0 relative w-[274.664px] rounded-lg overflow-hidden">
-              <LazyImage 
-                alt={video.title || `Health video ${index + 2}`} 
-                class="block max-w-none size-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                height="275.475" 
-                src={video.thumbnail || `https://img.youtube.com/vi/${getYouTubeId(video.url)}/maxresdefault.jpg`}
-                width="274.664"
-                loading="lazy"
-              />
-              <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
-            </div>
-            <!-- Play Button -->
-            <div class="[grid-area:1_/_1] bg-[rgba(0,0,0,0.6)] backdrop-blur-sm box-border content-stretch flex gap-[8.392px] h-[42.365px] items-center justify-center ml-[215.908px] mt-[27.755px] p-[10.07px] relative rounded-full w-[42.365px] group-hover:bg-[rgba(0,0,0,0.8)] group-hover:scale-110 transition-all duration-300">
-              <div class="relative shrink-0 size-[20.14px]">
-                <svg class="size-full text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/>
-                </svg>
+
+        <!-- Secondary thumbnails -->
+        <div class="w-full md:w-1/3 grid grid-cols-2 md:grid-cols-1 gap-4">
+          {videos.slice(1, 3).map((video, index) => (
+            <div class="relative rounded-2xl overflow-hidden cursor-pointer video-thumbnail group"
+                 data-video-id={video.id}
+                 data-video-url={video.url}
+                 data-video-title={video.title}>
+              <div class="relative w-full aspect-[16/9]">
+                <LazyImage 
+                  alt={video.title || `Health video ${index + 2}`}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                  src={video.thumbnail || `https://img.youtube.com/vi/${getYouTubeId(video.url)}/hqdefault.jpg`}
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="bg-black/60 rounded-full p-2 group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-    
-    <!-- Title and Description Section -->
-    <div class="basis-0 content-stretch flex flex-col gap-[50px] grow items-start justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0">
-      <div class="font-bold relative shrink-0 text-black text-[55px] tracking-[-2px] w-full text-sans">
-        <h2 class=" font-heading leading-[65px] text-xl md:text-5xl">{title}</h2>
-      </div>
-      <div class="font-normal relative  w-full">
-        <p class="leading-[60px] text-lg md:text-2xl text-gray-500">{description}</p>
+
+      <!-- Title and Description -->
+      <div class="w-full text-center md:text-left">
+        <h2 class="font-heading text-black text-3xl md:text-5xl font-bold tracking-[-0.02em] mb-3">{title}</h2>
+        <p class="text-gray-600 text-base md:text-xl leading-relaxed md:leading-8">{description}</p>
       </div>
     </div>
   </div>
@@ -221,7 +207,7 @@ function convertToEmbedUrl(url: string): string {
   // Initialize video section on page load
   document.addEventListener('DOMContentLoaded', initVideoSection);
   document.addEventListener('astro:page-load', initVideoSection);
-</script>
+  </script>
 
 <style>
   /* Custom styles for video section */
@@ -277,30 +263,5 @@ function convertToEmbedUrl(url: string): string {
     }
   }
 
-  /* Section responsive adjustments */
-  @media (max-width: 768px) {
-    .box-border {
-      flex-direction: column;
-      gap: 2rem;
-      padding: 1rem 2rem;
-    }
-    
-    .content-stretch:first-child {
-      width: 100%;
-      height: auto;
-    }
-    
-    .basis-0 {
-      width: 100%;
-      text-align: center;
-    }
-    
-    .text-\[55px\] {
-      font-size: 2.5rem;
-    }
-    
-    .text-\[25px\] {
-      font-size: 1.25rem;
-    }
-  }
+  /* Section responsive adjustments - simplified (Tailwind handles most) */
 </style>
