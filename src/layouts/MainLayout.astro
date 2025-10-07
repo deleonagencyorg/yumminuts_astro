@@ -35,14 +35,20 @@ const currentLang = validLocales.includes(langFromUrl) ? langFromUrl : 'es'; // 
 const { pathname } = Astro.url;
 const headerColorConfig = getHeaderColors(pathname);
 
-// Si se pasan colores de header específicos (por ejemplo, desde un producto), 
-// crear una configuración personalizada
+// Si se pasan colores de header específicos (por ejemplo, desde un producto),
+// crear una configuración personalizada. Soportar hex (#xxxxxx) como arbitrary value
+// y clases tailwind directas como 'bg-white'.
 let customHeaderConfig = headerColorConfig;
 if (headerColors) {
+  const bg = headerColors.backgroundColor || '';
+  const resolvedBg = bg
+    ? (bg.startsWith('#') ? `bg-[${bg}]` : bg)
+    : headerColorConfig.backgroundColor;
+  const txt = headerColors.textColor || headerColorConfig.textColor;
   customHeaderConfig = {
     ...headerColorConfig,
-    backgroundColor: headerColors.backgroundColor ? `bg-[${headerColors.backgroundColor}]` : headerColorConfig.backgroundColor,
-    textColor: headerColors.textColor ? headerColors.textColor : headerColorConfig.textColor, // Mantener el textColor original de getHeaderColors
+    backgroundColor: resolvedBg,
+    textColor: txt,
   };
 }
 ---
@@ -58,6 +64,36 @@ if (headerColors) {
     <ViewTransitions />
     <slot name="head" />
     {/* <GoogleTagManager /> */}
+  
+  <!-- Script para prevenir carga de URLs de imágenes incorrectas -->
+  <script is:inline>
+    // Interceptar requests de imágenes con URLs relativas problemáticas
+    if ('serviceWorker' in navigator) {
+      // Limpiar cualquier cache problemático al cargar la página
+      if (window.caches) {
+        caches.keys().then(function(cacheNames) {
+          cacheNames.forEach(function(cacheName) {
+            if (cacheName.includes('image') || cacheName.includes('asset')) {
+              caches.delete(cacheName);
+            }
+          });
+        });
+      }
+    }
+    
+    // Prevenir navegación a URLs de imágenes
+    document.addEventListener('DOMContentLoaded', function() {
+      // Interceptar clicks en elementos que puedan tener URLs de imagen incorrectas
+      document.addEventListener('click', function(e) {
+        const href = e.target.href || (e.target.closest('a') && e.target.closest('a').href);
+        if (href && href.includes('.webp') && !href.startsWith('http')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      });
+    });
+  </script>
   </head>
   <body class={`font-sans ${className || ''}`}>
     {/* <GoogleTagManagerNoScript /> */}
@@ -73,5 +109,41 @@ if (headerColors) {
     
     <!-- Menú móvil al final del body para máximo z-index -->
     <MobileMenu currentLang={currentLang} headerColorConfig={customHeaderConfig} />
+
+    <!-- Global reveal-on-scroll animation script -->
+    <script is:inline>
+      (function(){
+        const cls = 'reveal-on-scroll';
+        const visible = 'is-visible';
+        const root = document;
+        function init(){
+          const items = Array.from(root.querySelectorAll('.' + cls));
+          if (!('IntersectionObserver' in window)) {
+            items.forEach(el => el.classList.add(visible));
+            return;
+          }
+          const io = new IntersectionObserver((entries)=>{
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add(visible);
+                io.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.15 });
+          items.forEach(el => io.observe(el));
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+        document.addEventListener('astro:page-load', init);
+        document.addEventListener('astro:after-swap', init);
+      })();
+    </script>
+    <style is:global>
+      .reveal-on-scroll { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+      .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+    </style>
   </body>
 </html>

@@ -15,7 +15,9 @@ export interface Props {
   loading?: boolean;
 }
 
-const { slides = [], loading = false } = Astro.props;
+// Coerce incoming slides to a safe array to avoid `.map` on non-arrays
+const { slides: rawSlides, loading = false } = Astro.props as { slides?: any; loading?: boolean };
+const slides = Array.isArray(rawSlides) ? rawSlides : [];
 
 // Log de depuración
 
@@ -87,7 +89,7 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
 {loading ? (
   <Skeleton items={3} />
 ) : (
-  <div class="relative overflow-hidden w-screen" transition:animate="fade">
+  <div class="relative overflow-hidden w-full mx-auto" transition:animate="fade">
     {preloadFirstImage && (
       <>
         <!-- Precargar la primera imagen para dispositivos móviles -->

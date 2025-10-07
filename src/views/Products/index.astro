@@ -7,71 +7,49 @@ import './styles.css';
 import Carousel from '../../components/common/Carousel/index.astro';
 import ProductsWithFilter from '../../components/common/ProductsWithFilter/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
-
+import categoriesConfig from '../../config/categories.json';
+import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 
 
 const currentLang = getLocale();
 const products = t('items', { namespace: 'products', locale: currentLang });
-const categories = t('categories', { namespace: 'products', locale: currentLang });
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
 const slides = commonAssets;
 const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
-// Obtener categorías únicas de los productos
-const uniqueCategories = Object.keys(categories);
+// Categorías centralizadas (mismas que usa ProductsWithFilter)
+const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.key);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <!-- Slider Section con máscara -->
-    <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[16/9] lg:h-[80vh]">
-     
-
-      <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[95vh] md:flex md:items-center md:justify-center">
-        <Carousel slides={slides} />
-      </div>
+  <div class="w-full flex items-center justify-center text-center reveal-on-scroll">
+    <div class="w-[80vw] mx-auto">
+      <Carousel slides={slides} />
     </div>
+  </div>
+  <div class="container mx-auto px-4 reveal-on-scroll">
+    <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+  </div>
 
-    <!-- New Products with Filter Component -->
-    <ProductsWithFilter title="Nuestros Productos" />
+  <!-- New Products with Filter Component -->
+  <div class="reveal-on-scroll">
+    <ProductsWithFilter  showAllProducts={true} />
+  </div>
 
-    <section id="discover" class="w-full bg-white py-16">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
+  <section id="discover" class="w-full bg-white py-16 reveal-on-scroll">
+    <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+  </section>
 </main>
 
 <script>
   // Fix para las imágenes que no cargan
-document.addEventListener('DOMContentLoaded', () => {
-  const images = document.querySelectorAll('img');
-  images.forEach(img => {
-    img.addEventListener('error', function() {
-      this.src = '/images/products/placeholder.jpg';
-    });
-  });
-  
-  // Filtro de categorías
-  const filterButtons = document.querySelectorAll('.category-filter');
-  const productCards = document.querySelectorAll('.product-card');
-  
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      // Actualizar estado activo de los botones
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      
-      const category = button.getAttribute('data-category');
-      
-      // Filtrar productos
-      productCards.forEach(card => {
-        const cardElement = card as HTMLElement;
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-          cardElement.style.display = 'block';
-        } else {
-          cardElement.style.display = 'none';
-        }
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      img.addEventListener('error', function() {
+        this.src = '/images/products/placeholder.jpg';
       });
     });
   });
-});
 </script>
 

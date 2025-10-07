@@ -1,4 +1,6 @@
 ---
+import LazyImage from '../LazyImage.astro';
+
 // src/components/common/VideoSection/index.astro
 interface Video {
   id: string;
@@ -41,7 +43,7 @@ function convertToEmbedUrl(url: string): string {
                data-video-url={videos[0].url}
                data-video-title={videos[0].title}>
             <div class="absolute h-[567.964px] left-0 top-0 w-[319.586px] rounded-lg overflow-hidden">
-              <img 
+              <LazyImage  
                 alt={videos[0].title || 'Health video'} 
                 class="block max-w-none size-full object-cover group-hover:scale-105 transition-transform duration-300" 
                 height="567.964" 
@@ -71,7 +73,7 @@ function convertToEmbedUrl(url: string): string {
                data-video-url={video.url}
                data-video-title={video.title}>
             <div class="[grid-area:1_/_1] h-[275.475px] ml-0 mt-0 relative w-[274.664px] rounded-lg overflow-hidden">
-              <img 
+              <LazyImage 
                 alt={video.title || `Health video ${index + 2}`} 
                 class="block max-w-none size-full object-cover group-hover:scale-105 transition-transform duration-300" 
                 height="275.475" 
@@ -97,10 +99,10 @@ function convertToEmbedUrl(url: string): string {
     <!-- Title and Description Section -->
     <div class="basis-0 content-stretch flex flex-col gap-[50px] grow items-start justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0">
       <div class="font-bold relative shrink-0 text-black text-[55px] tracking-[-2px] w-full text-sans">
-        <p class="leading-[65px]">{title}</p>
+        <h2 class=" font-heading leading-[65px] text-xl md:text-5xl">{title}</h2>
       </div>
-      <div class="font-normal relative shrink-0 text-[25px] text-gray tracking-[5px] w-full">
-        <p class="leading-[60px]">{description}</p>
+      <div class="font-normal relative  w-full">
+        <p class="leading-[60px] text-lg md:text-2xl text-gray-500">{description}</p>
       </div>
     </div>
   </div>

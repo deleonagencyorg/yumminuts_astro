@@ -58,33 +58,14 @@ export const routesConfig: RouteConfig[] = [
     metaDescriptionKey: 'meta.brands.description',
   },
   {
-    id: 'yummiesone',
-    slugs: { es: 'yummiesone', en: 'yummiesone' },
-    contentComponent: '@/views/YummiesOne/index.astro',
-    metaTitleKey: 'meta.yummiesone.title',
-    metaDescriptionKey: 'meta.yummiesone.description',
-  },
-  {
     id: 'about_us',
     slugs: { es: 'nosotros', en: 'about-us' },
     contentComponent: '@/views/AboutUs/index.astro',
     metaTitleKey: 'meta.about_us.title',
     metaDescriptionKey: 'meta.about_us.description',
   },
-  {
-    id: 'zibas_creators',
-    slugs: { es: 'zibas-creators', en: 'zibas-creators' },
-    contentComponent: '@/views/ZibasCreators/index.astro',
-    metaTitleKey: 'meta.zibas_creators.title',
-    metaDescriptionKey: 'meta.zibas_creators.description',
-  },
-  {
-    id: 'jurados',
-    slugs: { es: 'jurados' }, // Spanish-only route
-    contentComponent: '@/views/Jurados/index.astro',
-    metaTitleKey: 'meta.jurados.title',
-    metaDescriptionKey: 'meta.jurados.description',
-  },
+
+
   // ... Agrega más rutas aquí
 ];
 

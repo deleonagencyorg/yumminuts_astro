@@ -3,13 +3,11 @@
 import { t } from '../../../i18n/i18n';
 import { getLocale } from '../../../i18n/i18n';
 import ProductCard from '../ProductCard/index.astro';
+import categoriesConfig from '../../../config/categories.json';
 
 const currentLang = getLocale();
-const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
-const brandsList = brandsAssets.brands || [];
-const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
-const nutsCategories = nutsBrand?.categories || [];
-const nutsProducts = nutsBrand?.products || [];
+// Load all products from localized JSON
+const products = t('items', { namespace: 'products', locale: currentLang }) || [];
 
 export interface Props {
   title?: string;
@@ -17,49 +15,46 @@ export interface Props {
 }
 
 const {
-  title = 'Nuestros Productos Yumminuts',
+  title = currentLang === 'es' ? 'Nuestros Productos' : 'Our Products',
   showAllProducts = false
 } = Astro.props;
 
-// Combine categories and products, or use products if categories are empty
-const productItems = nutsCategories.length > 0 ? nutsCategories : nutsProducts;
+// Use all localized products
+const productItems = Array.isArray(products) ? products : [];
 
-// Define specific filter categories matching the yumminuts categories
-const filterCategories = [
-  { key: 'manies', name: 'Maní' },
-  { key: 'semillas', name: 'Semillas' },
-  { key: 'maranones', name: 'Marañón' }
-];
+// Build filter categories from centralized config with localized labels
+const filterCategories = (categoriesConfig.categories || []).map((c: any) => ({
+  key: c.key,
+  name: currentLang === 'es' ? c.labels.es : c.labels.en,
+  icon: c.icon,
+  background: c.background,
+  slug: currentLang === 'es' ? c.slugs.es : c.slugs.en
+}));
 
-// Function to get category from product
+// Function to get category from product using categories config first
 function getProductCategory(product: any): string {
-  const title = (product.title || '').toLowerCase();
-  const id = (product.id || '').toLowerCase();
-  const slug = (product.slug || '').toLowerCase();
-  
-  // Check for maní/peanut related products
-  if (title.includes('mani') || title.includes('maníes') || id.includes('mani') || slug.includes('mani')) {
-    return 'manies';
+  const cfg = (categoriesConfig as any).categories || [];
+  const raw = String(product?.category || product?.title || product?.name || '').toLowerCase();
+  // Try exact match against labels/slugs/keys
+  for (const c of cfg) {
+    const labels = [c?.labels?.es, c?.labels?.en].map((s: string) => String(s || '').toLowerCase());
+    const slugs = [c?.slugs?.es, c?.slugs?.en].map((s: string) => String(s || '').toLowerCase());
+    const key = String(c?.key || '').toLowerCase();
+    if (labels.includes(raw) || slugs.includes(raw) || raw === key) return c.key;
   }
-  
-  // Check for marañón/cashew related products
-  if (title.includes('maranon') || title.includes('marañón') || id.includes('maranon') || slug.includes('maranon')) {
-    return 'maranones';
-  }
-  
-  // Check for semillas/seeds/mix/almendras related products
-  if (title.includes('semilla') || title.includes('seed') || title.includes('mix') || title.includes('almendra') || 
-      id.includes('semilla') || id.includes('mix') || slug.includes('semilla')) {
-    return 'semillas';
-  }
-  
-  // Default based on category IDs from yumminuts structure
-  if (id === 'manies' || slug === 'manies') return 'manies';
-  if (id === 'semillas' || slug === 'semillas') return 'semillas';
-  if (id === 'maranones' || slug === 'maranones') return 'maranones';
-  
-  // Fallback default
-  return 'manies';
+  // Heuristics (fallback)
+  const title = String(product?.title || '').toLowerCase();
+  const id = String(product?.id || '').toLowerCase();
+  const slug = String(product?.slug || '').toLowerCase();
+  const category = String(product?.category || '').toLowerCase();
+  if (title.includes('mani') || title.includes('maní') || id.includes('mani') || slug.includes('mani') ||
+      title.includes('peanut') || category.includes('peanut')) return 'manies';
+  if (title.includes('maranon') || title.includes('marañón') || id.includes('maranon') || slug.includes('maranon') ||
+      title.includes('cashew') || category.includes('cashew')) return 'maranones';
+  if (title.includes('semilla') || id.includes('semilla') || title.includes('seed') || category.includes('seed') ||
+      title.includes('almond') || category.includes('almond') || title.includes('mix') || id.includes('mix')) return 'semillas';
+  // Ultimate fallback
+  return (cfg[0]?.key) || 'manies';
 }
 
 // Display products (limit to 6 if not showing all)
@@ -88,7 +83,7 @@ function productHref(product: any): string {
     
     <!-- Title -->
     <div class="text-left mb-8">
-      <h2 class="font-sans text-4xl md:text-5xl font-extrabold text-black tracking-[-2px] leading-tight">
+      <h2 class="font-heading text-4xl md:text-5xl font-extrabold text-black tracking-[-2px] leading-tight">
         {title}
       </h2>
     </div>
@@ -100,7 +95,7 @@ function productHref(product: any): string {
         data-filter="all" 
         class="category-filter active px-6 py-3 rounded-lg font-medium text-sm md:text-base transition-all duration-300 whitespace-nowrap"
       >
-        Todos los Productos
+        {currentLang === 'es' ? 'Todos los Productos' : 'All Products'}
       </button>
       {filterCategories.map((category) => (
         <button 
@@ -120,7 +115,7 @@ function productHref(product: any): string {
           <ProductCard 
             title={product.title || product.name}
             image={product.image || '/images/products/placeholder.jpg'}
-            bgImage={product.bgColor}
+            bgColor={(product.background_color || product.color_button || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
             description={product.description}
           />
         </a>
@@ -129,7 +124,7 @@ function productHref(product: any): string {
 
     <!-- No products message -->
     <div id="noProductsMessage" class="text-center py-12 hidden">
-      <p class="text-gray-500 text-lg">No hay productos en esta categoría.</p>
+      <p class="text-gray-500 text-lg">{currentLang === 'es' ? 'No hay productos en esta categoría.' : 'No products in this category.'}</p>
     </div>
 
     <!-- Show All Button (if not showing all products) -->
@@ -139,7 +134,7 @@ function productHref(product: any): string {
           href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}`}
           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300 text-lg"
         >
-          Ver Todos los Productos
+          {currentLang === 'es' ? 'Ver Todos los Productos' : 'See All Products'}
         </a>
       </div>
     )}
@@ -188,57 +183,45 @@ function productHref(product: any): string {
 </style>
 
 <script>
-  // Product filter functionality
-  document.addEventListener('DOMContentLoaded', () => {
-    const filterButtons = document.querySelectorAll('.category-filter');
-    const productCards = document.querySelectorAll('.product-card');
-    const noProductsMessage = document.getElementById('noProductsMessage');
-    
-    filterButtons.forEach(button => {
+  function initProductsFilters() {
+    const root = document.currentScript?.closest('.w-full')?.parentElement || document;
+    const filterButtons = Array.from(root.querySelectorAll('.category-filter'));
+    const productCards = Array.from(root.querySelectorAll('.product-card'));
+    const noProductsMessage = root.querySelector('#noProductsMessage');
+
+    if (!filterButtons.length || !productCards.length) return;
+
+    function apply(category: string) {
+      let visibleCount = 0;
+      productCards.forEach((card) => {
+        const productCategory = card.getAttribute('data-category');
+        const shouldShow = category === 'all' || productCategory === category;
+        card.classList.toggle('hidden', !shouldShow);
+        if (shouldShow) visibleCount++;
+      });
+      if (noProductsMessage) {
+        noProductsMessage.classList.toggle('hidden', visibleCount !== 0);
+      }
+    }
+
+    filterButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        // Update active state of buttons
-        filterButtons.forEach(btn => btn.classList.remove('active'));
+        const category = button.getAttribute('data-filter') || 'all';
+        filterButtons.forEach((b) => b.classList.remove('active'));
         button.classList.add('active');
-        
-        const category = button.getAttribute('data-filter');
-        let visibleCount = 0;
-        
-        // Filter products with smooth animation
-        productCards.forEach(card => {
-          const productCategory = card.getAttribute('data-category');
-          const shouldShow = category === 'all' || productCategory === category;
-          
-          if (shouldShow) {
-            card.classList.remove('hidden');
-            visibleCount++;
-          } else {
-            card.classList.add('hidden');
-          }
-        });
-        
-        // Show/hide no products message
-        if (visibleCount === 0) {
-          noProductsMessage?.classList.remove('hidden');
-        } else {
-          noProductsMessage?.classList.add('hidden');
-        }
+        apply(category);
       });
     });
 
-    // Fix for images that fail to load
-    const images = document.querySelectorAll('.product-card [style*="background-image"]');
-    images.forEach(imageDiv => {
-      const img = new Image();
-      const element = imageDiv as HTMLElement;
-      const bgStyle = element.style.backgroundImage;
-      const url = bgStyle.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1];
-      
-      if (url) {
-        img.onerror = function() {
-          element.style.backgroundImage = "url('/images/products/placeholder.jpg')";
-        };
-        img.src = url;
-      }
-    });
-  });
+    // Initial state
+    apply('all');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductsFilters);
+  } else {
+    initProductsFilters();
+  }
+  document.addEventListener('astro:page-load', initProductsFilters);
+  document.addEventListener('astro:after-swap', initProductsFilters);
 </script>

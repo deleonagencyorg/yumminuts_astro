@@ -192,7 +192,7 @@
     {
       "id": "products",
       "text": "Productos",
-      "href": "/es/#products"
+      "href": "/es/productos"
     },
     {
       "id": "recipes",
@@ -266,8 +266,8 @@
   },
   "home": {
     "meta": {
-      "title": " Ziba's - Disfruta tus Ziba's en todo momento",
-      "description": "Tus hojuelas de papa frita favoritas llegan con sabores naturalmente auténticos para todos los gustos."
+      "title": "Yummi Nuts",
+      "description": "¡Bienvenido a un lugar lleno de energía! Conoce todas las semillas que ofrece Yummi Nuts, recetas y consejos para una nutrición mindful."
     },
     "newsletter":{
       "placeholder":"tucorreo@email.com",

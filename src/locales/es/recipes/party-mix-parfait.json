@@ -1,0 +1,35 @@
+{
+  "date": "2025-09-11",
+  "id": "party-mix-parfait",
+  "slug": "party-mix-parfait",
+  "title": "Party Mix Parfait",
+  "people": "2",
+  "difficulty": "Fácil",
+  "image": "https://snack.yummiespromociones.com/yumminuts/party-mix-parfait.webp",
+  "gallery": [
+    "party-mix-parfait.webp"
+  ],
+  "type": "image",
+  "preparation_time": 10,
+  "ingredients": [
+    "1 taza de yogur griego",
+    "2 cucharadas de mantequilla de maní",
+    "1 cucharada de miel",
+    "¼ de taza de coco rallado",
+    "Chocolate derretido",
+    "1 paquete de Fiesta Mix"
+  ],
+  "instructions": [
+    "Paso 1: Mezcla el yogur con la mantequilla de maní y la miel en un recipiente.",
+    "Paso 2: En una copa o taza arma tu parfait en capas de la siguiente forma:",
+    "Capa de yogur",
+    "Capa de chocolate derretido",
+    "Fiesta Mix",
+    "Coco rallado",
+    "Repite el procedimiento hasta acabar con los ingredientes y llenar la copa o vaso."
+  ],
+  "brand": [
+    "yummimix"
+  ],
+  "category": "snacks"
+}

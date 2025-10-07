@@ -50,11 +50,11 @@ const headerColors = {
       
       <!-- Left Column - Contact Info -->
     <div class="w-[100%] lg:w-[40%] pl-8 lg:pl-16 flex flex-col justify-center h-[100%] lg:h-[600px]">
-        <h2 class="text-black font-title text-xl uppercase md:text-2xl lg:text-5xl font-bold mb-6">
+        <h2 class="text-black font-heading text-xl uppercase md:text-2xl lg:text-5xl font-bold mb-6">
           {contact.title}
         </h2>
         
-        <p class="text-gray-300 font-bold text-2xl lg:text-lg mb-8 leading-relaxed ">
+        <p class="text-gray font-sans text-2xl lg:text-lg mb-8 leading-relaxed ">
           {contact.description}
         </p>
      
@@ -67,19 +67,19 @@ const headerColors = {
     </div>
     
     <!-- Offices Section -->
-    <div class="mx-auto bg-white p-8">
+    <div class="container mx-auto bg-white p-8">
       
       <!-- Tabs and Office Info -->
       <div class="flex flex-col mb-4">
-        <h3 class="text-black md:text-4xl text-4xl font-title uppercase font-bold mb-4 flex items-center justify-left ml-9 gap-1">
-          <span class="font-title">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
+        <h3 class="text-black md:text-4xl text-4xl font-heading uppercase font-bold mb-4 flex items-center justify-left ml-9 gap-1">
+          <span class="font-heading">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
         </h3>
         <!-- Office Details -->
         <div class="order-2 w-[80%] mx-auto">
           <div id="officeInfo" class="bg-white rounded-2xl p-8 ">
             <div class="flex flex-col lg:flex-row justify-between items-center">
               <div class="space-y-4">
-                <h3 id="officeName" class="text-black font-sans text-5xl md:text-4xl uppercase font-extrabold  mb-4">
+                <h3 id="officeName" class="text-black font-heading text-5xl md:text-4xl uppercase font-extrabold  mb-4">
                   {contact.offices.locations["+504"].name}
                 </h3>
                 

@@ -71,27 +71,33 @@
         "alt": "Zambos",
         "title": "",
         "description": "",
-        "link": "https://www.zambos.com"
+        "link": "#"
       }
     ],
     "healthInfo": [
       {
         "id": "info1",
         "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg",
-        "alt": "High in protein",
+        "alt": "High in Protein",
         "text": "High in Protein"
       },
       {
         "id": "info2",
         "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg",
-        "alt": "High in fiber",
-        "text": "High in Fiber"
+        "alt": "Rich in Fiber",
+        "text": "Rich in Fiber"
       },
       {
         "id": "info3",
-        "icon": "https://snack.yummiespromociones.com/yumminuts/sin-gluten.svg",
-        "alt": "Gluten free",
-        "text": "Gluten Free"
+        "icon": "https://snack.yummiespromociones.com/yumminuts/azucar.svg",
+        "alt": "Low in Sugar",
+        "text": "Low in Sugar"
+      },
+      {
+        "id": "info4",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg",
+        "alt": "High in Energy",
+        "text": "High in Energy"
       }
     ],
     "healthPage": {
@@ -181,20 +187,26 @@
     "explore": "Explorar"
   },
   "menu_items": [
-    {
-      "id": "zibas-creators",
-      "text": "Ziba's Creators",
-      "href": "/en/zibas-creators"
-    },
+
     {
       "id": "products",
       "text": "Products",
-      "href": "/en/#products"
+      "href": "/en/products"
     },
     {
-      "id": "gallery",
-      "text": "Gallery",
-      "href": "/en/#gallery"
+      "id": "recipes",
+      "text": "Recipes",
+      "href": "/en/recipes"
+    },
+    {
+      "id": "news",
+      "text": "News",
+      "href": "/en/blog"
+    },
+    {
+      "id": "health",
+      "text": "Health",
+      "href": "/en/health"
     },
     {
       "id": "contact",
@@ -212,8 +224,8 @@
   },
   "home": {
     "meta": {
-      "title": " Ziba's - Disfruta tus Ziba's en todo momento",
-      "description": "Tus hojuelas de papa frita favoritas llegan con sabores naturalmente auténticos para todos los gustos."
+      "title": "Yummi Nuts",
+      "description": "¡Bienvenido a un lugar lleno de energía! Conoce todas las semillas que ofrece Yummi Nuts, recetas y consejos para una nutrición mindful."
     },
     "newsletter":{
       "placeholder":"email@email.com",

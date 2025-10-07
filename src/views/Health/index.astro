@@ -8,6 +8,8 @@ import Carousel from '../../components/common/Carousel/index.astro';
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Discover from '../../components/common/Discover/index.astro';
 import VideoSection from '../../components/common/VideoSection/index.astro';
+import LazyImage from '../../components/common/LazyImage.astro';
+import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 
 const currentLang = getLocale();
 const healthBenefits = t('benefits', { namespace: 'health', locale: currentLang });
@@ -28,28 +30,31 @@ console.log('Health home:', healthHome.title);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <!-- Slider Section with mask -->
-  <div class="relative w-full overflow-hidden max-w-[100vw] h-auto aspect-[1/1] md:aspect-[16/9] lg:h-[80vh]">
-    <div class="relative z-0 w-full md:w-[100%] md:ml-auto md:h-full h-[95vh] md:flex md:items-center md:justify-center">
+  <div class="container mx-auto px-4">
+    <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+  </div>
+  <!-- Slider Section centered at 80% width (same as Products) -->
+  <div class="w-full flex items-center justify-center text-center">
+    <div class="w-[80vw] mx-auto">
       <Carousel slides={slides} />
     </div>
   </div>
 
   <!-- Health Benefits Section -->
-  <section class="w-full bg-white py-16">
+  <section class="cotainer bg-white py-16">
     <div class="box-border content-stretch flex gap-[20px] items-center px-[90px] py-0 relative w-full">
-      <div class="basis-0 content-stretch flex flex-col gap-[50px] grow items-start justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0">
-        <div class="font-bold relative shrink-0 text-black text-[55px] tracking-[-2px] w-full text-sans">
-          <p class="leading-[65px]">{healthHome?.title || 'Activa tu mente y cuerpo con Yummi Nuts'}</p>
+      <div class="basis-0 content-stretch flex flex-col gap-4 md:gap-6 grow items-start justify-center leading-normal not-italic relative shrink-0 max-w-[620px]">
+        <div class="cotainer">
+          <h1 class="font-heading text-black text-3xl md:text-5xl font-bold mb-2 md:mb-3">{healthHome?.title || 'Activa tu mente y cuerpo con Yummi Nuts'}</h1>
         </div>
-        <div class="font-normal relative shrink-0 text-[25px] text-gray tracking-[5px] w-full" >
-          <p class="leading-[60px]">{healthHome?.description || 'Lorem Ipsum Dolor It'}</p>
+        <div class="w-full">
+          <p class="text-gray-600 text-base md:text-lg leading-relaxed md:leading-7">{currentLang === 'es' ? 'Sabemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas.' : 'We know that taking care of your body is not a trend, it is a lifestyle. That is why Yummi Nuts shares important information about your health and some tips to continue taking care of your body and enjoying your favorite seeds.' }</p>
         </div>
       </div>
       <div class="content-stretch flex flex-col gap-[27.972px] items-start relative shrink-0 w-[620px]">
         <div class="h-[615.964px] overflow-clip relative shrink-0 w-[620.178px]">
           <div class="absolute inset-0">
-            <img alt="Yummi Nuts Health" class="block max-w-none size-full object-cover" height="615.964" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} width="620.178" />
+            <LazyImage alt="Yummi Nuts Health" class="block max-w-none size-full object-cover" height="615.964" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} width="620.178" />
           </div>
           <div class="absolute content-stretch flex items-center justify-between translate-x-[-50%] translate-y-[-50%] w-[620.18px]" style="top: calc(50% + 0.485px); left: calc(50% + 0.001px);">
             <div class="flex items-center justify-center relative shrink-0">
@@ -95,14 +100,16 @@ console.log('Health home:', healthHome.title);
   </section>
 
   <!-- Video Section -->
+<section id="videos" class="cotainer bg-white py-16">
   <VideoSection 
     title={videoSectionData?.title || 'Tips para mantener tu cuerpo siempre saludable'}
     description={videoSectionData?.description || 'Explora más sobre Yummi Nuts a través de nuestros videos.'}
     videos={videosData}
   />
+</section>
 
   <!-- Discover Section -->
-  <section id="discover" class="w-full bg-white py-16">
+  <section id="discover" class="cotainer bg-white py-16">
     <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
   </section>
 </main>

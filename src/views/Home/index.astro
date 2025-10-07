@@ -3,12 +3,6 @@ import LazyImage from '../../components/common/LazyImage.astro';
 // Component Imports
 import Carousel from '../../components/common/Carousel/index.astro';
 import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
-import ProductsCarousel from '../../components/common/ProductsCarousel/index.astro';
-import MasonryGallery from '../../components/gallery/MasonryGallery.astro';
-import PixelGrid from '../../components/atoms/PixelGrid.astro';
-import AnimHeart from '../../components/common/AnimHeart/index.astro';
-import SocialMediaIcons from '../../components/common/SocialMediaIcons/index.astro';
-import Newsletter from '../../components/common/Newsletter/index.astro';
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
@@ -18,7 +12,7 @@ import './styles.css';
 
 // i18n and Data Imports
 import { t, getLocale } from '../../i18n/i18n';
-import { InstagramEmbed } from 'react-social-media-embed';
+import categoriesConfig from '../../config/categories.json';
 
 
 
@@ -34,12 +28,44 @@ const homeAssets = t('home', { namespace: 'common', locale: currentLang }) || {}
 const recipesAssets = t('', { namespace: 'recipes', locale: currentLang }) || {};
 const galleryAssets = t('', { namespace: 'gallery', locale: currentLang }) || {};
 const aboutAssets = t('', { namespace: 'aboutus', locale: currentLang }) || {};
-const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const products = t('items', { namespace: 'products', locale: currentLang }) || [];
-const brandsList = brandsAssets.brands || [];
-const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
-const nutsCategories = nutsBrand?.categories || [];
+
+// Build first product per category using centralized categories config
+type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
+function normalizeCategory(value: string): string {
+  const v = (value || '').toLowerCase();
+  if (!v) return '';
+  // Map by keywords to our keys
+  if (v.includes('maní') || v.includes('mani') || v.includes('peanut')) return 'manies';
+  if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
+  if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
+  // Try direct match with labels from config
+  const cfg = (categoriesConfig as any).categories || [];
+  const match = cfg.find((c: any) => [c.labels?.es, c.labels?.en, c.key].map((s: string) => (s||'').toLowerCase()).includes(v));
+  return match?.key || '';
+}
+
+const productsByCategory: Record<string, any[]> = {};
+for (const p of products as any[]) {
+  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+  if (!key) continue;
+  if (!productsByCategory[key]) productsByCategory[key] = [];
+  productsByCategory[key].push(p);
+}
+
+const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
+  const list = productsByCategory[c.key] || [];
+  const first = list[0] || {};
+  // Always show the category label (ES/EN) below the image, not the product name
+  const title = (c.labels?.[currentLang] || c.labels?.es || c.labels?.en || '') as string;
+  const image = (first.image || '') as string;
+  // Use category config color to paint SVG, independent of product
+  const bgColor = (c.background || '#95CFF2') as string;
+  const id = (first.id || c.key) as string;
+  const slug = (first.slug || first.id || '') as string;
+  return { id, title, image, bgColor, slug };
+}).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
 const slides = Array.isArray(commonAssets) 
@@ -48,7 +74,7 @@ const slides = Array.isArray(commonAssets)
     .map(asset => ({
       desktop: asset.desktop,
       mobile: asset.mobile,
-      alt: asset.alt || "Ziba's",
+      alt: asset.alt || "Yumminuts",
       title: asset.title || '',
       subtitle: asset.description || '',
       link: asset.url || asset.link || ''
@@ -56,6 +82,21 @@ const slides = Array.isArray(commonAssets)
   : [];
 
 const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+
+// Load recipes via Vite glob (same strategy as Recipes page)
+interface Recipe { id: string; title: string; image?: string; preparation_time: number; type?: string }
+const recipeModules = import.meta.glob<{ default: Recipe }>("../../locales/*/recipes/*.json");
+const allRecipes: Recipe[] = [];
+for (const path in recipeModules) {
+  const parts = path.split('/');
+  const lang = parts[parts.length - 3];
+  if (lang === currentLang) {
+    const mod = await recipeModules[path]();
+    allRecipes.push(mod.default);
+  }
+}
+// Fallback: if there are no per-file recipes, use translations list if available
+const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes : (recipesAssets.items || []);
 
 ---
 
@@ -74,12 +115,12 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
       <HealthInfoSection />
     </div>
 
-    <!-- Sección de Productos Nuts -->
-    {nutsCategories.length > 0 && (
+    <!-- Sección de Productos por Categoría -->
+    {categoryCards.length > 0 && (
       <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
         <div class="container mx-autxo px-4">
           <Categories 
-            products={nutsCategories}
+            products={categoryCards}
             title={currentLang === 'es' ? 'Categorías' : 'Categories'}
           />
         </div>
@@ -105,7 +146,6 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
           </div>
         )}
         <RecipesCarousel 
-          recipes={recipesAssets.items || []} 
           title={recipesAssets.home?.title || 'Recetas'}
           textButton={recipesAssets.home?.view_more || 'Ver Todas'}
         />
@@ -116,85 +156,6 @@ const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale
     <section id="discover" class="w-container mx-auto px-4 bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
       <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
     </section>
-
-    <!-- Sección Gallery 
-    <section id="gallery" class="bg-pink w-full py-12" transition:animate="slide">
-      <div class="container mx-auto px-4">
-        {Array.isArray(galleryAssets.images) && galleryAssets.images.length > 0 && (
-          <MasonryGallery 
-            items={galleryAssets.images}
-            columns={3}
-            title={galleryAssets.title}
-            className=""
-          />
-        )}
-      </div>
-    </section>
-    -->
-
-
-
-    <!-- Sección News -->
-     <!-- <section id="news" class="bg-yellow w-full py-12" transition:animate="slide">
-  <div class="container mx-auto px-4">
-    {newsAssets.home.title && (
-      <div class="text-center mb-16 relative z-20 overflow-hidden" >
-          <div class="absolute left-0 top-0 w-[100%] h-[100%] -z-10 pointer-events-none -ml-[250px]">
-            <PixelGrid
-               pixelSize={20}
-               density={0.7}
-               introDuration={800}
-               loopInterval={1100}
-               mutateAmount={50}
-             />
-          </div>
-        <h2 class="text-3xl md:text-4xl italic font-bold mb-4 text-brown relative z-10">
-          {newsAssets.home.title}
-        </h2>
-        {newsAssets.home.subtitle && (
-          <h1 class="text-6xl md:text-9xl italic font-bold mb-4 text-brown relative z-10 flex items-center justify-center">
-            
-            <span class="font-title pl-2 relative z-10">{newsAssets.home.subtitle}</span>
-          </h1>
-        
-        )}
-      </div>
-    )}
-  </div>
-</section> -->
-    <!-- Sección Abaout -->
-<!-- <section id="about" class="bg-red w-full py-12" transition:animate="slide">
-  <div class="container mx-auto px-4">
-    <div class="text-center mb-8">
-      {aboutAssets.title && (
-        <div class="text-center mb-16 relative z-20" >
-          <h2 class="text-3xl md:text-4xl italic font-bold mb-4 text-white">
-            {aboutAssets.title}
-          </h2>
-          {aboutAssets.subtitle && (
-            <h1 class="text-6xl md:text-9xl italic font-bold mb-4 text-white">
-              {aboutAssets.subtitle}
-            </h1>
-          )}
-        </div>
-      )}
-    </div>
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8">
-      <div>
-        <h4 class="md:text-4xl text-lg font-bold text-white font-title">LOREM IPSUM DOLOR</h4>
-        <p class="text-white font-sans  text-xl leading-relaxed w-100%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec metus vel ante bibendum finibus. Nullam nec metus vel ante bibendum finibus.</p>
-      </div>
-      <div>
-        <LazyImage src="https://snack.yummiespromociones.com/zibas/gallery16.webp" class="py-4" alt="Ziba's" />
-      </div>
-      <div>
-        <LazyImage src="https://snack.yummiespromociones.com/zibas/gallery15.webp" class="py-4" alt="Ziba's" />
-        <h4 class="md:text-4xl text-lg font-bold text-white font-title">LOREM IPSUM DOLOR</h4>
-        <p class="text-white font-sans text-xl  leading-relaxed w-100%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec metus vel ante bibendum finibus. Nullam nec metus vel ante bibendum finibus.</p>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 
 

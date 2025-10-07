@@ -1,6 +1,7 @@
 ---
 // src/components/common/Footer/index.astro
 import { t, type Locale } from '../../../i18n/i18n';
+import { getRouteById } from '../../../config/routes';
 import { logos } from '../../../config/assets';
 import './styles.css';
 import Skeleton from './Skeleton.astro';
@@ -39,6 +40,14 @@ const youtubeText = t('social_media.youtube.text', { namespace: 'common', locale
 
 // Obtener el logo específico de Yumminuts desde brands.json
 const logoYumminuts = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/logo-blue-yumminuts.webp';
+
+// Helper: build localized path from a route ID
+function langPath(routeId: string): string {
+  const route = getRouteById(routeId);
+  if (!route) return `/${currentLang}`;
+  const slug = route.slugs[currentLang] || '';
+  return slug ? `/${currentLang}/${slug}` : `/${currentLang}`;
+}
 ---
 
 {loading ? (
@@ -72,13 +81,13 @@ const logoYumminuts = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/
             {t('footer.home', { namespace: 'common', locale: currentLang })}
           </div>
           <div class="flex flex-col font-sans gap-6 items-start justify-start leading-relaxed not-italic relative shrink-0 text-primary text-lg">
-            <a href={`/${currentLang}/products`} class="hover:underline hover:text-blue">{t('footer.products', { namespace: 'common', locale: currentLang })}</a>
-            <a href={`/${currentLang}/health`} class="hover:underline hover:text-blue">{t('footer.health', { namespace: 'common', locale: currentLang })}</a>
-            <a href={`/${currentLang}/news`} class="hover:underline hover:text-blue">{t('footer.latest_news', { namespace: 'common', locale: currentLang })}</a>
-            <a href={`/${currentLang}/contact`} class="hover:underline hover:text-blue">{t('footer.contact', { namespace: 'common', locale: currentLang })}</a>
+            <a href={langPath('products')} class="hover:underline hover:text-blue">{t('footer.products', { namespace: 'common', locale: currentLang })}</a>
+            <a href={langPath('health')} class="hover:underline hover:text-blue">{t('footer.health', { namespace: 'common', locale: currentLang })}</a>
+            <a href={langPath('news')} class="hover:underline hover:text-blue">{t('footer.latest_news', { namespace: 'common', locale: currentLang })}</a>
+            <a href={langPath('contact')} class="hover:underline hover:text-blue">{t('footer.contact', { namespace: 'common', locale: currentLang })}</a>
           </div>
         </div>
-        <div class="flex flex-col gap-12 items-start justify-start relative shrink-0">
+        {/* <div class="flex flex-col gap-12 items-start justify-start relative shrink-0">
           <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
             {t('footer.support', { namespace: 'common', locale: currentLang })}
           </div>
@@ -88,7 +97,7 @@ const logoYumminuts = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/
             <a href="#" class="hover:underline hover:text-blue">{t('footer.terms_conditions', { namespace: 'common', locale: currentLang })}</a>
             <a href="#" class="hover:underline hover:text-blue">{t('footer.complaints_book', { namespace: 'common', locale: currentLang })}</a>
           </div>
-        </div>
+        </div> */}
         <div class="flex flex-col gap-10 items-start justify-start relative shrink-0">
           <div class="font-title text-3xl md:text-4xl font-normal relative text-primary">
             {t('footer.help', { namespace: 'common', locale: currentLang })}
