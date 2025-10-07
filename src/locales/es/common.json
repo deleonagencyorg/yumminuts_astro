@@ -67,7 +67,7 @@
       {
         "id": "slide1",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
@@ -150,7 +150,7 @@
         {
           "id": "slide1",
           "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/mobilehealth.jpg",
           "alt": "Home Yumminuts",
           "title": "",
           "description": "",
@@ -164,21 +164,57 @@
       "videos": [
         {
           "id": "video1",
-          "url": "https://www.youtube.com/embed/lDQWoYSB9xg",
-          "thumbnail": "https://img.youtube.com/vi/lDQWoYSB9xg/maxresdefault.jpg",
-          "title": "Tips de Vida Saludable #1"
+          "url": "https://www.youtube.com/embed/AVOMZkoahhw",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-1.png",
+          "title": "Natalia y YummiNuts nos cuentan sobre la Alimentación Consciente"
         },
         {
           "id": "video2",
-          "url": "https://www.youtube.com/embed/rhqXNtfKk8s",
-          "thumbnail": "https://img.youtube.com/vi/rhqXNtfKk8s/maxresdefault.jpg",
-          "title": "Tips de Vida Saludable #2"
+          "url": "https://www.youtube.com/embed/jV8qCeP-Fp0",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-2.png",
+          "title": "Alimentación consciente con Yummi Nuts"
         },
         {
           "id": "video3",
-          "url": "https://www.youtube.com/embed/OY3AoQ4eqqU",
-          "thumbnail": "https://img.youtube.com/vi/OY3AoQ4eqqU/maxresdefault.jpg",
-          "title": "Tips de Vida Saludable #3"
+          "url": "https://www.youtube.com/embed/RZWuIvyxjiY",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-3.png",
+          "title": "El papel de los carbohidratos en tu alimentación"
+        },
+        {
+          "id": "video4",
+          "url": "https://www.youtube.com/embed/KzgnTHbebzc",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-4.png",
+          "title": "Las proteínas en nuestra alimentación"
+        },
+        {
+          "id": "video5",
+          "url": "https://www.youtube.com/embed/sYBax1yU3j8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-5.png",
+          "title": "¿Cuánto necesito comer?"
+        },
+        {
+          "id": "video6",
+          "url": "https://www.youtube.com/embed/T2nWko83keI",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-6.png",
+          "title": "¿Cómo reconocer las señales de hambre?"
+        },
+        {
+          "id": "video7",
+          "url": "https://www.youtube.com/embed/zdNXdG9AsS8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-7.png",
+          "title": "Detonantes del hambre"
+        },
+        {
+          "id": "video8",
+          "url": "https://www.youtube.com/embed/j0nJbP00V9c",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-8.png",
+          "title": "¿Realmente tengo hambre?"
+        },
+        {
+          "id": "video10",
+          "url": "https://www.youtube.com/embed/cRQ2LjO1syo",
+          "thumbnail":"https://snack.yummiespromociones.com/yumminuts/Tennis-Video.jpg",
+          "title": "Recargate de energía con Yummi Nuts"
         }
       ]
     }
@@ -303,7 +339,7 @@
     "instagram_text": "Instagram",
     "facebook_text": "Facebook",
     "email": "ayudacliente@zibas.com",
-    "copyright": "Copyright 2025. Ziba's. Todos los derechos reservados.",
+    "copyright": "Copyright 2025. Todos los derechos reservados.",
     "privacy_policy_text": "Política de Privacidad",
     "privacy_policy_url": "/es/politica-privacidad",
     "newsletter": "NOVEDADES",

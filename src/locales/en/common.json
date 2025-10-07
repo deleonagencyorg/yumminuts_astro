@@ -67,8 +67,7 @@
       {
         "id": "slide1",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
-        "alt": "Zambos",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
         "title": "",
         "description": "",
         "link": "#"
@@ -108,7 +107,7 @@
         {
           "id": "slide1",
           "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/mobilehealth.jpg",
           "alt": "Home Yumminuts",
           "title": "",
           "description": "",
@@ -122,21 +121,57 @@
       "videos": [
         {
           "id": "video1",
-          "url": "https://www.youtube.com/embed/zkximeTgUvM",
-          "thumbnail": "https://img.youtube.com/vi/zkximeTgUvM/maxresdefault.jpg",
-          "title": "Healthy Living Tips #1"
+          "url": "https://www.youtube.com/embed/AVOMZkoahhw",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-1.png",
+          "title": "Natalia and YummiNuts tell us about Mindful Eating"
         },
         {
           "id": "video2",
-          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
-          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
-          "title": "Healthy Living Tips #2"
+          "url": "https://www.youtube.com/embed/jV8qCeP-Fp0",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-2.png",
+          "title": "Mindful Eating with Yummi Nuts"
         },
         {
           "id": "video3",
-          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
-          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
-          "title": "Healthy Living Tips #3"
+          "url": "https://www.youtube.com/embed/RZWuIvyxjiY",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-3.png",
+          "title": "The Role of Carbohydrates in Your Diet"
+        },
+        {
+          "id": "video4",
+          "url": "https://www.youtube.com/embed/KzgnTHbebzc",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-4.png",
+          "title": "Proteins in Our Diet"
+        },
+        {
+          "id": "video5",
+          "url": "https://www.youtube.com/embed/sYBax1yU3j8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-5.png",
+          "title": "How Much Do I Need to Eat?"
+        },
+        {
+          "id": "video6",
+          "url": "https://www.youtube.com/embed/T2nWko83keI",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-6.png",
+          "title": "How to Recognize Hunger Signals?"
+        },
+        {
+          "id": "video7",
+          "url": "https://www.youtube.com/embed/zdNXdG9AsS8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-7.png",
+          "title": "Hunger Triggers"
+        },
+        {
+          "id": "video8",
+          "url": "https://www.youtube.com/embed/j0nJbP00V9c",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-8.png",
+          "title": "Am I Really Hungry?"
+        },
+        {
+          "id": "video10",
+          "url": "https://www.youtube.com/embed/cRQ2LjO1syo",
+          "thumbnail":"https://snack.yummiespromociones.com/yumminuts/Tennis-Video.jpg",
+          "title": "Recharge Your Energy with Yummi Nuts"
         }
       ]
     },

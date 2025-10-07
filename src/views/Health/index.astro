@@ -33,11 +33,9 @@ console.log('Health home:', healthHome.title);
   <div class="container mx-auto px-4">
     <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
   </div>
-  <!-- Slider Section centered at 80% width (same as Products) -->
-  <div class="w-full flex items-center justify-center text-center">
-    <div class="w-[80vw] mx-auto">
-      <Carousel slides={slides} />
-    </div>
+  <!-- Slider Section -->
+  <div class="w-full">
+    <Carousel slides={slides} />
   </div>
 
   <!-- Health Benefits Section -->
@@ -52,14 +50,14 @@ console.log('Health home:', healthHome.title);
       <!-- Right: Simple responsive image -->
       <div class="w-full md:w-1/2">
         <div class="relative overflow-hidden rounded-2xl aspect-[4/3]">
-          <LazyImage alt="Yummi Nuts Health" class="w-full h-full object-cover" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} />
+          <LazyImage alt="Yummi Nuts Health" class="w-full h-full object-contain" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} />
         </div>
       </div>
     </div>
   </section>
 
   <!-- Video Section -->
-<section id="videos" class="container mx-auto px-4 pt-4 md:pt-6 pb-0">
+<section id="videos" class="w-full bg-white py-8 md:py-12">
   <VideoSection 
     title={videoSectionData?.title || 'Tips para mantener tu cuerpo siempre saludable'}
     description={videoSectionData?.description || 'Explora más sobre Yummi Nuts a través de nuestros videos.'}

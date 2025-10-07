@@ -34,6 +34,12 @@ function convertToEmbedUrl(url: string): string {
 <section class="w-full bg-white py-16">
   <div class="container mx-auto px-4">
     <div class="flex flex-col gap-8 md:gap-12">
+      <!-- Title and Description -->
+      <div class="w-full text-center md:text-left">
+        <h2 class="font-heading text-black text-3xl md:text-5xl font-bold tracking-[-0.02em] mb-3">{title}</h2>
+        <p class="text-gray-600 text-base md:text-xl leading-relaxed md:leading-8">{description}</p>
+      </div>
+      
       <!-- Videos row: main + two thumbnails -->
       <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
         <!-- Main video thumbnail -->
@@ -44,7 +50,7 @@ function convertToEmbedUrl(url: string): string {
                data-video-title={videos[0].title}>
             <div class="relative w-full aspect-[16/9]">
               <LazyImage 
-                alt={videos[0].title || 'Health video'} 
+                alt={videos[0].title || 'Featured video'} 
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                 src={videos[0].thumbnail || `https://img.youtube.com/vi/${getYouTubeId(videos[0].url)}/maxresdefault.jpg`}
                 loading="lazy"
@@ -55,12 +61,17 @@ function convertToEmbedUrl(url: string): string {
                   <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
                 </div>
               </div>
+              {videos[0].title && (
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                  <h3 class="text-white text-lg md:text-xl font-medium truncate">{videos[0].title}</h3>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        <!-- Secondary thumbnails -->
-        <div class="w-full md:w-1/3 grid grid-cols-2 md:grid-cols-1 gap-4">
+        <!-- Secondary thumbnails (2nd and 3rd videos) -->
+        <div class="w-full md:w-1/3 grid grid-cols-1 gap-4">
           {videos.slice(1, 3).map((video, index) => (
             <div class="relative rounded-2xl overflow-hidden cursor-pointer video-thumbnail group"
                  data-video-id={video.id}
@@ -68,7 +79,7 @@ function convertToEmbedUrl(url: string): string {
                  data-video-title={video.title}>
               <div class="relative w-full aspect-[16/9]">
                 <LazyImage 
-                  alt={video.title || `Health video ${index + 2}`}
+                  alt={video.title || `Video ${index + 2}`}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                   src={video.thumbnail || `https://img.youtube.com/vi/${getYouTubeId(video.url)}/hqdefault.jpg`}
                   loading="lazy"
@@ -79,48 +90,81 @@ function convertToEmbedUrl(url: string): string {
                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
                   </div>
                 </div>
+                {video.title && (
+                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <h3 class="text-white text-sm md:text-base font-medium truncate">{video.title}</h3>
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <!-- Title and Description -->
-      <div class="w-full text-center md:text-left">
-        <h2 class="font-heading text-black text-3xl md:text-5xl font-bold tracking-[-0.02em] mb-3">{title}</h2>
-        <p class="text-gray-600 text-base md:text-xl leading-relaxed md:leading-8">{description}</p>
-      </div>
+      <!-- Additional videos grid (3 columns in desktop/tablet, 2 columns in mobile) -->
+      {videos.length > 3 && (
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {videos.slice(3).map((video, index) => (
+            <div class="relative rounded-2xl overflow-hidden cursor-pointer video-thumbnail group"
+                data-video-id={video.id}
+                data-video-url={video.url}
+                data-video-title={video.title}>
+              <div class="relative w-full aspect-[16/9]">
+                <LazyImage 
+                  alt={video.title || `Video ${index + 4}`}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                  src={video.thumbnail || `https://img.youtube.com/vi/${getYouTubeId(video.url)}/hqdefault.jpg`}
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="bg-black/60 rounded-full p-2 group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                  </div>
+                </div>
+                {video.title && (
+                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <h3 class="text-white text-sm md:text-base font-medium truncate">{video.title}</h3>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   </div>
 </section>
 
 <!-- Video Modal -->
-<div id="videoModal" class="fixed inset-0 items-center justify-center z-50 hidden">
-  <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-75"></div>
-  <div class="bg-black rounded-lg max-w-5xl max-h-[90vh] mx-4 relative z-10 transform transition-all overflow-hidden">
+<div id="videoModal" class="fixed inset-0 z-50 hidden">
+  <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-80"></div>
+  <div class="modal-container w-[80%] md:w-[80%] max-w-5xl mx-auto z-10 transition-all">
     <!-- Close Button -->
-    <button type="button" class="modal-close absolute top-4 right-4 z-20 text-white hover:text-gray-300 bg-black/50 rounded-full p-2">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <button type="button" class="modal-close absolute -top-12 right-0 z-20 text-white hover:text-gray-300 bg-black/50 rounded-full p-2.5">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
     
-    <!-- Video Container -->
-    <div class="relative" style="padding-bottom: 56.25%; /* 16:9 aspect ratio */ min-height: 400px;">
-      <iframe 
-        id="videoIframe"
-        class="absolute inset-0 w-full h-full rounded-t-lg"
-        src=""
-        title="Video Player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-    </div>
-    
-    <!-- Video Title -->
-    <div class="p-4 bg-black">
-      <h3 class="text-white text-xl font-semibold" id="videoTitle"></h3>
+    <!-- Video Container with 16:9 aspect ratio -->
+    <div class="video-wrapper bg-black rounded-lg overflow-hidden shadow-2xl">
+      <div class="relative w-full" style="padding-bottom: 56.25%;">
+        <iframe 
+          id="videoIframe"
+          class="absolute inset-0 w-full h-full"
+          src=""
+          title="Video Player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      
+      <!-- Video Title -->
+      <div class="p-4 bg-black">
+        <h3 class="text-white text-lg md:text-xl font-semibold" id="videoTitle"></h3>
+      </div>
     </div>
   </div>
 </div>
@@ -153,15 +197,35 @@ function convertToEmbedUrl(url: string): string {
       
       // Add autoplay parameter to URL
       const separator = embedUrl.includes('?') ? '&' : '?';
-      iframe.src = embedUrl + separator + 'autoplay=1&rel=0';
+      iframe.src = embedUrl + separator + 'autoplay=1&rel=0&modestbranding=1';
       
       if (videoTitle) {
         videoTitle.textContent = title;
       }
       
+      // Show modal
       modal.classList.remove('hidden');
-      modal.classList.add('flex');
       document.body.classList.add('overflow-hidden');
+      
+      // Ensure modal container is centered
+      const modalContainer = modal.querySelector('.modal-container');
+      if (modalContainer) {
+        // Ensure modal is visible and centered
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            // Double RAF to ensure styles are applied
+            modalContainer.classList.add('modal-visible');
+          });
+        });
+      }
+      
+      // Focus trap for accessibility
+      setTimeout(() => {
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn) {
+          (closeBtn as HTMLElement).focus();
+        }
+      }, 100);
     }
     
     // Close video modal
@@ -169,7 +233,6 @@ function convertToEmbedUrl(url: string): string {
       if (!modal) return;
       
       modal.classList.add('hidden');
-      modal.classList.remove('flex');
       document.body.classList.remove('overflow-hidden');
       iframe.src = ''; // Stop video playback
     }
@@ -213,23 +276,64 @@ function convertToEmbedUrl(url: string): string {
   /* Custom styles for video section */
   .video-thumbnail {
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
   .video-thumbnail img {
     transition: transform 0.3s ease;
   }
   
+  .video-thumbnail:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
   .video-thumbnail:hover img {
     transform: scale(1.05);
   }
   
-  /* Modal animation */
+  /* Title truncation for small screens */
+  .video-thumbnail h3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Modal animation and styling */
   #videoModal {
     backdrop-filter: blur(4px);
   }
   
-  #videoModal > div:last-child {
+  #videoModal.hidden {
+    display: none;
+  }
+  
+  #videoModal:not(.hidden) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-container {
     animation: fadeInScale 0.3s ease-out;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .modal-container.modal-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .video-wrapper {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
   
   @keyframes fadeInScale {
@@ -245,23 +349,25 @@ function convertToEmbedUrl(url: string): string {
   
   /* Modal responsive adjustments */
   @media (max-width: 1024px) {
-    #videoModal > div:nth-child(2) {
-      max-width: 90vw;
-      max-height: 85vh;
+    .modal-container {
+      width: 85%;
     }
   }
   
   @media (max-width: 768px) {
-    #videoModal > div:nth-child(2) {
-      max-width: 95vw;
-      max-height: 80vh;
-      margin: 1rem;
+    .modal-container {
+      width: 90%;
     }
     
-    #videoModal .relative[style*="padding-bottom"] {
-      min-height: 250px;
+    .modal-close {
+      top: -10px;
+      right: -5px;
+    }
+    
+    /* Adjust video grid on mobile */
+    .video-thumbnail h3 {
+      font-size: 0.875rem;
+      -webkit-line-clamp: 1;
     }
   }
-
-  /* Section responsive adjustments - simplified (Tailwind handles most) */
 </style>
