@@ -41,20 +41,20 @@ const headerColors = {
 };
 ---
 
-<MainLayout title={title} class="bg-white" description={metaDescription} headerColorConfig={headerColors}>
+<MainLayout title={title} class="bg-white" description={metaDescription} >
   <div class=" w-[100%] mx-auto ">
     
 
     <!-- Main Contact Section -->
-    <div class="flex flex-col justify-center px-4 items-start lg:flex-row gap-12 py-12" style="background-image: url('https://snack.yummiespromociones.com/SnacksyummiesAssets/bgcontactzibas.webp'); background-size: cover; background-position: center;">
+    <div class="flex flex-col justify-center px-4 items-start lg:flex-row gap-12 py-12" >
       
       <!-- Left Column - Contact Info -->
     <div class="w-[100%] lg:w-[40%] pl-8 lg:pl-16 flex flex-col justify-center h-[100%] lg:h-[600px]">
-        <h1 class="text-white font-title text-7xl uppercase md:text-6xl lg:text-7xl font-bold mb-6">
+        <h2 class="text-black font-heading text-xl uppercase md:text-2xl lg:text-5xl font-bold mb-6">
           {contact.title}
-        </h1>
+        </h2>
         
-        <p class="text-white font-bold text-2xl lg:text-2xl mb-8 leading-relaxed ">
+        <p class="text-gray font-sans text-2xl lg:text-lg mb-8 leading-relaxed ">
           {contact.description}
         </p>
      
@@ -67,27 +67,24 @@ const headerColors = {
     </div>
     
     <!-- Offices Section -->
-    <div class="mx-auto bg-blue p-8">
-      <h3 class="text-white md:text-4xl text-4xl italic font-title uppercase font-bold mb-4 flex items-center justify-center gap-1">
-        <span class="font-title">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
-      </h3>
-      <h1 class="text-white md:text-9xl text-12xl italic font-title uppercase font-bold mb-4 flex items-center justify-center gap-1">
-        <span class="font-title">{contact.offices.title.split(' ').slice(2).join(' ')}</span>
-      </h1>
+    <div class="container mx-auto bg-white p-8">
       
       <!-- Tabs and Office Info -->
       <div class="flex flex-col mb-4">
+        <h3 class="text-black md:text-4xl text-4xl font-heading uppercase font-bold mb-4 flex items-center justify-left ml-9 gap-1">
+          <span class="font-heading">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
+        </h3>
         <!-- Office Details -->
         <div class="order-2 w-[80%] mx-auto">
-          <div id="officeInfo" class="bg-blue rounded-2xl p-8 ">
+          <div id="officeInfo" class="bg-white rounded-2xl p-8 ">
             <div class="flex flex-col lg:flex-row justify-between items-center">
               <div class="space-y-4">
-                <h3 id="officeName" class="text-white font-sans text-9xl md:text-7xl uppercase font-extrabold  mb-4">
+                <h3 id="officeName" class="text-black font-heading text-5xl md:text-4xl uppercase font-extrabold  mb-4">
                   {contact.offices.locations["+504"].name}
                 </h3>
                 
                 <div class="flex items-start space-x-3">
-                  <p id="officeAddress" class="text-white leading-relaxed font-semibold ">  {`+ ${contact.offices.locations["+504"].address}`}</p>
+                  <p id="officeAddress" class="text-black leading-relaxed font-semibold ">  {`+ ${contact.offices.locations["+504"].address}`}</p>
                 </div>
                 
                 <div class="flex items-center space-x-3">
@@ -127,10 +124,10 @@ const headerColors = {
           {Object.entries(contact.offices.locations).map(([countryCode, location]: [string, any], index: number) => (
             <button 
               data-country-code={countryCode}
-              class={`country-tab px-10 py-4 text-white uppercase text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2.5
+              class={`country-tab px-10 py-4 text-black uppercase text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2.5
                 ${index === 0 
-                  ? 'h-[54px] bg-[#005ADA] opacity-100 border border-white' 
-                  : 'h-[54px] bg-[#005ADA] opacity-75 hover:opacity-100'
+                  ? 'h-[54px] bg-skyblue opacity-100 border border-white' 
+                  : 'h-[54px] bg-gray-200 opacity-75 hover:opacity-100'
                 } rounded-[47px]`}
             >
               {location.tab}
@@ -253,14 +250,16 @@ const headerColors = {
         
         // Function to handle tab selection
         function handleTabSelection(tab) {
-          // Remove active class and border from all tabs
+          // Remove active styles from all tabs
           tabs.forEach(t => {
-            t.classList.remove('border', 'border-white');
+            t.classList.remove('border', 'border-white', 'bg-skyblue');
+            t.classList.add('bg-gray-200');
             t.style.opacity = '0.75';
           });
           
-          // Add active class and border to clicked tab
-          tab.classList.add('border', 'border-white');
+          // Add active styles to clicked tab
+          tab.classList.remove('bg-gray-200');
+          tab.classList.add('border', 'border-white', 'bg-skyblue');
           tab.style.opacity = '1';
           
           // Update office info based on country code
@@ -286,6 +285,21 @@ const headerColors = {
         
         // Initialize with first country
         if (tabs.length > 0) {
+          // Set initial styling for all tabs
+          tabs.forEach((tab, index) => {
+            if (index === 0) {
+              // First tab should be active
+              tab.classList.remove('bg-gray-200');
+              tab.classList.add('border', 'border-white', 'bg-skyblue');
+              tab.style.opacity = '1';
+            } else {
+              // Other tabs should be inactive
+              tab.classList.remove('border', 'border-white', 'bg-skyblue');
+              tab.classList.add('bg-gray-200');
+              tab.style.opacity = '0.75';
+            }
+          });
+          
           const firstTabCountry = tabs[0].getAttribute('data-country-code');
           if (firstTabCountry) {
             updateOfficeInfo(firstTabCountry);

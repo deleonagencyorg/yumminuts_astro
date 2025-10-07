@@ -1,0 +1,127 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl?: string;
+}
+
+const { currentPage, totalPages, baseUrl = '' } = Astro.props;
+
+// Helper function to generate page URL
+const getPageUrl = (page: number) => {
+  return `${baseUrl}?page=${page}`;
+};
+
+// Calculate which page numbers to show
+const getVisiblePages = () => {
+  const pages = [];
+  const maxVisible = 5;
+  
+  if (totalPages <= maxVisible) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+  } else {
+    // Always show first page
+    pages.push(1);
+    
+    if (currentPage > 3) {
+      pages.push('...');
+    }
+    
+    // Show current page and surrounding pages
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    
+    for (let i = start; i <= end; i++) {
+      if (!pages.includes(i)) {
+        pages.push(i);
+      }
+    }
+    
+    if (currentPage < totalPages - 2) {
+      pages.push('...');
+    }
+    
+    // Always show last page
+    if (!pages.includes(totalPages)) {
+      pages.push(totalPages);
+    }
+  }
+  
+  return pages;
+};
+
+const visiblePages = getVisiblePages();
+---
+
+<div class="flex gap-4 items-start">
+  <!-- Previous Button -->
+  {currentPage > 1 ? (
+    <a 
+      href={getPageUrl(currentPage - 1)}
+      class="bg-white flex items-center justify-center relative rounded-[4px] w-10 h-10 hover:bg-gray-50 transition-colors"
+    >
+      <div class="border border-[#bebebe] border-solid absolute inset-0 rounded-[4px]"></div>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+  ) : (
+    <div class="bg-white flex items-center justify-center relative rounded-[4px] w-10 h-10 opacity-30">
+      <div class="border border-[#bebebe] border-solid absolute inset-0 rounded-[4px]"></div>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </div>
+  )}
+
+  <!-- Page Numbers -->
+  {visiblePages.map((page) => {
+    if (page === '...') {
+      return (
+        <div class="flex items-center justify-center rounded-[4px] w-10 h-10">
+          <span class="font-heading text-[#242424] text-base text-center">...</span>
+        </div>
+      );
+    }
+    
+    const pageNum = page as number;
+    const isCurrentPage = pageNum === currentPage;
+    
+    return isCurrentPage ? (
+      <div class="bg-[#e1ecff] flex items-center justify-center relative rounded-[4px] w-10 h-10">
+        <div class="border border-[#385cad] border-solid absolute inset-0 rounded-[4px]"></div>
+        <span class="font-heading text-[#385cad] text-base text-center">{pageNum}</span>
+      </div>
+    ) : (
+      <a 
+        href={getPageUrl(pageNum)}
+        class="bg-white flex items-center justify-center relative rounded-[4px] w-10 h-10 hover:bg-gray-50 transition-colors"
+      >
+        <div class="border border-[#bebebe] border-solid absolute inset-0 rounded-[4px]"></div>
+        <span class="font-heading text-[#242424] text-base text-center">{pageNum}</span>
+      </a>
+    );
+  })}
+
+  <!-- Next Button -->
+  {currentPage < totalPages ? (
+    <a 
+      href={getPageUrl(currentPage + 1)}
+      class="bg-white flex items-center justify-center relative rounded-[4px] w-10 h-10 hover:bg-gray-50 transition-colors"
+    >
+      <div class="border border-[#bebebe] border-solid absolute inset-0 rounded-[4px]"></div>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
+  ) : (
+    <div class="bg-white flex items-center justify-center relative rounded-[4px] w-10 h-10 opacity-30">
+      <div class="border border-[#bebebe] border-solid absolute inset-0 rounded-[4px]"></div>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+  )}
+</div>

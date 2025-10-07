@@ -29,10 +29,19 @@ export const headerColors: HeaderColors = {
     hoverBackgroundColor: 'hover:bg-blue-800',
     showMessageCarousel: true,
   },
+  
+  // Configuración para la página de salud
+  health: {
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
+    showMessageCarousel: false,
+  },
   yummiesone: {
     textColor: 'text-primary',
-    backgroundColor: 'bg-brown',
-    hoverTextColor: 'hover:text-secondary',
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: false,
   },
@@ -42,7 +51,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: true,
+    showMessageCarousel: false,
   },
   
   // Configuración para la página de brands
@@ -69,7 +78,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: true,
+    showMessageCarousel: false,
   },
   
   // Configuración para la página de recetas
@@ -87,7 +96,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: true,
+    showMessageCarousel: false,
   },
   
   // Configuración para la página de jurados
@@ -101,10 +110,10 @@ export const headerColors: HeaderColors = {
   
   // Configuración para la página de noticias
   news: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-purple-800',
-    hoverTextColor: 'hover:text-purple-200',
-    hoverBackgroundColor: 'hover:bg-purple-700',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: false,
   },
   
@@ -119,20 +128,20 @@ export const headerColors: HeaderColors = {
 
   // Configuración para Ziba's Creators
   zibas_creators: {
-    textColor: 'text-white',
-    backgroundColor: 'bg-orange-500',
-    hoverTextColor: 'hover:text-orange-200',
-    hoverBackgroundColor: 'hover:bg-orange-600',
+    textColor: 'text-primary',
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
     showMessageCarousel: false,
   },
 
   // Configuración para la página de nosotros
   about: {
     textColor: 'text-primary',
-    backgroundColor: 'bg-brown',
-    hoverTextColor: 'hover:text-white',
-    hoverBackgroundColor: 'hover:bg-secondary',
-    showMessageCarousel: false
+    backgroundColor: 'bg-white',
+    hoverTextColor: 'hover:text-primary',
+    hoverBackgroundColor: 'hover:bg-primary',
+    showMessageCarousel: false,
   },
 };
 
@@ -151,6 +160,10 @@ export function getHeaderColors(pathname: string): HeaderColorConfig {
   
   if (path.includes('/products') || path.includes('/productos')) {
     return headerColors.products;
+  }
+  
+  if (path.includes('/health') || path.includes('/salud')) {
+    return headerColors.health;
   }
   
   if (path.includes('/recipes') || path.includes('/recetas')) {

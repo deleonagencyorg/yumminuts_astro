@@ -17,7 +17,7 @@ export interface Props {
 const { slide, priority = false } = Astro.props;
 ---
 
-<div class="swiper-slide relative h-full">
+<div class="swiper-slide relative h-full w-full">
   {slide.link ? (
     <a href={slide.link} class="block w-full h-full">
       <div class="w-full h-full overflow-hidden">
@@ -26,12 +26,14 @@ const { slide, priority = false } = Astro.props;
           alt={slide.alt}
           class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
+          style="width: 100%; height: 100%; object-fit: cover;"
         />
         <LazyImage 
           src={slide.desktop} 
           alt={slide.alt}
-          class="w-full h-full object-cover object-center hidden md:block"
+          class="w-full h-full object-contain object-center hidden md:block"
           priority={priority}
+          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
         />
       </div>
       <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
@@ -47,12 +49,14 @@ const { slide, priority = false } = Astro.props;
           alt={slide.alt}
           class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
+          style="width: 100%; height: 100%; object-fit: cover;"
         />
         <LazyImage 
           src={slide.desktop} 
           alt={slide.alt}
-          class="w-full h-full object-cover object-center hidden md:block"
+          class="w-full h-full object-contain object-center hidden md:block"
           priority={priority}
+          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
         />
       </div>
       <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">

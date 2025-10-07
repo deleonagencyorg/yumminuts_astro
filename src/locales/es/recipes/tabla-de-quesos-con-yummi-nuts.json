@@ -1,0 +1,39 @@
+{
+  "date": "2025-09-11",
+  "id": "tabla-de-quesos-con-yummi-nuts",
+  "slug": "tabla-de-quesos-con-yummi-nuts",
+  "title": "Tabla de Quesos con Yummi Nuts",
+  "people": "8",
+  "difficulty": "Fácil",
+  "image": "https://snack.yummiespromociones.com/yumminuts/tabla-de-quesos-con-yummi-nuts.webp",
+  "gallery": [
+    "tabla-de-quesos-con-yummi-nuts.webp"
+  ],
+  "type": "image",
+  "preparation_time": 25,
+  "ingredients": [
+    "Jamón serrano",
+    "Chorizo",
+    "Jamón Salmón",
+    "Salchichón",
+    "Queso suizo",
+    "Queso cheddar",
+    "Queso Gouda",
+    "Aceitunas",
+    "Miel",
+    "Paté",
+    "Hummus",
+    "Mostaza",
+    "Queso de cabra",
+    "Uvas",
+    "Jalea de frutas",
+    "Variedad de Yummi Nuts"
+  ],
+  "instructions": [
+    "Paso 1: Coloca todos los ingredientes sobre la tabla a tu gusto, intentando dejar los ingredientes como la miel, paté, hummus y la mostaza al centro"
+  ],
+  "brand": [
+    "yumminuts"
+  ],
+  "category": "snacks"
+}

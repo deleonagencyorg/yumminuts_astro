@@ -1,0 +1,41 @@
+{
+  "date": "2025-09-11",
+  "id": "pasta-pluma-con-pesto-de-maranon",
+  "slug": "pasta-pluma-con-pesto-de-maranon",
+  "title": "Pasta Pluma con Pesto de Marañón con Yummi Nuts Marañón con Sal",
+  "people": "4",
+  "difficulty": "Fácil",
+  "image": "https://snack.yummiespromociones.com/yumminuts/pasta-pluma-con-pesto-de-maranon.webp",
+  "gallery": [
+    "pasta-pluma-con-pesto-de-maranon.webp"
+  ],
+  "type": "image",
+  "preparation_time": 15,
+  "ingredients": [
+    "Para el pesto:",
+    "2 tazas de albahaca fresca",
+    "¼ de taza de semilla de marañón",
+    "½ de taza de queso parmesano rallado",
+    "6 cucharadas de aceite de oliva",
+    "Sal y pimienta al gusto",
+    "Para la pasta:",
+    "1 paquete de pasta pluma",
+    "¾ de taza del agua donde cocinaste la pasta",
+    "Queso parmesano para servir",
+    "Yummi Nuts Marañón con Sal"
+  ],
+  "instructions": [
+    "Para el pesto:",
+    "Paso 1: Coloca todos los ingredientes en un procesador de alimentos y procésalos hasta tener un puré homogéneo.",
+    "Paso 2: Sazónalo con sal y pimienta al gusto.",
+    "Para la pasta:",
+    "Paso 1: Cocina la pasta según las instrucciones del empaque.",
+    "Paso 2: Escúrrela y reserva ¾ de taza del agua donde la cocinaste.",
+    "Paso 3: Mezcla la pasta con el pesto y agrégale ¼ de taza de agua.",
+    "Paso 4: Revuélvelo despacio; poco a poco agrega el agua para integrarla bien."
+  ],
+  "brand": [
+    "yumminuts"
+  ],
+  "category": "dinner"
+}

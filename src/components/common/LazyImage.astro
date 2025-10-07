@@ -38,6 +38,14 @@ const {
 // Si no hay src, no renderizar nada
 if (!src) return null;
 
+// Asegurar que las URLs relativas de imágenes se conviertan en absolutas
+// para evitar que el navegador las trate como rutas de página
+let processedSrc = src;
+if (src && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:')) {
+  // Si es una URL relativa sin protocolo ni slash inicial, convertir a absoluta
+  processedSrc = `https://snack.yummiespromociones.com/zibas/${src}`;
+}
+
 // Optimizar el texto alternativo
 let optimizedAlt = alt;
 
@@ -55,13 +63,13 @@ if (decorative) {
 }
 
 // Determinar prioridad
-const priority = explicitPriority !== undefined ? explicitPriority : shouldPrioritize(src, context);
+const priority = explicitPriority !== undefined ? explicitPriority : shouldPrioritize(processedSrc, context);
 
 // Obtener tamaños óptimos
 const sizes = explicitSizes || getOptimalSizes(context);
 
 // Determinar si es una imagen WebP
-const isWebP = src.toLowerCase().endsWith('.webp');
+const isWebP = processedSrc.toLowerCase().endsWith('.webp');
 
 // Función para calcular la rotación de matiz según el color
 function getHueRotate(color: string) {
@@ -142,37 +150,31 @@ function getHueRotate(color: string) {
 }
 
 // Generar srcset para imágenes responsivas
-const isExternal = src.startsWith('http');
+const isExternal = processedSrc.startsWith('http');
 let srcset = '';
 
 if (isWebP) {
-  if (isExternal && src.includes('assets.doguiygatibienestar.com')) {
+  if (isExternal && processedSrc.includes('assets.doguiygatibienestar.com')) {
     srcset = [
-      `${src}?w=640 640w`,
-      `${src}?w=768 768w`,
-      `${src}?w=1024 1024w`,
-      `${src}?w=1280 1280w`
-    ].join(', ');
-  } else if (!isExternal) {
-    const baseUrl = src.substring(0, src.lastIndexOf('.webp'));
-    srcset = [
-      `${baseUrl}-640w.webp 640w`,
-      `${baseUrl}-768w.webp 768w`,
-      `${baseUrl}-1024w.webp 1024w`,
-      `${baseUrl}-1280w.webp 1280w`
+      `${processedSrc}?w=640 640w`,
+      `${processedSrc}?w=768 768w`,
+      `${processedSrc}?w=1024 1024w`,
+      `${processedSrc}?w=1280 1280w`
     ].join(', ');
   }
+  // Removed local WebP srcset generation to prevent 404s from non-existent variants
+  // Local images should exist as single files, not responsive variants
 }
 ---
 
 <img 
-  src={src} 
+  src={processedSrc} 
   alt={optimizedAlt}
   class={className}
   style={{
     ...(color === 'white' ? { filter: 'brightness(0) invert(1)' } : 
         color === 'black' ? { filter: 'brightness(0) invert(0)' } : 
-        color && color.startsWith('#') && isSvgUrl(src) ? { 
+        color && color.startsWith('#') && isSvgUrl(processedSrc) ? { 
           filter: `
             brightness(0) 
             drop-shadow(0 0 0 ${color}) 

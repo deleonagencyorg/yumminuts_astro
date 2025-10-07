@@ -5,12 +5,16 @@ import type { Locale } from '../../../i18n/i18n';
 import './styles.css';
 import { initProductDetail } from './scripts.js';
 import ProductsCarousel from '../../../components/common/ProductsCarousel/index.astro';
+import Carousel from '../../../components/common/Carousel/index.astro';
+import ProductCard from '../../../components/common/ProductCard/index.astro';
 import LazyImage from '../../../components/common/LazyImage.astro';
 import ProductImageCarousel from '../../../components/common/ProductImageCarousel/index.astro';
 import ProductBenefits from '../../../components/common/ProductBenefits/index.astro';
 import RelatedProducts from '../../../components/common/RelatedProducts/index.astro';
 import Categories from '../../../components/common/Categories/index.astro';
 import Discover from '../../../components/common/Discover/index.astro';
+import categoriesConfig from '../../../config/categories.json';
+import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
 
 
 // Interfaces locales
@@ -52,15 +56,42 @@ const { currentLang, productId } = Astro.props;
 
 // Obtener datos desde traducciones
 const productsAssets = t('home', { namespace: 'products', locale: currentLang }) || {};
+const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
+const slides = commonAssets;
 const products = t('items', { namespace: 'products', locale: currentLang as Locale }) || [];
 const stockists = t('stockist', { namespace: 'products', locale: currentLang as Locale }) || [];
-const product = products.find((item: Product) => item.id === productId);
-const brandsAssets = t('', { namespace: 'brands', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
-const brandsList = brandsAssets.brands || [];
-const nutsBrand = brandsList.find((brand: any) => brand.id === 'yumminuts');
-const nutsCategories = nutsBrand?.categories || [];
 const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+
+// Helper: get category key from a slug (supports es/en)
+function getCategoryKeyFromSlug(slug: string): string | null {
+  const cfg = (categoriesConfig as any).categories || [];
+  const s = (slug || '').toLowerCase();
+  const match = cfg.find((c: any) => [c.key, c.slugs?.es, c.slugs?.en].map((v: string) => (v||'').toLowerCase()).includes(s));
+  return match?.key || null;
+}
+
+// Helper: normalize product.category into our category key
+function normalizeCategory(value: string): string {
+  const v = (value || '').toLowerCase();
+  if (!v) return '';
+  if (v.includes('maní') || v.includes('mani') || v.includes('peanut')) return 'manies';
+  if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
+  if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
+  const key = getCategoryKeyFromSlug(v);
+  return key || '';
+}
+
+// Resolve selected product:
+let product: Product | undefined;
+const categoryKey = getCategoryKeyFromSlug(productId);
+if (categoryKey) {
+  // pick first product of that category
+  product = (products as Product[]).find(p => normalizeCategory(p.category) === categoryKey);
+} else {
+  // match by id or slug (id is used in our JSON)
+  product = (products as Product[]).find((item: any) => item.id === productId || item.slug === productId);
+}
 
 
 // Si el producto no existe, lanzar error
@@ -74,7 +105,7 @@ const safeProduct: Product = {
   name: product.name || '',
   category: product.category || '',
   image: product.image || '',
-  background_image: product.background_color || '',
+  background_image: product.background_image || '',
   background_color: product.background_color || '',
   header_text_color: product.header_text_color || '#000000',
   color_button: product.color_button || '#000000',
@@ -89,12 +120,33 @@ const safeProduct: Product = {
 const productsData = t('items', { locale: currentLang, namespace: 'products' }) || [];
 const allProductsArray = Array.isArray(productsData) ? productsData : [];
 
-// Filtrar productos relacionados - simplificado para evitar errores
+// Build categoryCards like Home: first product per category using categories config
+type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
+const productsByCategory: Record<string, any[]> = {};
+for (const p of (products as any[])) {
+  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+  if (!key) continue;
+  if (!productsByCategory[key]) productsByCategory[key] = [];
+  productsByCategory[key].push(p);
+}
+
+const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
+  const list = productsByCategory[c.key] || [];
+  const first = list[0] || {};
+  const title = (c.labels?.[currentLang] || c.labels?.es || c.labels?.en || '') as string;
+  const image = (first.image || '') as string;
+  const bgColor = (c.background || '#95CFF2') as string;
+  const id = (first.id || c.key) as string;
+  const slug = (first.slug || first.id || '') as string;
+  return { id, title, image, bgColor, slug };
+}).filter((cp: CatProduct) => cp.image && cp.bgColor);
+
+// Filtrar productos relacionados: de la misma categoría si hay más de 1
 let relatedProducts: any[] = [];
-// Solo usar productos de la misma categoría si hay más de 1 producto
 if (allProductsArray.length > 1) {
+  const key = normalizeCategory(safeProduct.category);
   relatedProducts = allProductsArray
-    .filter((p: any) => p.id !== productId)
+    .filter((p: any) => p.id !== safeProduct.id && normalizeCategory(p.category) === key)
     .slice(0, 3);
 }
 
@@ -130,97 +182,90 @@ const productBenefits = [
 
 ---
 
-{safeProduct.background_color && (
-  <article id="product-detail" class="product-detail pt-12 md:pt-29 pb-32 md:bg-[image:var(--desktop-bg)] bg-cover bg-center bg-[var(--mobile-bg)] relative" 
-    style={`
-      --mobile-bg: ${safeProduct.background_color};
-      --desktop-bg: url('${safeProduct.background_color}');
-    `}
-    transition:animate="slide"
-  >
-    <div class="md:mt-[0] container mx-auto px-6 py-5 flex flex-col md:flex-row gap-5">
-      {/* Product Image Carousel */}
-      <div class="hidden md:flex md:flex-col md:justify-start md:items-center md:pr-4">
-        <ProductImageCarousel 
-          images={carouselImages}
-          productName={safeProduct.name}
-          activeImageIndex={0}
-          className="max-h-[605px] overflow-y-auto"
+<!-- Header aligned with Products page: Slider then Breadcrumb -->
+
+<div class="container mx-auto px-4 reveal-on-scroll">
+  <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+</div>
+
+<!-- Product Detail Two-Column Layout -->
+<section class="container mx-auto px-4 py-10 bg-white reveal-on-scroll">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+    <!-- Left: Product visual using ProductCard -->
+    <div>
+      <ProductCard 
+        title={safeProduct.name}
+        image={safeProduct.image}
+        bgColor={safeProduct.background_color || safeProduct.color_button}
+        description={''}
+        size="lg"
+        hideText={true}
+      />
+    </div>
+
+    <!-- Right: Category, Name, Description, Benefits -->
+    <div>
+      {(() => {
+        const key = normalizeCategory(safeProduct.category);
+        const catCfg = ((categoriesConfig as any).categories || []).find((c: any) => c.key === key) || {};
+        const catLabel = (catCfg.labels?.[currentLang] || safeProduct.category) as string;
+        return (
+          <>
+            <p class="text-xl text-gray-700 mb-2">{catLabel}</p>
+            <h1 class="font-heading text-4xl md:text-6xl font-extrabold text-black tracking-tight mb-4">{safeProduct.name.replace(/^Yummi\s*Nuts?\s*/i, '')}</h1>
+            {safeProduct.description && (
+              <p class="text-gray-700 text-lg leading-relaxed mb-6">{safeProduct.description}</p>
+            )}
+
+            {/* Benefits icons row (3 placeholders based on productBenefits) */}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4 mb-8">
+              {productBenefits.slice(0,3).map((b) => (
+                <div class="flex flex-col items-center text-center">
+                  <img src={b.icon} alt={b.alt} class="w-10 h-10 mb-2" />
+                  <span class="text-primary text-sm font-medium">{b.text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Related smaller product cards from same category */}
+            {relatedProducts.length > 0 && (
+              <div class="mt-6">
+                <h3 class="text-2xl font-bold mb-4">{currentLang === 'es' ? 'Otros productos' : 'Other products'}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {relatedProducts.map((p: any) => (
+                    <a href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}/${p.slug || p.id}`} class="block">
+                      <ProductCard
+                        title={p.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
+                        image={p.image}
+                        bgColor={p.background_color || safeProduct.background_color}
+                        size="sm"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        );
+      })()}
+    </div>
+  </div>
+
+</section>
+{/* Removed nutsCategories section; categories are not sourced here anymore */}
+   <!-- Sección de Productos por Categoría -->
+   {categoryCards.length > 0 && (
+    <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <div class="container mx-autxo px-4">
+        <Categories 
+          products={categoryCards}
+          title={currentLang === 'es' ? 'Categorías' : 'Categories'}
         />
       </div>
-      
-      {/* Contenedor de la imagen del lado izquierdo */}
-      <div class="relative flex justify-center items-center w-full md:w-[505px] p-4 md:px-28 md:py-16 rounded-[85px] gap-2 cursor-pointer overflow-hidden group" style={{ backgroundColor: safeProduct.color_button }}>
-        {/* Overlay para el efecto de oscurecimiento */}
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 rounded-[85px]"></div>
-        <img id="product-image" class="relative z-10 max-w-full h-auto transition-transform duration-300 group-hover:scale-110" src={safeProduct.image} alt={safeProduct.name} transition:name={`product-image-${safeProduct.id}`} />
-      </div>
-      
-      {/* Contenido del lado derecho */}
-      <div class="w-full md:w-1/2 md:h-[605px] h-auto">
-      <h4 class="md:text-2xl text-xl font-sans uppercase " style={{ color: safeProduct.header_text_color }}>{safeProduct.category}</h4>
-        <div class="flex justify-between items-center mb-6">
-          
-          <h3 class="md:text-2xl text-xl font-sans font-semibold uppercase " style={{ color: safeProduct.header_text_color }}>{safeProduct.name}</h3>
-          <a 
-            href="#" 
-            class="flex h-[54px] justify-center items-center gap-[10px] px-10 py-5 rounded-[47px] bg-primary border whitespace-nowrap uppercase font-title text-lg font-medium text-white"
-            style={{  borderColor: safeProduct.header_text_color}}
-          >
-            {currentLang === 'es' ? 'ENCUÉNTRALO' : 'FIND IT'}
-          </a>
-        </div>
-        
-        <p
-          class=" md:text-lg text-lg font-text font-medium gap-30 py-5"
-          style={{ color: safeProduct.header_text_color }}
-        >
-            {safeProduct.description}
-        </p>
-
-        {/* Product Benefits Section */}
-        <div class="my-8">
-          <ProductBenefits 
-            title={currentLang === 'es' ? 'Beneficios' : 'Benefits'}
-            benefits={productBenefits}
-            titleColor={safeProduct.header_text_color}
-            textColor="#385cad"
-            className="w-full"
-          />
-        </div>
-
-        {/* Related Products Section */}
-        {relatedProducts.length > 0 && (
-          <div class="my-8">
-            <RelatedProducts 
-              products={relatedProducts}
-              currentLang={currentLang}
-              title={currentLang === 'es' ? '' : ''}
-              titleColor={safeProduct.header_text_color}
-              className="w-full"
-            />
-          </div>
-        )}
-
-        
-      </div>
-    </div>
-  </article>
-)}
-
-<!-- Sección de Productos Nuts -->
-    {nutsCategories.length > 0 && (
-      <section class="w-full py-2 bg-white pt-10">
-        <div class="container mx-auto ">
-          <Categories 
-            products={nutsCategories}
-            title="Categorías"
-          />
-        </div>
-      </section>
+    </section>
   )}
 
-  <section id="discover" class="w-full bg-white py-16">
+  <section id="discover" class="w-full bg-white py-16 reveal-on-scroll">
       <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
   </section>
 
@@ -228,7 +273,45 @@ const productBenefits = [
 <script>
   // Este script se ejecuta solo en el navegador
   import { initProductDetail } from './scripts.js';
-  document.addEventListener('DOMContentLoaded', () => {
+  function initReveal() {
+    // Reveal-on-scroll (igual que en Home)
+    const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll')) as HTMLElement[];
+    const show = (el: HTMLElement) => {
+      el.classList.remove('opacity-0', 'translate-y-6');
+      el.classList.add('opacity-100', 'translate-y-0');
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target as HTMLElement;
+          const children = el.querySelectorAll('[data-reveal-child]');
+          if (children.length) {
+            children.forEach((child, idx) => {
+              (child as HTMLElement).style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+              child.classList.remove('opacity-0', 'translate-y-6');
+              child.classList.add('opacity-100', 'translate-y-0');
+            });
+          }
+          show(el);
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+    revealElements.forEach((el) => observer.observe(el));
+  }
+
+  function initPage() {
     initProductDetail();
-  });
+    initReveal();
+  }
+
+  // Primera carga
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+  } else {
+    initPage();
+  }
+  // Navegaciones parciales de Astro
+  document.addEventListener('astro:page-load', initPage);
+  document.addEventListener('astro:after-swap', initPage);
 </script>

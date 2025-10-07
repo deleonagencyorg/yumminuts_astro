@@ -11,7 +11,7 @@
       {
         "id": "slide1",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/mobileproducts.jpg",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
@@ -35,113 +35,118 @@
   ],
   "items": [
     {
-      "id": "yumminuts-mani-con-sal",
-      "name": "Yumminuts Mani con Sal",
+      "id": "yummi-nut-mani-con-sal",
+      "name": "Yummi Nut Maní con Sal",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
-      "background_color": "white",
-      "header_color": "#FDE820",
-      "text_color":"primary",
+      "background_color": "#0073C1",
+      "header_color": "#0073C1",
+      "text_color": "primary",
       "header_background": "white",
       "header_text_color": "primary",
-      "color_button": "#95CFF2",
-      "description": "Hojuelas de Papa Fritas con sabor a Queso.",
+      "color_button": "#0073C1",
+      "description": "¡Snack crujiente y delicioso en cada bocado! Dale un gusto a tu día con nuestro Maní con Sal: porciones perfectas de maní tostado con un toque de sal, ideal para llevar o disfrutar en casa. 100% natural, sin lácteos, sin gluten y lleno de sabor. ¡Tu nuevo favorito para picar!",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/zibas-grande2.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        {
-          "value": "150",
-          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-clasicas-2.webp"
-        }
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp" }
       ],
-      "weight": [
-        "23g",
-        "26g",
-        "40g",
-        "80g",
-        "190g"
-      ]
+      "weight": ["30g", "60g", "120g"]
     },
     {
-      "id": "zibas-queso",
-      "name": "Ziba's Queso",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-queso-2.webp",
-      "background_color": "#FE5A00",
-      "header_color": "#FFFFFF",
-      "text_color":"#FE5A00",
-      "header_background": "#FE5A00",
-      "header_text_color": "#FFFFFF",
-      "color_button": "#FE5A00",
-      "description": "Hojuelas de Papa Fritas con sabor a Queso.",
+      "id": "yummi-nut-mani-con-limon",
+      "name": "Yummi Nut Maní con Limón",
+      "category": "Maní",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp",
+      "background_color": "#B4BF8E",
+      "header_color":"#B4BF8E",
+      "text_color": "primary",
+      "header_background": "#B4BF8E",
+      "header_text_color": "primary",
+      "color_button": "#B4BF8E",
+      "description": "Maní con un toque cítrico de limón.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/zibas-grande2.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        {
-          "value": "150",
-          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-clasicas-2.webp"
-        }
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp" }
       ],
-      "weight": [
-        "23g",
-        "26g",
-        "40g",
-        "80g",
-        "190g"
-      ]
+      "weight": ["30g", "60g", "120g"]
     },
     {
-      "id": "zibas-crema-y-especias",
-      "name": "Ziba's Crema y Especias",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-crema-y-especias-2.webp",
-      "background_color": "#BEDE89",
-      "header_color": "#1C1C1C",
-      "text_color":"#BEDE89",
-      "header_background": "#BEDE89",
-      "header_text_color": "#1C1C1C",
-      "color_button": "#BEDE89",
-      "description": "Hojuelas de Papa Fritas con sabor a Queso.",
+      "id": "yummi-nut-mani-japones",
+      "name": "Yummi Nut Maní Japonés",
+      "category": "Maní",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp",
+      "background_color":"#796B6D",
+      "header_color": "#796B6D",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#796B6D",
+      "description": "Maní estilo japonés con cobertura crujiente.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/zibas-grande2.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        {
-          "value": "150",
-          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-clasicas-2.webp"
-        }
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp" }
       ],
-      "weight": [
-        "23g",
-        "26g",
-        "40g",
-        "80g",
-        "190g"
-      ]
+      "weight": ["30g", "60g", "120g"]
     },
     {
-      "id": "zibas-miel-mostasa",
-      "name": "Ziba's Miel Mostasa",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-miel-mostasa-2.webp",
-      "background_color": "#0167F7",
-      "header_color": "#FFFFFF",
-      "text_color":"#FFFFFF",
-      "header_background": "#0167F7",
-      "header_text_color": "#FFFFFF",
-      "color_button": "#0167F7",
-      "description": "Hojuelas de Papa Fritas con sabor a Queso.",
+      "id": "yummi-nut-maranon-con-sal",
+      "name": "Yummi Nut Marañón con Sal",
+      "category": "Marañones",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
+      "background_color":"#9AE3BE",
+      "header_color": "#9AE3BE",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#9AE3BE",
+      "description": "Marañones tostados con sal, llenos de energía.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/zibas-grande2.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        {
-          "value": "150",
-          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/zibas-clasicas-2.webp"
-        }
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp" }
       ],
-      "weight": [
-        "23g",
-        "26g",
-        "40g",
-        "80g",
-        "190g"
-      ]
+      "weight": ["30g", "60g", "120g"]
+    },
+    {
+      "id": "yummi-nut-mix-almendras",
+      "name": "Yummi Nut Mix Almendras",
+      "category": "Semillas",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
+      "background_color": "#DC9EE5",
+      "header_color":  "#DC9EE5",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#DC9EE5",
+      "description": "Mezcla de frutos secos con almendras.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
+    },
+    {
+      "id": "yummi-nut-omega-mix",
+      "name": "Yummi Nut Omega Mix",
+      "category": "Semillas",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp",
+      "background_color": "#DC9EE5",
+      "header_color": "#DC9EE5",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#DC9EE5",
+      "description": "Mix de semillas y frutos con Omegas.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
     }
   ]
 }

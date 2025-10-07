@@ -2,25 +2,39 @@
 export interface Props {
   title: string;
   image: string; // product image URL
-  bgImage: string; // background image URL
+  bgColor?: string; // background color for SVG shape
   description?: string;
+  size?: 'sm' | 'md' | 'lg';
+  hideText?: boolean;
 }
 
-const { title, image, bgImage, description } = Astro.props as Props;
+const { title, image, bgColor = '#95CFF2', description, size = 'md', hideText = false } = Astro.props as Props;
+
+const sizeClasses = (() => {
+  switch (size) {
+    case 'lg':
+      return 'h-[480px] md:h-[560px]';
+    case 'sm':
+      return 'h-[220px] md:h-[260px]';
+    default:
+      return 'h-[320px] md:h-[400px]';
+  }
+})();
 ---
 
 <div class="group cursor-pointer">
   <!-- Product Image Container -->
-  <div class="relative h-[320px] md:h-[400px] mb-4 overflow-hidden rounded-lg">
-    <!-- Background Image -->
-    <div 
-      class="absolute inset-0 rounded-lg transition-all duration-300 group-hover:scale-105 bg-center bg-cover bg-no-repeat" 
-      style={`background-image: url('${bgImage}')`}>
+  <div class={`relative ${sizeClasses} mb-4 overflow-hidden rounded-lg`}>
+    <!-- Background SVG Shape -->
+    <div class="absolute inset-0 rounded-lg transition-all duration-300 group-hover:scale-105">
+      <svg xmlns="http://www.w3.org/2000/svg" width="377" height="375" viewBox="0 0 377 375" fill="none" class="w-full h-full">
+        <path d="M41.608 1.6313C53.182 2.57591 64.7455 2.93357 76.3513 3.22832C107.44 4.03025 107.44 4.03025 122.023 5.59699C137 7.20212 151.104 7.20986 166.035 5.18749C174.849 4.03281 183.637 3.76317 192.516 3.54783C197.138 3.42781 201.721 3.1037 206.327 2.72427C211.86 2.3139 217.406 2.18451 222.95 2.00598C227.435 1.85015 231.891 1.63183 236.361 1.2334C249.414 0.0886065 262.34 0.755485 275.345 2.09551C291.363 3.73192 306.72 3.58425 322.757 2.28492C329.167 1.78194 335.549 1.46068 341.979 1.40582C342.751 1.39105 343.522 1.37628 344.317 1.36106C352.841 1.3674 359.783 3.5141 366.118 9.31068C375.542 19.1627 376.695 31.5371 376.607 44.604C376.607 45.9058 376.609 47.2076 376.612 48.5094C376.616 52.0347 376.605 55.5598 376.59 59.0852C376.577 62.8524 376.579 66.6196 376.578 70.3868C376.575 76.7689 376.562 83.1509 376.543 89.533C376.519 97.5027 376.51 105.472 376.506 113.442C376.493 139.749 376.444 166.055 376.07 192.359C376.06 193.099 376.05 193.839 376.039 194.601C375.939 201.635 375.833 208.67 375.707 215.704C375.479 228.449 375.413 241.126 376.095 253.863C376.406 259.671 376.427 265.472 376.417 271.288C376.418 272.455 376.418 273.623 376.419 274.79C376.421 277.204 376.419 279.618 376.415 282.032C376.41 285.039 376.413 288.047 376.418 291.055C376.435 303.379 376.323 315.69 375.92 328.008C375.869 329.556 375.869 329.556 375.817 331.136C374.769 359.961 374.769 359.961 367.474 368.053C364.301 370.784 361.62 371.136 357.485 371.175C356.425 371.189 355.365 371.203 354.273 371.218C353.117 371.225 351.962 371.232 350.806 371.24C349.613 371.253 348.42 371.268 347.227 371.283C344.085 371.322 340.943 371.352 337.801 371.378C332.791 371.422 327.78 371.478 322.77 371.538C321.031 371.557 319.293 371.571 317.554 371.585C312.188 371.642 306.904 371.801 301.571 372.423C291.347 373.605 280.475 372.08 270.464 369.91C264.419 368.745 258.123 369.216 252.115 370.481C244.962 371.984 237.944 372.028 230.675 371.979C230.034 371.977 229.394 371.976 228.734 371.974C220.974 371.953 213.334 371.712 205.635 370.685C194.48 369.212 184.384 369.85 173.504 372.639C167.876 374.048 162.253 374.478 156.454 374.472C155.802 374.473 155.15 374.474 154.479 374.474C149.056 374.427 143.706 373.978 138.31 373.464C129.69 372.648 121.165 372.477 112.51 372.604C107.292 372.669 102.128 372.55 96.9221 372.204C89.61 371.725 82.3183 371.609 74.9917 371.609C72.8765 371.608 70.7618 371.592 68.6467 371.576C62.4438 371.555 56.7258 371.665 50.6691 373.126C46.3738 373.846 42.0329 373.267 37.7219 372.881C36.7929 372.814 35.864 372.746 34.9068 372.677C24.4249 371.815 14.0743 370.319 6.79221 362.111C-1.42053 350.027 1.73137 331.011 2.38883 317.282C2.7282 310.189 2.93092 303.108 2.97241 296.007C2.98336 295.182 2.9943 294.357 3.00557 293.507C3.01278 287.843 2.6666 282.268 2.20214 276.626C1.18238 264.185 0.878445 251.843 0.940869 239.363C0.956461 236.154 0.958276 232.944 0.958069 229.735C0.973415 219.362 1.15259 209.023 1.66095 198.662C2.00465 191.516 2.09398 184.385 2.07508 177.231C2.07056 175.225 2.07506 173.219 2.08047 171.213C2.08324 163.933 1.93475 156.672 1.65291 149.398C1.21054 137.907 1.04338 126.441 1.06252 114.942C1.06373 114.187 1.06494 113.432 1.06619 112.655C1.07655 107.226 1.09528 101.798 1.11557 96.3702C1.13585 90.8877 1.15301 85.4052 1.16305 79.9226C1.16844 77.7718 1.17904 75.621 1.18997 73.4702C1.21278 66.2442 1.00793 59.1109 0.465156 51.9022C0.0725141 46.5677 0.0757464 41.2376 0.0545154 35.8901C0.037008 34.7778 0.0195006 33.6655 0.00146268 32.5196C-0.0352601 23.3159 0.573952 13.097 7.05747 5.9153C16.8877 -1.91755 29.8634 0.612944 41.608 1.6313Z" fill={bgColor}/>
+      </svg>
     </div>
 
     <!-- Product Image -->
     <div 
-      class="absolute bg-center bg-cover bg-no-repeat w-[70%] h-[80%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group-hover:scale-110 shadow-lg rounded"
+      class="absolute bg-center bg-contain bg-no-repeat w-full h-full top-0 left-0 transition-all duration-300 group-hover:scale-105"
       style={`background-image: url('${image || '/images/products/placeholder.jpg'}')`}>
     </div>
 
@@ -28,13 +42,14 @@ const { title, image, bgImage, description } = Astro.props as Props;
     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 rounded-lg"></div>
   </div>
 
-  <!-- Product Title -->
-  <div class="text-center">
-    <h3 class="font-sans text-lg md:text-xl font-medium text-black tracking-[-0.5px] leading-tight">
-      {title}
-    </h3>
-    {description && (
-      <p class="text-gray-600 text-sm mt-2 line-clamp-2">{description}</p>
-    )}
-  </div>
+  { !hideText && (
+    <div class="text-center">
+      <h3 class="font-sans text-lg md:text-xl font-medium text-black tracking-[-0.5px] leading-tight">
+        {title}
+      </h3>
+      {description && size !== 'sm' && (
+        <p class="text-gray-600 text-sm mt-2 line-clamp-2">{description}</p>
+      )}
+    </div>
+  )}
 </div>

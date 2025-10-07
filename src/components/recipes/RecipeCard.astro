@@ -1,8 +1,6 @@
 ---
 import LazyImage from '../common/LazyImage.astro';
 import { getLocale } from '../../i18n/i18n';
-import { Image } from 'astro:assets';
-import { fade } from 'astro:transitions';
 
 interface Props {
   image: string;
@@ -11,10 +9,6 @@ interface Props {
   id: string;
   textColor?: string;
   iconColor?: string;
-  hoverImage?: string;
-  difficulty?: string;
-  servings?: number;
-  rating?: number;
 }
 
 const { 
@@ -22,17 +16,12 @@ const {
   title, 
   time = "---", 
   id,
-  textColor = 'text-blue-900',
-  iconColor = 'text-blue-900',
-  hoverImage = image,
-  difficulty = "---",
-  servings = 0,
-  rating = 0
+  textColor = 'text-black',
+  iconColor = 'text-blue-900'
 } = Astro.props;
 
 const currentLocale = getLocale();
 const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
-const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
 ---
 
 <a 

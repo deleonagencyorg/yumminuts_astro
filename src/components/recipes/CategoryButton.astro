@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  active?: boolean;
+  onClick?: () => void;
+}
+
+const { id, name, active = false } = Astro.props;
+---
+
+<button 
+  class={`flex gap-2.5 items-center justify-center px-4 md:px-6 py-4 md:py-5 rounded-[10px] text-[16px] md:text-[20px] font-text leading-4 md:leading-5 transition-all duration-300 whitespace-nowrap ${
+    active 
+      ? 'bg-skyblue text-primary font-medium' 
+      : 'bg-white text-black font-normal hover:bg-skyblue hover:text-primary'
+  }`}
+  data-category={id}
+>
+  {name}
+</button>

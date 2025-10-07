@@ -67,31 +67,36 @@
       {
         "id": "slide1",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/bannermobile.jpg",
-        "alt": "Zambos",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
         "title": "",
         "description": "",
-        "link": "https://www.zambos.com"
+        "link": "#"
       }
     ],
     "healthInfo": [
       {
         "id": "info1",
         "icon": "https://snack.yummiespromociones.com/yumminuts/proteina.svg",
-        "alt": "High in protein",
+        "alt": "High in Protein",
         "text": "High in Protein"
       },
       {
         "id": "info2",
         "icon": "https://snack.yummiespromociones.com/yumminuts/fibra.svg",
-        "alt": "High in fiber",
-        "text": "High in Fiber"
+        "alt": "Rich in Fiber",
+        "text": "Rich in Fiber"
       },
       {
         "id": "info3",
-        "icon": "https://snack.yummiespromociones.com/yumminuts/sin-gluten.svg",
-        "alt": "Gluten free",
-        "text": "Gluten Free"
+        "icon": "https://snack.yummiespromociones.com/yumminuts/azucar.svg",
+        "alt": "Low in Sugar",
+        "text": "Low in Sugar"
+      },
+      {
+        "id": "info4",
+        "icon": "https://snack.yummiespromociones.com/yumminuts/energia.svg",
+        "alt": "High in Energy",
+        "text": "High in Energy"
       }
     ],
     "healthPage": {
@@ -102,7 +107,7 @@
         {
           "id": "slide1",
           "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/banner-salud.png",
+          "mobile": "https://snack.yummiespromociones.com/yumminuts/mobilehealth.jpg",
           "alt": "Home Yumminuts",
           "title": "",
           "description": "",
@@ -116,21 +121,57 @@
       "videos": [
         {
           "id": "video1",
-          "url": "https://www.youtube.com/embed/zkximeTgUvM",
-          "thumbnail": "https://img.youtube.com/vi/zkximeTgUvM/maxresdefault.jpg",
-          "title": "Healthy Living Tips #1"
+          "url": "https://www.youtube.com/embed/AVOMZkoahhw",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-1.png",
+          "title": "Natalia and YummiNuts tell us about Mindful Eating"
         },
         {
           "id": "video2",
-          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
-          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
-          "title": "Healthy Living Tips #2"
+          "url": "https://www.youtube.com/embed/jV8qCeP-Fp0",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-2.png",
+          "title": "Mindful Eating with Yummi Nuts"
         },
         {
           "id": "video3",
-          "url": "https://www.youtube.com/embed/4p0bXgYk4fA",
-          "thumbnail": "https://img.youtube.com/vi/4p0bXgYk4fA/maxresdefault.jpg",
-          "title": "Healthy Living Tips #3"
+          "url": "https://www.youtube.com/embed/RZWuIvyxjiY",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-3.png",
+          "title": "The Role of Carbohydrates in Your Diet"
+        },
+        {
+          "id": "video4",
+          "url": "https://www.youtube.com/embed/KzgnTHbebzc",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-4.png",
+          "title": "Proteins in Our Diet"
+        },
+        {
+          "id": "video5",
+          "url": "https://www.youtube.com/embed/sYBax1yU3j8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-5.png",
+          "title": "How Much Do I Need to Eat?"
+        },
+        {
+          "id": "video6",
+          "url": "https://www.youtube.com/embed/T2nWko83keI",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-6.png",
+          "title": "How to Recognize Hunger Signals?"
+        },
+        {
+          "id": "video7",
+          "url": "https://www.youtube.com/embed/zdNXdG9AsS8",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-7.png",
+          "title": "Hunger Triggers"
+        },
+        {
+          "id": "video8",
+          "url": "https://www.youtube.com/embed/j0nJbP00V9c",
+          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-8.png",
+          "title": "Am I Really Hungry?"
+        },
+        {
+          "id": "video10",
+          "url": "https://www.youtube.com/embed/cRQ2LjO1syo",
+          "thumbnail":"https://snack.yummiespromociones.com/yumminuts/Tennis-Video.jpg",
+          "title": "Recharge Your Energy with Yummi Nuts"
         }
       ]
     },
@@ -181,20 +222,26 @@
     "explore": "Explorar"
   },
   "menu_items": [
-    {
-      "id": "zibas-creators",
-      "text": "Ziba's Creators",
-      "href": "/en/zibas-creators"
-    },
+
     {
       "id": "products",
       "text": "Products",
-      "href": "/en/#products"
+      "href": "/en/products"
     },
     {
-      "id": "gallery",
-      "text": "Gallery",
-      "href": "/en/#gallery"
+      "id": "recipes",
+      "text": "Recipes",
+      "href": "/en/recipes"
+    },
+    {
+      "id": "news",
+      "text": "News",
+      "href": "/en/blog"
+    },
+    {
+      "id": "health",
+      "text": "Health",
+      "href": "/en/health"
     },
     {
       "id": "contact",
@@ -212,8 +259,8 @@
   },
   "home": {
     "meta": {
-      "title": " Ziba's - Disfruta tus Ziba's en todo momento",
-      "description": "Tus hojuelas de papa frita favoritas llegan con sabores naturalmente auténticos para todos los gustos."
+      "title": "Yummi Nuts",
+      "description": "¡Bienvenido a un lugar lleno de energía! Conoce todas las semillas que ofrece Yummi Nuts, recetas y consejos para una nutrición mindful."
     },
     "newsletter":{
       "placeholder":"email@email.com",

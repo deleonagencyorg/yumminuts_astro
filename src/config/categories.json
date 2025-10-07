@@ -1,0 +1,25 @@
+{
+  "categories": [
+    {
+      "key": "manies",
+      "labels": { "es": "Maní", "en": "Peanuts" },
+      "slugs": { "es": "manies", "en": "peanuts" },
+      "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
+      "background": "#0073C1"
+    },
+    {
+      "key": "maranones",
+      "labels": { "es": "Marañón", "en": "Cashews" },
+      "slugs": { "es": "maranones", "en": "cashews" },
+      "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
+      "background": "#9AE3BE"
+    },
+    {
+      "key": "semillas",
+      "labels": { "es": "Semillas", "en": "Seeds" },
+      "slugs": { "es": "semillas", "en": "seeds" },
+      "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
+      "background": "#DC9EE5"
+    }
+  ]
+}

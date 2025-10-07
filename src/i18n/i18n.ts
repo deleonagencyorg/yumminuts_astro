@@ -8,6 +8,7 @@ import esBrands from '../locales/es/brands.json';
 import esNewProducts from '../locales/es/newproducts.json';
 import esGallery from '../locales/es/gallery.json';
 import esAboutUs from '../locales/es/aboutus.json';
+import esHealth from '../locales/es/health.json';
 import enRecipes from '../locales/en/recipes.json';
 import enNews from '../locales/en/news.json';
 import enProducts from '../locales/en/products.json';
@@ -15,6 +16,7 @@ import enBrands from '../locales/en/brands.json';
 import enNewProducts from '../locales/en/newproducts.json';
 import enGallery from '../locales/en/gallery.json';
 import enAboutUs from '../locales/en/aboutus.json';
+import enHealth from '../locales/en/health.json';
 
 // Tipos para las traducciones
 export type Locale = 'es' | 'en';
@@ -27,6 +29,7 @@ const translations = {
     recipes: esRecipes,
     news: esNews,
     products: esProducts,
+    health: esHealth,
     brands: esBrands,
     newproducts: esNewProducts,
     gallery: esGallery,
@@ -37,6 +40,7 @@ const translations = {
     recipes: enRecipes,
     news: enNews,
     products: enProducts,
+    health: enHealth,
     brands: enBrands,
     newproducts: enNewProducts,
     gallery: enGallery,

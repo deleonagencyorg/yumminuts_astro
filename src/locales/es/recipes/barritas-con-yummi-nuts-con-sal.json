@@ -1,0 +1,39 @@
+{
+  "date": "2025-09-11",
+  "id": "barritas-con-yummi-nuts-con-sal",
+  "slug": "barritas-con-yummi-nuts-con-sal",
+  "title": "Barritas con Yummi Nuts con Sal",
+  "people": "10",
+  "difficulty": "Intermedio",
+  "image": "https://snack.yummiespromociones.com/yumminuts/barritas-con-yummi-nuts-con-sal.jpg",
+  "gallery": [
+    "barritas-con-yummi-nuts-con-sal.jpg"
+  ],
+  "type": "image",
+  "preparation_time": 90,
+  "ingredients": [
+    "Ingredientes para la mantequilla de maní:",
+    "2 tazas de Yummi Nuts con Sal",
+    "2 cucharadas de miel",
+    "sal al gusto",
+    "Ingredientes para las barritas:",
+    "1 taza de mantequilla de maní casera",
+    "2/3 de taza de miel",
+    "1 cucharadita de vainilla",
+    "2 ½ tazas de copos de avena",
+    "1/3 de mini chocolate chips",
+    "3 cucharadas de Yummi Nuts Mix triturado"
+  ],
+  "instructions": [
+    "Preparación mantequilla de maní:",
+    "Paso 1: Coloca los maní en un procesador de alimentos y procesa hasta que lleguen a una consistencia líquida/cremosa. Agrega la miel y sal si gustas. Procesa y coloca en un recipiente.",
+    "Preparación barritas:",
+    "Paso 1: Coloca papel para hornear en una bandeja para horno.",
+    "Paso 3: En un recipiente mezcla la mantequilla de maní, la miel, la vainilla hasta suavizarlo y mezclarlo bien. Agrega el resto de ingredientes y mezcla bien.",
+    "Paso 5: Coloca la mezcla en la bandeja y presiona bien. Refrigera por una hora y luego córtala en tiras o barritas."
+  ],
+  "brand": [
+    "yumminuts"
+  ],
+  "category": "snacks"
+}

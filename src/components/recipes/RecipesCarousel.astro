@@ -24,12 +24,14 @@ export interface Props {
   title?: string;
   textButton?: string;
   items?: any[]; // permitir arrays compatibles (e.g., RecipeItem)
+  limit?: number; // limitar el número de recetas mostradas
 }
 
 const {
   textButton = currentLang === 'es' ? 'Ver Todas' : 'View All',
-  items
-} = Astro.props as { textButton?: string; items?: any[] };
+  items,
+  limit
+} = Astro.props as { textButton?: string; items?: any[]; limit?: number };
 
 // If items provided, use them; otherwise load all by lang
 let recipeItems: Recipe[] = Array.isArray(items) ? (items as unknown as Recipe[]) : [];
@@ -44,6 +46,11 @@ if (!recipeItems.length) {
       recipeItems.push(mod.default);
     }
   }
+}
+
+// Aplicar límite si está definido
+if (limit && limit > 0 && recipeItems.length > limit) {
+  recipeItems = recipeItems.slice(0, limit);
 }
 
 // Determine if we are in provided-items mode (hide filters/CTA)

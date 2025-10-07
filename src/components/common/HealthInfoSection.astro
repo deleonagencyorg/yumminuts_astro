@@ -1,7 +1,7 @@
 ---
 // src/components/common/ProteinSection.astro
-import proteinaSvg from '../../assets/proteina.svg';
 import { t, getLocale } from '../../i18n/i18n';
+import LazyImage from '../common/LazyImage.astro';
 
 // Get current locale and health info assets
 const locale = getLocale();
@@ -13,7 +13,7 @@ const healthInfo = t('assets.healthInfo', { locale });
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       {healthInfo && healthInfo.map((item: any) => (
         <div class="flex justify-center">
-          <img 
+          <LazyImage
             src={item.icon} 
             alt={item.alt} 
             class="w-24 h-24 md:w-32 md:h-32 object-contain"  
