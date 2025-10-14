@@ -232,9 +232,18 @@ function convertToEmbedUrl(url: string): string {
     function closeModal() {
       if (!modal) return;
       
-      modal.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-      iframe.src = ''; // Stop video playback
+      // Remove visible class first for smooth transition
+      const modalContainer = modal.querySelector('.modal-container');
+      if (modalContainer) {
+        modalContainer.classList.remove('modal-visible');
+      }
+      
+      // Hide modal after transition
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        iframe.src = ''; // Stop video playback
+      }, 200);
     }
     
     // Add click listeners to video thumbnails
