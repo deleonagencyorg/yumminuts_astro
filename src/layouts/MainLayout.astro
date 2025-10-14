@@ -1,5 +1,4 @@
 ---
-import GoogleTagManager from '../components/common/GoogleTagManager.astro';
 import Favicon from '../components/Favicon.astro';
 // import GoogleTagManager from './i18n/GoogleTagManager.astro';
 // import GoogleTagManagerNoScript from './i18n/GoogleTagManagerNoScript.astro';
@@ -54,7 +53,6 @@ if (headerColors) {
 ---
 <html lang={currentLang}>
   <head>
-    <GoogleTagManager />
     <Favicon />
     
     <meta charset="UTF-8" />
@@ -63,7 +61,6 @@ if (headerColors) {
     {description && <meta name="description" content={description} />}
     <ViewTransitions />
     <slot name="head" />
-    {/* <GoogleTagManager /> */}
   
   <!-- Script para prevenir carga de URLs de imágenes incorrectas -->
   <script is:inline>
@@ -96,6 +93,14 @@ if (headerColors) {
   </script>
   </head>
   <body class={`font-sans ${className || ''}`}>
+    <!-- Google Tag Manager (noscript) -->
+  <noscript>
+  <iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-T82M4TL"
+    height="0" width="0" style="display:none;visibility:hidden">
+  </iframe>
+</noscript>
+    <!-- End Google Tag Manager (noscript) -->
     {/* <GoogleTagManagerNoScript /> */}
     <I18nProvider>
       <slot name="header">
