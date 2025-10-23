@@ -172,7 +172,20 @@ function initAllCarousels() {
   });
 }
 
+// Cleanup antes del DOM swap de Astro
+document.addEventListener('astro:before-swap', () => {
+  document.querySelectorAll('.blog-hero-carousel').forEach(container => {
+    if (container.__carouselInstance) {
+      container.__carouselInstance.stopAutoPlay();
+      container.__carouselInstance = null;
+    }
+  });
+});
+
 document.addEventListener('astro:after-swap', () => {
+  setTimeout(initAllCarousels, 0);
+});
+document.addEventListener('astro:page-load', () => {
   setTimeout(initAllCarousels, 0);
 });
 document.addEventListener('DOMContentLoaded', () => {
