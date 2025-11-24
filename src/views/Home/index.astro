@@ -40,6 +40,7 @@ function normalizeCategory(value: string): string {
   if (v.includes('maní') || v.includes('mani') || v.includes('peanut')) return 'manies';
   if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
   if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
+  if (v.includes('barra') || v.includes('bar') || v.includes('bars')) return 'barras';
   // Try direct match with labels from config
   const cfg = (categoriesConfig as any).categories || [];
   const match = cfg.find((c: any) => [c.labels?.es, c.labels?.en, c.key].map((s: string) => (s||'').toLowerCase()).includes(v));
@@ -126,7 +127,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
 
     <!-- Sección de video -->
     <section id="video" class="w-full  bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <video height="100%" width="100%" muted playsinline preload="metadata" data-autoplay-on-view controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
+      <video height="100%" width="100%" muted playsinline autoplay preload="auto" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
         <source src="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4" type="video/mp4">
       </video>
     </section>
@@ -169,7 +170,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
       document.addEventListener('DOMContentLoaded', () => {
         const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
-        const show = (el) => {
+        const show = (el: Element) => {
           el.classList.remove('opacity-0', 'translate-y-6');
           el.classList.add('opacity-100', 'translate-y-0');
         };
@@ -182,7 +183,10 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
               const children = el.querySelectorAll('[data-reveal-child]');
               if (children.length) {
                 children.forEach((child, idx) => {
-                  child.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+                  const childEl = child as HTMLElement;
+                  if (childEl && childEl.style) {
+                    childEl.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+                  }
                   child.classList.remove('opacity-0', 'translate-y-6');
                   child.classList.add('opacity-100', 'translate-y-0');
                 });
@@ -195,27 +199,23 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
 
         revealElements.forEach((el) => observer.observe(el));
 
-        // Auto-play/pause video when the section is in view
-        const autoPlayVideos = Array.from(document.querySelectorAll('video[data-autoplay-on-view]'));
-        if (autoPlayVideos.length) {
-          const videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              const vid = entry.target;
-              if (!(vid instanceof HTMLVideoElement)) return;
-              if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                // Ensure muted for autoplay policies
-                vid.muted = true;
-                const playPromise = vid.play();
-                if (playPromise && typeof playPromise.then === 'function') {
-                  playPromise.catch(() => {/* swallow autoplay rejection */});
-                }
-              } else {
-                vid.pause();
-              }
-            });
-          }, { threshold: [0, 0.5, 1] });
-
-          autoPlayVideos.forEach((v) => videoObserver.observe(v));
+        // Force autoplay on load (mobile-friendly): ensure muted and call play()
+        const videoEl = document.querySelector('#video video');
+        if (videoEl instanceof HTMLVideoElement) {
+          videoEl.muted = true;
+          videoEl.setAttribute('playsinline', '');
+          videoEl.setAttribute('autoplay', '');
+          const tryPlay = () => {
+            const p = videoEl.play();
+            if (p && typeof p.catch === 'function') {
+              p.catch(() => { /* ignore autoplay policy rejections */ });
+            }
+          };
+          if (videoEl.readyState >= 2) {
+            tryPlay();
+          } else {
+            videoEl.addEventListener('loadeddata', tryPlay, { once: true });
+          }
         }
       });
     </script>

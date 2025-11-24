@@ -26,7 +26,7 @@
     },
     "brands": {
       "title": "Nuestras Marcas de Snacks",
-      "description": "Descubre Yummi Nuts, Zambos, Ranchitas y Superman. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
+      "description": "Descubre Yummi Nuts, Zambos, Ranchitas. Cada marca con sabores únicos y auténticos que conquistan Centroamérica."
     },
     "about_us": {
       "title": "Nosotros - Historia y Valores",
@@ -315,17 +315,17 @@
       "description":"Síguenos en nuestras redes sociales - Snacks Yummies",
       "newsletter":"Entérate de las noticias y promociones",
       "instagramLinks":[
-        {
-          "url":"https://www.instagram.com/reel/DNT6raEoqzD/?igsh=MXJsdmh4YWxpMGZseA=="
+       {
+          "url":"https://www.instagram.com/reel/DRVAh_2gdOx/?igsh=MWFqcm95bWRuMmt2dg=="
         },
         {
-          "url":"https://www.instagram.com/reel/DNL-gGZOW09/?igsh=MTY4eDVzazc5YTliaA=="
+          "url":"https://www.instagram.com/reel/DRNscpmCTgl/?igsh=ZHg4bzd5YTRoNXlu"
         },
         {
-          "url":"https://www.instagram.com/reel/DNHd_ltM-pc/?igsh=OWpnamQ4Y3FmN3Vz"
+          "url":"https://www.instagram.com/reel/DQfRliVkRCM/?igsh=MTF0amw0cDc5djd3Mg=="
         },
         {
-          "url":"https://www.instagram.com/reel/DNEaatBuSfZ/?igsh=MTZuZjgzZnZ4dzg0dw=="
+          "url":"https://www.instagram.com/reel/DQcs9f6iXdF/?igsh=ZjYwMHlnNm9ndDNj"
         }
       ]
     }

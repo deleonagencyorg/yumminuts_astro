@@ -147,6 +147,63 @@
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp" }
       ],
       "weight": ["30g", "60g", "120g"]
+    },
+    {
+      "id": "yummi-nut-barra-fresa",
+      "name": "Strawberry Bar",
+      "category": "Bars",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-fresa.webp",
+      "background_color": "#E67DA0",
+      "header_color": "#E67DA0",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#E67DA0",
+      "description": "Fruit bar with strawberry flavor, perfect to take on the go.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-fresa.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
+    },
+    {
+      "id": "yummi-nut-barra-arandano",
+      "name": "Blueberry Bar",
+      "category": "Bars",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-arandano.webp",
+      "background_color": "#8C85C6",
+      "header_color": "#8C85C6",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#8C85C6",
+      "description": "Fruit bar with blueberry flavor, tasty and convenient for your day.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-arandano.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
+    },
+    {
+      "id": "yummi-nut-barra-coco",
+      "name": "Coconut Bar",
+      "category": "Bars",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-coco.webp",
+      "background_color": "#D6B196",
+      "header_color": "#D6B196",
+      "text_color": "primary",
+      "header_background": "white",
+      "header_text_color": "primary",
+      "color_button": "#D6B196",
+      "description": "Bar with coconut flavor, smooth and full of natural taste.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-coco.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
     }
   ]
 }
