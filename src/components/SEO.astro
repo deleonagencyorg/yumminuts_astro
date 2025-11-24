@@ -1,6 +1,6 @@
 ---
-import { t, type Locale } from '../../i18n/i18n';
-import config from '../../i18n/config';
+import { t, type Locale } from '../i18n/i18n';
+import config from '../i18n/config';
 
 export interface Props {
   currentLang: Locale;
@@ -26,7 +26,9 @@ const pageUrl = canonicalUrl || `https://snacksyummies.com/${currentLang}`;
 const facebookUrl = socialMedia?.facebook?.url || '';
 const instagramUrl = socialMedia?.instagram?.url || '';
 const twitterUrl = socialMedia?.twitter?.url || '';
+const locales: string[] = (config.supportedLocales as unknown as string[]) || [];
 
+---
 <!-- Primary Meta Tags -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,14 +44,14 @@ const twitterUrl = socialMedia?.twitter?.url || '';
 <meta property="og:description" content={pageDescription} />
 <meta property="og:image" content={pageImage} />
 <meta property="og:locale" content={currentLang} />
-{config.supportedLocales.map(lang => (
+{locales.map((lang: string) => (
   <meta property="og:locale:alternate" content={lang} />
 ))}
 
 <!-- Image Optimization -->
 <meta name="og:image:width" content="1200" />
 <meta name="og:image:height" content="630" />
-<meta name="og:image:alt" content="Snacks Yummies - ${title || 'Delicious snacks from Central America'}" />
+<meta name="og:image:alt" content={`Snacks Yummies - ${title || 'Delicious snacks from Central America'}`} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />

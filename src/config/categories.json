@@ -20,6 +20,13 @@
       "slugs": { "es": "semillas", "en": "seeds" },
       "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
       "background": "#DC9EE5"
+    },
+    {
+      "key": "barras",
+      "labels": { "es": "Barras", "en": "Bars" },
+      "slugs": { "es": "barras", "en": "bars" },
+      "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa.webp",
+      "background": "#E67DA0"
     }
   ]
 }
