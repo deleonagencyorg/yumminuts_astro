@@ -1,18 +1,38 @@
 // src/views/ZibasCreators/scripts.js
 
-document.addEventListener('DOMContentLoaded', function() {
+function initZibasCreators() {
+  // Only run on pages that have the Zibas Creators markup
+  if (!document.querySelector('.categories-container') && !document.querySelector('.step-card')) return;
+
   // Inicializar animaciones de scroll
   initScrollAnimations();
-  
+
   // Inicializar interacciones de botones
   initButtonInteractions();
-  
+
   // Inicializar efectos de hover
   initHoverEffects();
-  
+
   // Inicializar contador de likes (simulado)
   initLikeCounters();
-});
+
+  // Inicializar efectos adicionales
+  initParticleEffect();
+  initSmoothScroll();
+  initParallaxEffect();
+  initCategoriesInteraction();
+}
+
+// Astro client-side navigation hooks
+document.addEventListener('astro:page-load', initZibasCreators);
+document.addEventListener('astro:after-swap', initZibasCreators);
+
+// Initial load fallback
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initZibasCreators);
+} else {
+  initZibasCreators();
+}
 
 /**
  * Inicializar animaciones de scroll
@@ -32,9 +52,11 @@ function initScrollAnimations() {
     });
   }, observerOptions);
 
-  // Observar elementos para animación
+  // Observar elementos para animación (idempotent)
   const animatedElements = document.querySelectorAll('.step-card, .category-card, .community-card');
   animatedElements.forEach(el => {
+    if (el.dataset.zcScrollObserved === '1') return;
+    el.dataset.zcScrollObserved = '1';
     observer.observe(el);
   });
 }
@@ -43,8 +65,15 @@ function initScrollAnimations() {
  * Inicializar interacciones de botones
  */
 function initButtonInteractions() {
+  if (document.body?.dataset?.zcButtonsBound === '1') return;
+  if (document.body) document.body.dataset.zcButtonsBound = '1';
+
+  const buttons = Array.from(document.querySelectorAll('button'));
+  const findButtonByText = (text) =>
+    buttons.find((b) => (b.textContent || '').trim().toUpperCase().includes(String(text).toUpperCase()));
+
   // Botón "REVISAR A LOS JURADOS"
-  const judgesButton = document.querySelector('button:contains("REVISAR A LOS JURADOS")');
+  const judgesButton = findButtonByText('REVISAR A LOS JURADOS');
   if (judgesButton) {
     judgesButton.addEventListener('click', function() {
       // Simular apertura de modal o navegación
@@ -53,7 +82,7 @@ function initButtonInteractions() {
   }
 
   // Botón "SUBIR CONTENIDO"
-  const uploadButton = document.querySelector('button:contains("SUBIR CONTENIDO")');
+  const uploadButton = findButtonByText('SUBIR CONTENIDO');
   if (uploadButton) {
     uploadButton.addEventListener('click', function() {
       // Simular apertura de formulario de subida
@@ -78,6 +107,8 @@ function initHoverEffects() {
   // Efectos para las tarjetas de comunidad
   const communityCards = document.querySelectorAll('.community-card');
   communityCards.forEach(card => {
+    if (card.dataset.zcHoverBound === '1') return;
+    card.dataset.zcHoverBound = '1';
     card.addEventListener('mouseenter', function() {
       this.style.transform = 'translateY(-10px) scale(1.02)';
     });
@@ -90,6 +121,8 @@ function initHoverEffects() {
   // Efectos para las tarjetas de categorías
   const categoryCards = document.querySelectorAll('.category-card');
   categoryCards.forEach(card => {
+    if (card.dataset.zcHoverBound === '1') return;
+    card.dataset.zcHoverBound = '1';
     card.addEventListener('mouseenter', function() {
       this.style.transform = 'scale(1.05)';
       this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
@@ -109,6 +142,8 @@ function initLikeCounters() {
   const likeElements = document.querySelectorAll('[class*="Likes"]');
   
   likeElements.forEach(element => {
+    if (element.dataset.zcLikesBound === '1') return;
+    element.dataset.zcLikesBound = '1';
     const currentLikes = parseInt(element.textContent.match(/\d+/)[0]);
     
     // Simular incremento de likes al hacer clic
@@ -171,6 +206,9 @@ function showNotification(message, type = 'info') {
  * Efecto de partículas para el fondo (opcional)
  */
 function initParticleEffect() {
+  if (document.body?.dataset?.zcParticlesBound === '1') return;
+  if (document.body) document.body.dataset.zcParticlesBound = '1';
+
   const sections = document.querySelectorAll('section');
   
   sections.forEach(section => {
@@ -216,6 +254,9 @@ function createFloatingParticle(container, color) {
  * Smooth scroll para enlaces internos
  */
 function initSmoothScroll() {
+  if (document.body?.dataset?.zcSmoothScrollBound === '1') return;
+  if (document.body) document.body.dataset.zcSmoothScrollBound = '1';
+
   const internalLinks = document.querySelectorAll('a[href^="#"]');
   
   internalLinks.forEach(link => {
@@ -239,6 +280,9 @@ function initSmoothScroll() {
  * Efecto de parallax suave para elementos de fondo
  */
 function initParallaxEffect() {
+  if (window.__zcParallaxBound) return;
+  window.__zcParallaxBound = true;
+
   window.addEventListener('scroll', function() {
     const scrolled = window.pageYOffset;
     const parallaxElements = document.querySelectorAll('.pixel-art');
@@ -251,14 +295,6 @@ function initParallaxEffect() {
   });
 }
 
-// Inicializar efectos adicionales
-document.addEventListener('DOMContentLoaded', function() {
-  initParticleEffect();
-  initSmoothScroll();
-  initParallaxEffect();
-  initCategoriesInteraction();
-});
-
 /**
  * Inicializar interacción de categorías con hover
  */
@@ -267,6 +303,9 @@ function initCategoriesInteraction() {
   const container = document.querySelector('.categories-container');
   
   if (!container || categoryCards.length === 0) return;
+
+  if (container.dataset.zcCategoriesBound === '1') return;
+  container.dataset.zcCategoriesBound = '1';
   
   categoryCards.forEach((card, index) => {
     // Reset all cards on mouse leave

@@ -167,7 +167,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
       #video video::-moz-media-controls { display: none !important; }
     </style>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
+      function initHomeRevealAndVideo() {
         const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
         const show = (el: Element) => {
@@ -175,11 +175,11 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
           el.classList.add('opacity-100', 'translate-y-0');
         };
 
+        // Reveal observer (idempotent per element)
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const el = entry.target;
-              // Stagger children if present
               const children = el.querySelectorAll('[data-reveal-child]');
               if (children.length) {
                 children.forEach((child, idx) => {
@@ -197,26 +197,49 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
           });
         }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
 
-        revealElements.forEach((el) => observer.observe(el));
+        revealElements.forEach((el) => {
+          const ht = el as HTMLElement;
+          if (ht.dataset.revealObserved === '1') return;
+          ht.dataset.revealObserved = '1';
+          observer.observe(el);
+        });
 
-        // Force autoplay on load (mobile-friendly): ensure muted and call play()
+        // Force autoplay (mobile-friendly): ensure muted and call play()
         const videoEl = document.querySelector('#video video');
         if (videoEl instanceof HTMLVideoElement) {
           videoEl.muted = true;
           videoEl.setAttribute('playsinline', '');
           videoEl.setAttribute('autoplay', '');
-          const tryPlay = () => {
-            const p = videoEl.play();
-            if (p && typeof p.catch === 'function') {
-              p.catch(() => { /* ignore autoplay policy rejections */ });
+
+          if (videoEl.dataset.autoplayBound !== '1') {
+            videoEl.dataset.autoplayBound = '1';
+            const tryPlay = () => {
+              const p = videoEl.play();
+              if (p && typeof p.catch === 'function') {
+                p.catch(() => { /* ignore autoplay policy rejections */ });
+              }
+            };
+            if (videoEl.readyState >= 2) {
+              tryPlay();
+            } else {
+              videoEl.addEventListener('loadeddata', tryPlay, { once: true });
+              videoEl.addEventListener('canplay', tryPlay, { once: true });
             }
-          };
-          if (videoEl.readyState >= 2) {
-            tryPlay();
           } else {
-            videoEl.addEventListener('loadeddata', tryPlay, { once: true });
+            // Re-try play after swaps
+            const p = videoEl.play();
+            if (p && typeof p.catch === 'function') p.catch(() => {});
           }
         }
-      });
+      }
+
+      document.addEventListener('astro:page-load', initHomeRevealAndVideo);
+      document.addEventListener('astro:after-swap', initHomeRevealAndVideo);
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHomeRevealAndVideo);
+      } else {
+        initHomeRevealAndVideo();
+      }
     </script>
   </main>

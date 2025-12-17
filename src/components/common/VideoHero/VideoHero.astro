@@ -182,29 +182,63 @@ const {
 </style>
 
 <script>
-  // Handle video loading and fallback
-  document.addEventListener('DOMContentLoaded', () => {
-    const videoElement = document.getElementById('heroVideo') as HTMLVideoElement;
-    const fallbackImage = document.querySelector('.fallback-image') as HTMLElement;
-    
-    if (videoElement) {
+  function initVideoHero() {
+    const root = document.currentScript?.closest('.video-hero-container') || document;
+    const videoElement = root.querySelector('#heroVideo') as HTMLVideoElement | null;
+    const fallbackImage = root.querySelector('.fallback-image') as HTMLElement | null;
+
+    if (!videoElement || !fallbackImage) return;
+
+    // Ensure autoplay-friendly attributes
+    videoElement.muted = true;
+    videoElement.setAttribute('muted', '');
+    videoElement.setAttribute('playsinline', '');
+    videoElement.setAttribute('autoplay', '');
+
+    // Bind listeners once per element
+    if (videoElement.dataset.vhBound !== '1') {
+      videoElement.dataset.vhBound = '1';
+
       // Hide fallback image once video can play
       videoElement.addEventListener('canplay', () => {
         fallbackImage.style.opacity = '0';
       });
-      
+
       // Show fallback image if video errors
       videoElement.addEventListener('error', () => {
         fallbackImage.style.opacity = '1';
       });
-      
-      // Set a timeout to show video anyway if it takes too long
-      setTimeout(() => {
-        if (videoElement.readyState < 3) { // HAVE_FUTURE_DATA = 3
-          // Video is taking too long, keep fallback visible
-          fallbackImage.style.opacity = '1';
-        }
-      }, 3000);
     }
-  });
+
+    // Attempt to play (may be blocked by autoplay policies if not muted)
+    const tryPlay = () => {
+      const p = videoElement.play();
+      if (p && typeof (p as any).catch === 'function') {
+        (p as any).catch(() => { /* ignore autoplay policy rejections */ });
+      }
+    };
+
+    if (videoElement.readyState >= 2) {
+      tryPlay();
+    } else {
+      videoElement.addEventListener('loadeddata', tryPlay, { once: true });
+      videoElement.addEventListener('canplay', tryPlay, { once: true });
+    }
+
+    // Timeout: keep fallback visible if video takes too long
+    setTimeout(() => {
+      if (videoElement.readyState < 3) {
+        fallbackImage.style.opacity = '1';
+      }
+    }, 3000);
+  }
+
+  document.addEventListener('astro:page-load', initVideoHero);
+  document.addEventListener('astro:after-swap', initVideoHero);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVideoHero);
+  } else {
+    initVideoHero();
+  }
 </script>
