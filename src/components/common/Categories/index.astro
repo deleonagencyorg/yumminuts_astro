@@ -19,6 +19,8 @@ const {
   title = 'Productos'
 } = Astro.props;
 
+const instanceId = `categories-${Math.random().toString(36).slice(2)}`;
+
 // Show up to 4 categories on desktop, and only 2 on mobile
 const displayProducts = products.slice(0, 4);
 
@@ -41,7 +43,7 @@ function productHref(p: Product): string {
 }
 ---
 
-<div class="box-border content-stretch flex flex-col gap-[50px] items-start justify-start  py-0 relative size-full">
+<div class="box-border content-stretch flex flex-col gap-[50px] items-start justify-start  py-0 relative size-full" data-categories-instance={instanceId}>
   <div class="font-sans leading-[0] not-italic relative shrink-0 text-black text-[55px] text-nowrap tracking-[-2px] font-extrabold" data-reveal-child>
     <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
       {title}</h2>
@@ -50,7 +52,7 @@ function productHref(p: Product): string {
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
     <div class="relative w-full -mx-4 md:mx-0">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="content-stretch flex items-stretch md:items-center md:justify-between relative w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none gap-4 px-4 md:px-0">
+      <div class="js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
         {displayProducts.map((product) => {
           const isBars = (product.title || '').toLowerCase().includes('barra') || (product.title || '').toLowerCase().includes('bar');
           return (
@@ -76,7 +78,7 @@ function productHref(p: Product): string {
       <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-0">
         <div class="flex items-center justify-center ml-4">
           <div class="flex-none">
-            <div class="relative size-[50.935px]">
+            <button type="button" class="js-categories-next relative size-[50.935px]" aria-label="Siguiente">
               <div class="absolute backdrop-blur-[11.016px] backdrop-filter bg-primary left-0 rounded-[11.938px] size-[50.935px] top-0">
                 <div aria-hidden="true" class="absolute border-blue border-[0.796px] border-solid inset-0 pointer-events-none rounded-[11.938px]"></div>
               </div>
@@ -89,10 +91,64 @@ function productHref(p: Product): string {
                   </div>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  const initCategoriesNext = () => {
+    const roots = document.querySelectorAll('[data-categories-instance]');
+    if (!roots.length) return;
+
+    roots.forEach((root) => {
+      const row = root.querySelector('.js-categories-row');
+      const nextBtn = root.querySelector('.js-categories-next');
+      if (!(row instanceof HTMLElement) || !(nextBtn instanceof HTMLButtonElement)) return;
+
+      if (nextBtn.dataset.bound === 'true') return;
+      nextBtn.dataset.bound = 'true';
+
+      const hasOverflow = () => row.scrollWidth > row.clientWidth + 1;
+
+      const cycleFirstToEnd = () => {
+        const first = row.firstElementChild;
+        if (!first) return;
+        row.appendChild(first);
+      };
+
+      const scrollNext = () => {
+        const card = row.querySelector('a');
+        const step = card ? card.getBoundingClientRect().width + 16 : Math.round(row.clientWidth * 0.8);
+
+        const maxLeft = row.scrollWidth - row.clientWidth;
+        const nextLeft = Math.min(row.scrollLeft + step, maxLeft);
+
+        row.scrollTo({ left: nextLeft, behavior: 'smooth' });
+
+        if (nextLeft >= maxLeft - 2) {
+          window.setTimeout(() => {
+            row.scrollTo({ left: 0, behavior: 'smooth' });
+          }, 250);
+        }
+      };
+
+      nextBtn.addEventListener('click', () => {
+        if (hasOverflow()) {
+          scrollNext();
+          return;
+        }
+        cycleFirstToEnd();
+      });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCategoriesNext);
+  } else {
+    initCategoriesNext();
+  }
+</script>
