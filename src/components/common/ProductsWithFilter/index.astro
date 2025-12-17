@@ -185,11 +185,19 @@ function productHref(product: any): string {
 <script>
   function initProductsFilters() {
     const root = document.currentScript?.closest('.w-full')?.parentElement || document;
-    const filterButtons = Array.from(root.querySelectorAll('.category-filter'));
-    const productCards = Array.from(root.querySelectorAll('.product-card'));
+    const filtersEl = root.querySelector('#productsFilters');
+    const gridEl = root.querySelector('#productsGrid');
     const noProductsMessage = root.querySelector('#noProductsMessage');
 
+    if (!filtersEl || !gridEl) return;
+    if ((filtersEl as any).dataset?.productsFiltersBound === '1') return;
+
+    const filterButtons = Array.from(filtersEl.querySelectorAll('.category-filter'));
+    const productCards = Array.from(gridEl.querySelectorAll('.product-card'));
+
     if (!filterButtons.length || !productCards.length) return;
+
+    (filtersEl as any).dataset.productsFiltersBound = '1';
 
     function apply(category: string) {
       let visibleCount = 0;
