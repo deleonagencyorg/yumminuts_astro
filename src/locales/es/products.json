@@ -33,7 +33,7 @@
       "icon": "https://snack.yummiespromociones.com/SnacksyummiesAssets/latorreapp.webp"
     }
   ],
-  "items": [
+"items": [
     {
       "id": "yummi-nut-mani-con-sal",
       "name": "Yummi Nut Maní con Sal",
@@ -50,6 +50,25 @@
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp" }
+      ],
+      "weight": ["30g", "60g", "120g"]
+    },
+      {
+      "id": "yummi-nut-mani-japones-con-sabor-a-chile-toreado",
+      "name": "Yummi Nut Maní Japones con Sabor a Chile Toreado",
+      "category": "Maní",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
+      "background_color": "#008444",
+      "header_color":"#008444",
+      "text_color": "primary",
+      "header_background": "#008444",
+      "header_text_color": "primary",
+      "color_button": "#008444",
+      "description": "Maní estilo japonés con cobertura crujiente.",
+      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+      "background_image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
+      "sizes": [
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp" }
       ],
       "weight": ["30g", "60g", "120g"]
     },
@@ -152,7 +171,7 @@
       "id": "yummi-nut-barra-fresa",
       "name": "Barra Fresa",
       "category": "Barras",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa.webp",
+      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa2.webp",
       "background_color": "#E67DA0",
       "header_color": "#E67DA0",
       "text_color": "primary",
@@ -163,7 +182,7 @@
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-fresa.webp" }
+        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-fresa2.webp" }
       ],
       "weight": ["30g", "60g", "120g"]
     },
