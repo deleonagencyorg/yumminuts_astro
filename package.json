@@ -15,7 +15,6 @@
     "@astrojs/react": "^4.3.0",
     "@astrojs/starlight": "^0.34.3",
     "@formkit/auto-animate": "^0.8.2",
-    "3d-react-carousal": "^5.0.0",
     "aos": "^2.3.4",
     "astro": "^5.8.0",
     "framer-motion": "^12.23.0",

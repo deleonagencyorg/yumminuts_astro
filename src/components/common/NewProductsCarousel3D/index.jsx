@@ -1,6 +1,10 @@
 import React from 'react';
-import { Carousel } from '3d-react-carousal';
 import './styles.css';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Autoplay, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/navigation';
 
 /**
  * 3D Carousel component for displaying new products
@@ -24,36 +28,44 @@ export default function NewProductsCarousel3D({
 
   // Create slides from products
   const slides = products.map((product, index) => (
-    <div key={index} className="product-slide">
-      <div className="product-card">
-        <div className="product-image-container">
-          <img 
-            src={product.image} 
-            alt={product.title || 'Product'} 
-            className="product-image"
-          />
+    <SwiperSlide key={index}>
+      <div className="product-slide">
+        <div className="product-card">
+          <div className="product-image-container">
+            <img 
+              src={product.image} 
+              alt={product.title || 'Product'} 
+              className="product-image"
+            />
+          </div>
         </div>
-     
       </div>
-    </div>
+    </SwiperSlide>
   ));
 
   // Handle slide change
-  const handleSlideChange = (index) => {
+  const handleSlideChange = (swiper) => {
     if (onSlideChange && typeof onSlideChange === 'function') {
-      onSlideChange(index);
+      onSlideChange(swiper.activeIndex);
     }
   };
 
   return (
     <div className="new-products-carousel-3d">
-      <Carousel
-        slides={slides}
-        autoplay={autoplay}
-        interval={interval}
-        arrows={arrows}
+      <Swiper
+        modules={[EffectCoverflow, Autoplay, Navigation]}
+        effect="coverflow"
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView="auto"
+        coverflowEffect={{ rotate: 30, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
+        autoplay={autoplay ? { delay: interval, disableOnInteraction: false } : false}
+        navigation={arrows}
         onSlideChange={handleSlideChange}
-      />
+        className="np3d-swiper"
+      >
+        {slides}
+      </Swiper>
     </div>
   );
 }
