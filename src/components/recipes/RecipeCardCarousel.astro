@@ -1,11 +1,12 @@
 ---
 import LazyImage from '../common/LazyImage.astro';
+import RecipePlaceholder from './RecipePlaceholder.astro';
 import { getLocale } from '../../i18n/i18n';
 import { Image } from 'astro:assets';
 import { fade } from 'astro:transitions';
 
 interface Props {
-  image: string;
+  image?: string;
   title: string;
   time?: string;
   id: string;
@@ -35,6 +36,9 @@ const {
 const currentLocale = getLocale();
 const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
 const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
+
+// Verificar si la imagen es válida (no es placeholder ni está vacía)
+const hasValidImage = image && !image.includes('placeholder.jpg');
 ---
 
 <a 
@@ -46,12 +50,18 @@ const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
   <div class="flex flex-col relative w-full">
     <!-- Imagen con tamaño uniforme y background-size: cover (via object-cover) -->
     <div class="relative overflow-hidden w-full aspect-[4/3] rounded-xl">
-      <LazyImage
-        src={image}
-        alt={title}
-        class="w-full h-full object-cover"
-        transition:name={`recipe-image-${id}`}
-      />
+      {hasValidImage ? (
+        <LazyImage
+          src={image}
+          alt={title}
+          class="w-full h-full object-cover"
+          transition:name={`recipe-image-${id}`}
+        />
+      ) : (
+        <RecipePlaceholder
+          class="w-full h-full rounded-xl"
+        />
+      )}
     </div>
     
     <!-- Información con altura fija para alinear cards -->

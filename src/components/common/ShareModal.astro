@@ -51,7 +51,7 @@ const texts = {
 const t = texts[(locale as 'es'|'en')] || texts.es;
 ---
 
-<div id={id} class="fixed inset-0 flex items-center justify-center z-50 hidden">
+<div id={id} class="fixed inset-0 flex items-center justify-center z-50 hidden" data-share-modal>
   <div class="modal-backdrop fixed inset-0 bg-black/60"></div>
   <div class="bg-orange text-white rounded-lg p-6 md:p-8 max-w-lg mx-4 relative z-10 transform transition-all shadow-xl">
     <!-- Close X -->
@@ -94,10 +94,14 @@ const t = texts[(locale as 'es'|'en')] || texts.es;
   </div>
 </div>
 
-<script define:vars={{ modalId: id }}>
-  function initShareModal(modalId){
-    const modal = document.getElementById(modalId);
-    if(!modal) return;
+<script is:inline>
+(function() {
+  'use strict';
+  
+  function initShareModal(modal){
+    if(!modal || modal.dataset.initialized === 'true') return;
+    modal.dataset.initialized = 'true';
+    
     const closes = modal.querySelectorAll('.modal-close');
     const backdrop = modal.querySelector('.modal-backdrop');
 
@@ -105,11 +109,15 @@ const t = texts[(locale as 'es'|'en')] || texts.es;
       modal.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
     }
+    
     closes.forEach(btn=>btn.addEventListener('click', closeModal));
     if(backdrop) backdrop.addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e)=>{
+    
+    // Escape key handler
+    const escapeHandler = (e) => {
       if(e.key==='Escape' && !modal.classList.contains('hidden')) closeModal();
-    });
+    };
+    document.addEventListener('keydown', escapeHandler);
   }
 
   // Public API: window.showShareModal(id)
@@ -123,10 +131,19 @@ const t = texts[(locale as 'es'|'en')] || texts.es;
     }
   }
 
-  document.addEventListener('DOMContentLoaded', ()=>{
-    initShareModal(modalId);
-  });
-  document.addEventListener('astro:page-load', ()=>{
-    initShareModal(modalId);
-  });
+  function initAllShareModals() {
+    document.querySelectorAll('[data-share-modal]').forEach(modal => {
+      initShareModal(modal);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllShareModals);
+  } else {
+    initAllShareModals();
+  }
+  
+  document.addEventListener('astro:page-load', initAllShareModals);
+  document.addEventListener('astro:after-swap', initAllShareModals);
+})();
 </script>

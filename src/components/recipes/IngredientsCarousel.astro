@@ -55,7 +55,10 @@ const { items = [] } = Astro.props as Props;
   </div>
 )}
 
-<script>
+<script is:inline>
+  (function() {
+    'use strict';
+    
   /**
    * @param {HTMLElement} root
    */
@@ -162,4 +165,5 @@ const { items = [] } = Astro.props as Props;
   }
   document.addEventListener('astro:page-load', initAll);
   document.addEventListener('astro:after-swap', initAll);
+  })();
 </script>

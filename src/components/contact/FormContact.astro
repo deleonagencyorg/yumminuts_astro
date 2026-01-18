@@ -27,6 +27,7 @@ const cityLabel = locale === 'es' ? 'Ciudad' : 'City';
 const countryPlaceholder = locale === 'es' ? 'Selecciona tu país' : 'Select your country';
 const departmentPlaceholder = locale === 'es' ? 'Primero selecciona un país' : 'First select a country';
 const contactReasonPlaceholder = locale === 'es' ? 'Selecciona el tipo de consulta' : 'Select the type of inquiry';
+const messagePlaceholder = contact.form.message.placeholder;
 
 // Get API configuration from environment variables
 const apiHost = import.meta.env.PUBLIC_CONTACT_API_HOST || 'https://api-crm.yummiespromociones.com/api';
@@ -109,7 +110,21 @@ const options = dynamicOptions[locale];
   }
 </style>
 
-<div class="bg-cover bg-center bg-no-repeat rounded-2xl p-8" style="background-image: url('https://snack.yummiespromociones.com/yumminuts/form-bg.png')" transition:name="contact-form">
+<div 
+  class="bg-cover bg-center bg-no-repeat rounded-2xl p-8" 
+  style="background-image: url('https://snack.yummiespromociones.com/yumminuts/form-bg.png')" 
+  transition:name="contact-form"
+  id="contactFormContainer"
+  data-locale={locale}
+  data-api-host={apiHost}
+  data-api-token={apiToken}
+  data-contact-form-path={contactFormPath}
+  data-message-placeholder={messagePlaceholder}
+  data-department-placeholder={departmentPlaceholder}
+  data-country-placeholder={countryPlaceholder}
+  data-labels={JSON.stringify(labels)}
+  data-options={JSON.stringify(options)}
+>
 
   <div class="flex flex-col gap-10 items-start w-full">
     <!-- Header -->
@@ -270,9 +285,32 @@ const options = dynamicOptions[locale];
   buttonText={locale === 'es' ? "Cerrar" : "Close"}
 />
 
-<script define:vars={{ departmentPlaceholder, countryPlaceholder, labels, options, locale, apiHost, apiToken, contactFormPath }}>
-  // Countries data
-  const countriesData = {
+<script is:inline>
+  (function() {
+    'use strict';
+    
+    function initContactForm() {
+      // Get config from data attributes
+      const container = document.getElementById('contactFormContainer');
+      if (!container) {
+        console.log('Contact form container not found');
+        return;
+      }
+      
+      const locale = container.dataset.locale;
+      const apiHost = container.dataset.apiHost;
+      const apiToken = container.dataset.apiToken;
+      const contactFormPath = container.dataset.contactFormPath;
+      const messagePlaceholder = container.dataset.messagePlaceholder;
+      const departmentPlaceholder = container.dataset.departmentPlaceholder;
+      const countryPlaceholder = container.dataset.countryPlaceholder;
+      const labels = JSON.parse(container.dataset.labels || '{}');
+      const options = JSON.parse(container.dataset.options || '{}');
+      
+      console.log('Initializing contact form with locale:', locale);
+      
+      // Countries data
+      const countriesData = {
     'Guatemala': [
       'Guatemala', 'Alta Verapaz', 'Baja Verapaz', 'Chimaltenango', 'Chiquimula',
       'El Progreso', 'Escuintla', 'Huehuetenango', 'Izabal', 'Jalapa',
@@ -311,8 +349,8 @@ const options = dynamicOptions[locale];
     ]
   };
 
-  // Simple file validation function
-  function validateFile(file) {
+      // Simple file validation function
+      function validateFile(file) {
     if (file.size > 10 * 1024 * 1024) {
       return { valid: false, error: locale === 'es' ? 'El archivo debe ser menor a 10MB' : 'File must be smaller than 10MB' };
     }
@@ -322,11 +360,11 @@ const options = dynamicOptions[locale];
       return { valid: false, error: locale === 'es' ? 'Solo se permiten archivos PDF, JPG y PNG' : 'Only PDF, JPG and PNG files are allowed' };
     }
     
-    return { valid: true };
-  }
+        return { valid: true };
+      }
 
-  // Form submission function using the new API
-  async function submitContactForm(formData) {
+      // Form submission function using the new API
+      async function submitContactForm(formData) {
     try {
       // Handle "Enviar Hoja de vida" redirect case
       if (formData.contactReason === 'Enviar Hoja de vida') {
@@ -359,6 +397,22 @@ const options = dynamicOptions[locale];
             success: false,
             message: fileValidation.error || 'Invalid file'
           };
+        }
+      }
+
+      // Normalize/augment data for specific reasons before building multipart payload
+      if (formData.contactReason === 'Soy un ganador') {
+        if (typeof formData.dynamicOrPromotion === 'string') {
+          const prefix = 'Dinámica o promoción: ';
+          if (!formData.dynamicOrPromotion.trim().toLowerCase().startsWith('dinámica o promoción')) {
+            formData.dynamicOrPromotion = prefix + formData.dynamicOrPromotion;
+          }
+        }
+        if (typeof formData.award === 'string') {
+          const prefix = 'Premio adjudicado: ';
+          if (!formData.award.trim().toLowerCase().startsWith('premio adjudicado')) {
+            formData.award = prefix + formData.award;
+          }
         }
       }
 
@@ -419,15 +473,15 @@ const options = dynamicOptions[locale];
 
     } catch (error) {
       console.error('Contact form submission error:', error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : (locale === 'es' ? 'Error al enviar el formulario' : 'Error sending form')
-      };
+        return {
+          success: false,
+          message: error instanceof Error ? error.message : (locale === 'es' ? 'Error al enviar el formulario' : 'Error sending form')
+        };
+      }
     }
-  }
 
-  // Initialize the form functionality
-  function initFormFunctionality() {
+      // Initialize the form functionality
+      function setupFormHandlers() {
     const contactReasonSelect = document.getElementById('contactReasonSelect');
     const countrySelect = document.getElementById('countrySelect');
     const citySelect = document.getElementById('departmentSelect');
@@ -570,20 +624,15 @@ const options = dynamicOptions[locale];
       }
     };
     
-    // Initialize dynamic fields with default contact reason if selected
-    if (contactReasonSelect.value) {
-      updateDynamicFields(contactReasonSelect.value);
-    }
-  }
+        // Initialize dynamic fields with default contact reason if selected
+        if (contactReasonSelect.value) {
+          updateDynamicFields(contactReasonSelect.value);
+        }
+      }
 
-  // Initialize on DOMContentLoaded (initial page load)
-  document.addEventListener('DOMContentLoaded', initFormFunctionality);
-  
-  // Also initialize on astro:page-load (for client-side navigation)
-  document.addEventListener('astro:page-load', initFormFunctionality);
-
-  // Function to update dynamic fields based on contact reason
-  function updateDynamicFields(contactReason) {
+      // Function to update dynamic fields based on contact reason
+      function updateDynamicFields(contactReason) {
+    const dynamicFields = document.getElementById('dynamicFields');
     if (!dynamicFields) {
       console.error('Dynamic fields container not found');
       return;
@@ -591,6 +640,29 @@ const options = dynamicOptions[locale];
     
     console.log('Updating dynamic fields for reason:', contactReason);
     
+    // Toggle phone required and message placeholder depending on contact reason
+    const phoneInput = document.querySelector('input[name="phone"]');
+    const messageTextarea = document.querySelector('textarea[name="message"]');
+    if (phoneInput) {
+      if (contactReason === 'Soy un ganador') {
+        phoneInput.setAttribute('required', 'true');
+      } else {
+        phoneInput.removeAttribute('required');
+      }
+    }
+    if (messageTextarea) {
+      if (contactReason === 'Soy un ganador') {
+        // Winner-specific placeholder text in Spanish
+        messageTextarea.setAttribute(
+          'placeholder',
+          'Escribe la promoción en la que ganaste o detalla el premio que ganaste. Ej, PS5, giftcards, etc'
+        );
+      } else {
+        // Restore default localized placeholder
+        messageTextarea.setAttribute('placeholder', messagePlaceholder);
+      }
+    }
+
     // Clear existing dynamic fields
     dynamicFields.innerHTML = '';
     
@@ -630,12 +702,12 @@ const options = dynamicOptions[locale];
         createOthersFields();
         break;
       default:
-        console.log('No specific fields for reason:', contactReason);
+          console.log('No specific fields for reason:', contactReason);
+      }
     }
-  }
 
-  // Field creation functions
-  function createClientFields() {
+      // Field creation functions
+      function createClientFields() {
     if (!labels || !options) {
       console.error('Labels or options not available');
       return;
@@ -663,9 +735,9 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
-  }
+      }
 
-  function createProspectiveClientFields() {
+      function createProspectiveClientFields() {
     if (!labels || !options) return;
     
     dynamicFields.innerHTML = `
@@ -682,9 +754,9 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
-  }
+      }
 
-  function createExportsFields() {
+      function createExportsFields() {
     if (!labels || !options) return;
     
     dynamicFields.innerHTML = `
@@ -696,9 +768,9 @@ const options = dynamicOptions[locale];
         </select>
       </div>
     `;
-  }
+      }
 
-  function createSupplierFields() {
+      function createSupplierFields() {
     if (!labels) return;
     
     dynamicFields.innerHTML = `
@@ -712,9 +784,9 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
-  }
+      }
 
-  function createStudentFields() {
+      function createStudentFields() {
     if (!labels) return;
     
     dynamicFields.innerHTML = `
@@ -728,9 +800,9 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
-  }
+      }
 
-  function createJournalistFields() {
+      function createJournalistFields() {
     if (!labels || !options) return;
     
     dynamicFields.innerHTML = `
@@ -746,9 +818,9 @@ const options = dynamicOptions[locale];
         <textarea name="question" required rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
       </div>
     `;
-  }
+      }
 
-  function createEthicsLineFields() {
+      function createEthicsLineFields() {
     if (!labels) return;
     
     dynamicFields.innerHTML = `
@@ -763,9 +835,9 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp || 'Formatos permitidos: PDF, JPG, PNG (max 10MB)'}</p>
       </div>
     `;
-  }
+      }
   
-  function createWinnerFields() {
+      function createWinnerFields() {
     if (!labels) return;
     
     // Solo disponible en español
@@ -787,10 +859,15 @@ const options = dynamicOptions[locale];
         <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">Premio adjudicado *</label>
         <input type="text" name="award" required class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
       </div>
+      <div>
+        <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />
+        <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
+      </div>
     `;
-  }
+      }
 
-  function createOthersFields() {
+      function createOthersFields() {
     if (!labels) return;
     
     dynamicFields.innerHTML = `
@@ -804,5 +881,21 @@ const options = dynamicOptions[locale];
         <p class="text-sm text-primary mt-1">${labels.fileHelp}</p>
       </div>
     `;
-  }
+      }
+
+      // Run setup
+      setupFormHandlers();
+    }
+    
+    // Initialize on different events
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initContactForm);
+    } else {
+      initContactForm();
+    }
+    
+    // Re-initialize on Astro page transitions
+    document.addEventListener('astro:page-load', initContactForm);
+    document.addEventListener('astro:after-swap', initContactForm);
+  })();
 </script>

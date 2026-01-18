@@ -82,9 +82,12 @@ const currentLang = getLocale();
   </div>
 )}
 
-<script>
+<script is:inline>
+  (function() {
+    'use strict';
+    
   // Initialize carousel (no TS types to avoid lint issues in Astro script)
-  function initRelatedCarousel(root: any) {
+  function initRelatedCarousel(root) {
     if (!root || root._relInit) return;
     root._relInit = true;
 
@@ -150,7 +153,7 @@ const currentLang = getLocale();
   }
 
   function initAll() {
-    document.querySelectorAll('[data-related-recipes-carousel]').forEach((el) => initRelatedCarousel(el as any));
+    document.querySelectorAll('[data-related-recipes-carousel]').forEach((el) => initRelatedCarousel(el));
   }
 
   if (document.readyState === 'loading') {
@@ -160,4 +163,5 @@ const currentLang = getLocale();
   }
   document.addEventListener('astro:page-load', initAll);
   document.addEventListener('astro:after-swap', initAll);
+  })();
 </script>

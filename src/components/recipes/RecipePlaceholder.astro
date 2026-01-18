@@ -1,0 +1,74 @@
+---
+import LazyImage from '../common/LazyImage.astro';
+
+interface Props {
+  class?: string;
+  width?: string | number;
+  height?: string | number;
+}
+
+const { 
+  class: className = '',
+  width,
+  height
+} = Astro.props;
+
+// Logo del sitio desde Favicon
+const logoUrl = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/logo-blue-yumminuts.webp';
+---
+
+<div 
+  class={`recipe-placeholder bg-primary flex items-center justify-center ${className}`}
+  style={{
+    width: width ? (typeof width === 'number' ? `${width}px` : width) : '100%',
+    height: height ? (typeof height === 'number' ? `${height}px` : height) : '100%',
+    minHeight: '200px'
+  }}
+>
+  <div class="logo-container w-2/3 h-2/3 flex items-center justify-center">
+    <LazyImage
+      src={logoUrl}
+      alt="Yummi Nuts"
+      class="w-full h-full object-contain"
+      color="white"
+      decorative={true}
+    />
+  </div>
+</div>
+
+<style>
+  .recipe-placeholder {
+    background: linear-gradient(135deg, #385CAD 0%, #2a4a8a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .recipe-placeholder::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+
+  .logo-container {
+    position: relative;
+    z-index: 1;
+    max-width: 200px;
+    max-height: 200px;
+  }
+</style>
