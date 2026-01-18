@@ -122,114 +122,130 @@ function normalizeType(r: Recipe): string {
   </div>
 </div>
 
-<script>
-  // This script runs only on the client side
-  document.addEventListener('DOMContentLoaded', () => {
-    // Fallback image handling
-    const images = document.querySelectorAll('img');
-    images.forEach((img) => {
-      img.addEventListener('error', function() {
-        this.src = '/images/recipes/placeholder.jpg';
-      });
-    });
+<script is:inline>
+  (function() {
+    'use strict';
+    
+    function initRecipesPage() {
+      // Filters
+      const filterButtons = Array.from(document.querySelectorAll('#recipeFilters .filter-btn'));
+      const cards = Array.from(document.querySelectorAll('#recipesGrid .recipe-card'));
+      const noResultsEl = document.getElementById('noResults');
+      const sentinel = document.getElementById('infiniteSentinel');
 
-    // Filters
-    const filterButtons = Array.from(document.querySelectorAll('#recipeFilters .filter-btn')) as HTMLButtonElement[];
-    const cards = Array.from(document.querySelectorAll('#recipesGrid .recipe-card')) as HTMLElement[];
-    const noResultsEl = document.getElementById('noResults') as HTMLElement | null;
-    const sentinel = document.getElementById('infiniteSentinel');
+      if (filterButtons.length === 0 || cards.length === 0) {
+        console.log('Recipes page elements not found, skipping initialization');
+        return;
+      }
 
-    // Pagination settings
-    const pageSize = 6;
-    let currentFilter = 'all';
-    let revealedCount = 0;
+      // Pagination settings
+      const pageSize = 6;
+      let currentFilter = 'all';
+      let revealedCount = 0;
+      let observer = null;
 
-    // Hide all cards
-    function hideAll() {
-      cards.forEach((c) => (c.style.display = 'none'));
-    }
+      // Hide all cards
+      function hideAll() {
+        cards.forEach((c) => (c.style.display = 'none'));
+      }
 
-    // Get cards matching filter
-    function getMatchingCards(filter: string) {
-      return cards.filter((card) => {
-        const type = (card.dataset.type || 'other').toLowerCase();
-        return filter === 'all' || type === filter;
-      });
-    }
+      // Get cards matching filter
+      function getMatchingCards(filter) {
+        return cards.filter((card) => {
+          const type = (card.dataset.type || 'other').toLowerCase();
+          return filter === 'all' || type === filter;
+        });
+      }
 
-    // Reveal next page of matching cards
-    function revealNextPage() {
-      const matching = getMatchingCards(currentFilter);
-      const nextBatch = matching.slice(revealedCount, revealedCount + pageSize);
-      nextBatch.forEach((card) => (card.style.display = ''));
-      revealedCount += nextBatch.length;
+      // Reveal next page of matching cards
+      function revealNextPage() {
+        const matching = getMatchingCards(currentFilter);
+        const nextBatch = matching.slice(revealedCount, revealedCount + pageSize);
+        nextBatch.forEach((card) => (card.style.display = ''));
+        revealedCount += nextBatch.length;
 
-      // Toggle no-results
-      const anyVisible = matching.length > 0;
-      if (noResultsEl) {
-        if (anyVisible) {
-          noResultsEl.classList.add('hidden');
-          noResultsEl.classList.remove('flex');
-        } else {
-          noResultsEl.classList.remove('hidden');
-          noResultsEl.classList.add('flex');
+        // Toggle no-results
+        const anyVisible = matching.length > 0;
+        if (noResultsEl) {
+          if (anyVisible) {
+            noResultsEl.classList.add('hidden');
+            noResultsEl.classList.remove('flex');
+          } else {
+            noResultsEl.classList.remove('hidden');
+            noResultsEl.classList.add('flex');
+          }
         }
+      }
+
+      // Apply filter and reset pagination
+      function applyFilter(filter) {
+        currentFilter = filter;
+        revealedCount = 0;
+        hideAll();
+        revealNextPage();
+      }
+
+      function setActive(btn) {
+        // Reset styles for all buttons
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
+          // Asegurar texto blanco siempre
+          b.classList.add('text-primary');
+        });
+        // Highlight active
+        btn.classList.add('bg-secondary', 'text-primary');
+        // Dim the rest
+        filterButtons.forEach(b => {
+          if (b !== btn) b.classList.add('opacity-40');
+        });
+      }
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const filter = btn.getAttribute('data-filter') || 'all';
+          setActive(btn);
+          applyFilter(filter);
+        });
+      });
+
+      // Initialize default state (ALL)
+      const defaultBtn = filterButtons.find(b => b.getAttribute('data-filter') === 'all');
+      if (defaultBtn) {
+        setActive(defaultBtn);
+        applyFilter('all');
+      }
+
+      // Infinite scroll observer
+      if ('IntersectionObserver' in window && sentinel) {
+        // Cleanup previous observer if exists
+        if (observer) {
+          observer.disconnect();
+        }
+        
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const matching = getMatchingCards(currentFilter);
+              if (revealedCount < matching.length) {
+                revealNextPage();
+              }
+            }
+          });
+        });
+        observer.observe(sentinel);
       }
     }
 
-    // Apply filter and reset pagination
-    function applyFilter(filter: string) {
-      currentFilter = filter;
-      revealedCount = 0;
-      hideAll();
-      revealNextPage();
+    // Initialize on different events
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initRecipesPage);
+    } else {
+      initRecipesPage();
     }
-
-    function setActive(btn: HTMLButtonElement) {
-      // Reset styles for all buttons
-      filterButtons.forEach(b => {
-        b.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
-        // Asegurar texto blanco siempre
-        b.classList.add('text-primary');
-      });
-      // Highlight active
-      btn.classList.add('bg-secondary', 'text-primary');
-      // Dim the rest
-      filterButtons.forEach(b => {
-        if (b !== btn) b.classList.add('opacity-40');
-      });
-    }
-
-    filterButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-filter') || 'all';
-        setActive(btn as HTMLButtonElement);
-        applyFilter(filter);
-      });
-    });
-
-    // Initialize default state (ALL)
-    const defaultBtn = filterButtons.find(b => b.getAttribute('data-filter') === 'all');
-    if (defaultBtn) {
-      setActive(defaultBtn);
-      applyFilter('all');
-    }
-
-    // Infinite scroll observer
-    if ('IntersectionObserver' in window && sentinel) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const matching = getMatchingCards(currentFilter);
-            if (revealedCount < matching.length) {
-              revealNextPage();
-            }
-          }
-        });
-      });
-      io.observe(sentinel);
-    }
-  });
+    
+    document.addEventListener('astro:page-load', initRecipesPage);
+    document.addEventListener('astro:after-swap', initRecipesPage);
+  })();
 </script>
 
 <style>

@@ -215,7 +215,10 @@ for (let i = 0; i < recipeItems.length; i += 1) {
   </div>
 </div>
 
-<script>
+<script is:inline>
+  (function() {
+    'use strict';
+    
   function initRecipesCarousel(root) {
     if (!root || root.dataset.rcInitialized === 'true') return;
     root.dataset.rcInitialized = 'true';
@@ -224,7 +227,14 @@ for (let i = 0; i < recipeItems.length; i += 1) {
 
     // Setup filtros
     const filtersContainer = root.querySelector('#recipesFilters');
-    const filterButtons = Array.from(filtersContainer?.querySelectorAll('.filter-btn'));
+    const filterButtons = Array.from(filtersContainer?.querySelectorAll('.filter-btn') || []);
+
+    // Pre-seleccionar el filtro "all" visualmente
+    const allFilterBtn = filterButtons.find(btn => btn.getAttribute('data-filter') === 'all');
+    if (allFilterBtn) {
+      filterButtons.forEach(b => b.classList.remove('ring-2', 'ring-brown'));
+      allFilterBtn.classList.add('ring-2', 'ring-brown');
+    }
 
     // Configuración para el carrusel mobile
     setupMobileCarousel();
@@ -462,4 +472,5 @@ for (let i = 0; i < recipeItems.length; i += 1) {
   }
   document.addEventListener('astro:page-load', initAll);
   document.addEventListener('astro:after-swap', initAll);
+  })();
 </script>
