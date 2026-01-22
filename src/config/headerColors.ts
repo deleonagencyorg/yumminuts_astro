@@ -36,14 +36,14 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   yummiesone: {
     textColor: 'text-primary',
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   // Configuración para la página de nosotros
   nosotros: {
@@ -51,7 +51,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de brands
@@ -60,7 +60,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de blog
@@ -69,7 +69,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de productos
@@ -78,7 +78,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de recetas
@@ -87,7 +87,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de contacto
