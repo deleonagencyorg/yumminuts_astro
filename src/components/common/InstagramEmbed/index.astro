@@ -183,15 +183,15 @@ const embedUrl = `https://www.instagram.com/p/${postId}/embed/`;
         try {
           // Intentar acceder al contenido del iframe
           // Si hay un error de seguridad, mostrará el fallback
-          if (iframe.contentDocument === null) {
+          if ((iframe as HTMLIFrameElement).contentDocument === null) {
             iframe.style.display = 'none';
-            const fallback = iframe.parentNode.querySelector('.instagram-fallback');
+            const fallback = iframe.parentNode?.querySelector('.instagram-fallback');
             if (fallback) fallback.style.display = 'flex';
           }
         } catch (e) {
           // Error de seguridad al intentar acceder al iframe
           iframe.style.display = 'none';
-          const fallback = iframe.parentNode.querySelector('.instagram-fallback');
+          const fallback = iframe.parentNode?.querySelector('.instagram-fallback');
           if (fallback) fallback.style.display = 'flex';
         }
       }, 1000);
