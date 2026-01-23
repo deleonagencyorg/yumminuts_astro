@@ -50,13 +50,13 @@ function productHref(p: Product): string {
   </div>
 
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
-    <div class="relative w-full -mx-4 md:mx-0">
+    <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
+      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
         {displayProducts.map((product) => {
           const isBars = (product.title || '').toLowerCase().includes('barra') || (product.title || '').toLowerCase().includes('bar');
           return (
-          <a href={productHref(product)} class={`content-stretch flex flex-col h-[421px] items-start justify-start relative shrink-0 snap-start w-[280px] md:w-[350px] opacity-0 translate-y-6 transition-all duration-700 ease-out`} data-reveal-child>
+          <a href={productHref(product)} class={`categories-card content-stretch flex flex-col h-[421px] items-start justify-start relative shrink-0 snap-start w-[280px] md:w-[350px] opacity-0 translate-y-6 transition-all duration-700 ease-out`} data-reveal-child>
             <div class="h-[374.054px] overflow-clip relative shrink-0 w-[275px]">
               <!-- SVG background filled by product.bgColor -->
               <div class="absolute inset-0 rounded-lg transition-all duration-300">
@@ -128,16 +128,15 @@ function productHref(p: Product): string {
         const nextLeft = Math.min(row.scrollLeft + step, maxLeft);
 
         row.scrollTo({ left: nextLeft, behavior: 'smooth' });
-
-        if (nextLeft >= maxLeft - 2) {
-          window.setTimeout(() => {
-            row.scrollTo({ left: 0, behavior: 'smooth' });
-          }, 250);
-        }
       };
 
       nextBtn.addEventListener('click', () => {
         if (hasOverflow()) {
+          const maxLeft = row.scrollWidth - row.clientWidth;
+          if (row.scrollLeft >= maxLeft - 2) {
+            row.scrollTo({ left: 0, behavior: 'smooth' });
+            return;
+          }
           scrollNext();
           return;
         }
@@ -152,3 +151,25 @@ function productHref(p: Product): string {
     initCategoriesNext();
   }
 </script>
+
+<style>
+  @media (max-width: 767px) {
+    [data-categories-instance] .categories-row-wrapper {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      overflow: visible;
+    }
+
+    [data-categories-instance] .categories-row {
+      padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      padding-right: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      scroll-padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      scroll-padding-right: clamp(16px, calc((100vw - 280px) / 2), 64px);
+    }
+
+    [data-categories-instance] .categories-card {
+      scroll-snap-align: center;
+    }
+  }
+</style>
