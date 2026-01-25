@@ -101,45 +101,7 @@
       }
     ],
     "discoverSection": {
-      "title": "Descúbrenos",
-      "images": [
-        {
-          "id": "slide1",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
-          "alt": "imagen1",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide2",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
-          "alt": "imagen2",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide3",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
-          "alt": "imagen3",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide4",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
-          "alt": "imagen4",
-          "title": "",
-          "description": "",
-          "link": "#"
-        }
-      ]
+      "title": "Descúbrenos"
     },
     "healthPage": {
       "title": "Activa tu mente y cuerpo con Yummi Nuts",
@@ -260,45 +222,7 @@
     ]
   },
   "discover": {
-    "title": "Descúbrenos",
-    "images": [
-      {
-        "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen1",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide2",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen2",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide3",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen3",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide4",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen4",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      }
-    ]
+    "title": "Descúbrenos"
   },
   "home": {
     "meta": {
@@ -310,7 +234,7 @@
       "buttonText":"Suscribirse"
     },
     "socialmedia":{
-      "title":"Síguenos",
+      "title":"Descúbrenos",
       "tagtitle":"en redes",
       "description":"Síguenos en nuestras redes sociales - Snacks Yummies",
       "newsletter":"Entérate de las noticias y promociones",

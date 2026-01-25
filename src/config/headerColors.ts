@@ -96,7 +96,7 @@ export const headerColors: HeaderColors = {
     backgroundColor: 'bg-white',
     hoverTextColor: 'hover:text-primary',
     hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
+    showMessageCarousel: true,
   },
   
   // Configuración para la página de jurados
@@ -126,14 +126,6 @@ export const headerColors: HeaderColors = {
     showMessageCarousel: true,
   },
 
-  // Configuración para Ziba's Creators
-  zibas_creators: {
-    textColor: 'text-primary',
-    backgroundColor: 'bg-white',
-    hoverTextColor: 'hover:text-primary',
-    hoverBackgroundColor: 'hover:bg-primary',
-    showMessageCarousel: false,
-  },
 
   // Configuración para la página de nosotros
   about: {
@@ -154,6 +146,7 @@ export function getHeaderColors(pathname: string): HeaderColorConfig {
     return headerColors.brands;
   }
   
+  // Blog (listado de noticias)
   if (path.includes('/blog') || path.includes('/noticias')) {
     return headerColors.blog;
   }
@@ -170,10 +163,11 @@ export function getHeaderColors(pathname: string): HeaderColorConfig {
     return headerColors.recipes;
   }
   
-  if (path.includes('/contact')) {
+  if (path.includes('/contact') || path.includes('/contacto')) {
     return headerColors.contact;
   }
   
+  // News (detalle /news/...)
   if (path.includes('/news')) {
     return headerColors.news;
   }
@@ -184,10 +178,6 @@ export function getHeaderColors(pathname: string): HeaderColorConfig {
    
   if (path.includes('/about') || path.includes('/nosotros')) {
     return headerColors.about;
-  }
-  
-  if (path.includes('/zibas-creators')) {
-    return headerColors.zibas_creators;
   }
   
   if (path.includes('/jurados')) {
