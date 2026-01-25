@@ -176,45 +176,7 @@
       ]
     },
     "discoverSection": {
-      "title": "Discover Us",
-      "images": [
-        {
-          "id": "slide1",
-          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "alt": "image1",
-          "title": "",
-          "description": "",
-          "link": "https://www.zambos.com"
-        },
-        {
-          "id": "slide2",
-          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "alt": "image2",
-          "title": "",
-          "description": "",
-          "link": "https://www.zambos.com"
-        },
-        {
-          "id": "slide3",
-          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "alt": "image3",
-          "title": "",
-          "description": "",
-          "link": "https://www.zambos.com"
-        },
-        {
-          "id": "slide4",
-          "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-          "alt": "image4",
-          "title": "",
-          "description": "",
-          "link": "https://www.zambos.com"
-        }
-      ]
+      "title": "Discover Us"
     }
   },
   "menu_labels": {
@@ -267,7 +229,7 @@
       "buttonText":"Subscribe"
     },
     "socialmedia":{
-      "title":"Follow us",
+      "title":"Discover Us",
       "tagtitle":"on social media",
       "description":"Follow us on our social media - Snacks Yummies",
       "newsletter":"Stay up to date with all our news and promotions",
