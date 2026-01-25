@@ -31,6 +31,8 @@ const locale = currentLang || getLocale();
 // Get contact data from locale
 const contact = locale === 'es' ? contactEs : contactEn;
 
+const locationUnavailableText = locale === 'es' ? 'Ubicación no disponible' : 'Location not available';
+
 // Meta information
 const title = contact.title;
 const metaDescription = contact.description;
@@ -50,7 +52,7 @@ const headerColors = {
       
       <!-- Left Column - Contact Info -->
     <div class="w-[100%] lg:w-[40%] pl-8 lg:pl-16 flex flex-col justify-center h-[100%] lg:h-[600px]">
-        <h2 class="text-black font-heading text-xl uppercase md:text-2xl lg:text-5xl font-bold mb-6">
+        <h2 class="text-black font-heading text-4xl uppercase md:text-4xl lg:text-5xl font-bold mb-6">
           {contact.title}
         </h2>
         
@@ -61,13 +63,13 @@ const headerColors = {
       </div>
       
       <!-- Right Column - Contact Form -->
-      <div class="w-[100%] lg:w-[40%]">
+      <div class="w-[100%] lg:w-[40%] -mt-4 lg:-mt-0">
         <FormContact currentLang={locale} />
       </div>
     </div>
     
     <!-- Offices Section -->
-    <div class="container mx-auto bg-white p-8">
+    <div class="container mx-auto bg-white p-8" data-contact-offices data-contact-locations={JSON.stringify(contact.offices.locations)}>
       
       <!-- Tabs and Office Info -->
       <div class="flex flex-col mb-4">
@@ -75,7 +77,7 @@ const headerColors = {
           <span class="font-heading">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
         </h3>
         <!-- Office Details -->
-        <div class="order-2 w-[80%] mx-auto">
+        <div class="order-2 w-[95%] md:w-[80%] mx-auto">
           <div id="officeInfo" class="bg-white rounded-2xl p-8 ">
             <div class="flex flex-col lg:flex-row justify-between items-center">
               <div class="space-y-4">
@@ -120,11 +122,12 @@ const headerColors = {
         <!-- Map and Tabs -->
         <div class="order-1 mt-4">
           <!-- Country Tabs -->
-          <div class="mb-6 flex flex-wrap justify-center gap-2">
+          <div class="mb-6 grid grid-cols-2 gap-3 w-[95%] mx-auto md:w-[95%] md:mx-auto md:flex md:flex-wrap md:justify-center md:gap-2">
           {Object.entries(contact.offices.locations).map(([countryCode, location]: [string, any], index: number) => (
             <button 
+              type="button"
               data-country-code={countryCode}
-              class={`country-tab px-10 py-4 text-black uppercase text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2.5
+              class={`country-tab w-full md:w-auto px-4 md:px-10 py-4 text-black uppercase text-xs md:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2.5 text-center leading-tight
                 ${index === 0 
                   ? 'h-[54px] bg-skyblue opacity-100 border border-white' 
                   : 'h-[54px] bg-gray-200 opacity-75 hover:opacity-100'
@@ -136,8 +139,8 @@ const headerColors = {
         </div>
           
           <!-- Map -->
-          <div class="bg-gradient-to-br w-[80%] mx-auto bg-white rounded-2xl p-6 shadow-lg mb-4">
-            <div class="w-full  overflow-hidden rounded-xl" style="height: 500px;">
+          <div class="bg-gradient-to-br w-[95%] md:w-[80%] mx-auto bg-white rounded-2xl p-6 shadow-lg mb-4">
+            <div class="w-full overflow-hidden rounded-xl h-[60vh] md:h-[500px]">
               <!-- Container for all map iframes -->
               <div id="maps-container" style="width: 100%; height: 100%;">
                 {Object.entries(contact.offices.locations).map(([countryCode, location]: [string, any], index: number) => (
@@ -145,16 +148,22 @@ const headerColors = {
                     data-map-country={countryCode}
                     style={`width: 100%; height: 100%; ${index === 0 ? 'display: block;' : 'display: none;'}`}
                   >
-                    <iframe
-                      src={location.mapEmbed}
-                      width="100%"
-                      height="100%"
-                      frameborder="0"
-                      allowfullscreen="allowfullscreen"
-                      aria-hidden="false"
-                      style="width: 100%; height: 100%; border: 0;"
-                      title={`${location.name} Map`}
-                    ></iframe>
+                    {location.mapEmbed ? (
+                      <iframe
+                        src={location.mapEmbed}
+                        width="100%"
+                        height="100%"
+                        frameborder="0"
+                        allowfullscreen="allowfullscreen"
+                        aria-hidden="false"
+                        style="width: 100%; height: 100%; border: 0;"
+                        title={`${location.name} Map`}
+                      ></iframe>
+                    ) : (
+                      <div class="w-full h-full flex items-center justify-center">
+                        <p class="text-center text-gray-600 font-semibold">{locationUnavailableText}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -164,22 +173,31 @@ const headerColors = {
       </div>
     </div>
 
-    <script define:vars={{ contactLocations: contact.offices.locations }}>
+    <script is:inline data-astro-rerun>
       // Función que se ejecutará cuando el DOM esté listo o cuando se llame manualmente
       function initializeCountryTabs() {
+        const root = document.querySelector('[data-contact-offices]');
+        if (!(root instanceof HTMLElement)) return;
+
+        const rawLocations = root.getAttribute('data-contact-locations') || '{}';
+        let contactData = {};
+        try {
+          contactData = JSON.parse(rawLocations);
+        } catch (err) {
+          console.error('Invalid contact locations JSON:', err);
+          contactData = {};
+        }
+
         // Get references to all elements that need to be updated
-        const tabs = document.querySelectorAll('.country-tab');
-        const officeName = document.getElementById('officeName');
-        const officeAddress = document.getElementById('officeAddress');
-        const officePhones = document.getElementById('officePhones');
-        const officeEmail = document.getElementById('officeEmail');
-        const officeImage = document.getElementById('officeImage');
+        const tabs = root.querySelectorAll('.country-tab');
+        const officeName = root.querySelector('#officeName');
+        const officeAddress = root.querySelector('#officeAddress');
+        const officePhones = root.querySelector('#officePhones');
+        const officeEmail = root.querySelector('#officeEmail');
+        const officeImage = root.querySelector('#officeImage');
         
         // Get all map containers
-        const mapContainers = document.querySelectorAll('[data-map-country]');
-        
-        // Contact data is directly available from Astro's define:vars
-        const contactData = contactLocations;
+        const mapContainers = root.querySelectorAll('[data-map-country]');
         
         // For debugging
         console.log('Contact locations:', contactData);
@@ -239,7 +257,7 @@ const headerColors = {
           });
           
           // Then show the selected one
-          const selectedMap = document.querySelector(`[data-map-country="${countryCode}"]`);
+          const selectedMap = root.querySelector(`[data-map-country="${countryCode}"]`);
           if (selectedMap) {
             selectedMap.style.display = 'block';
             console.log('Showing map container:', countryCode);
@@ -268,19 +286,27 @@ const headerColors = {
             updateOfficeInfo(countryCode);
           }
         }
-        
-        // Add click and touch event listeners to tabs for better mobile compatibility
-        tabs.forEach(tab => {
-          // Función para manejar ambos tipos de eventos
-          const handleEvent = (e) => {
-            e.preventDefault();
-            console.log('Tab interaction:', tab.getAttribute('data-country-code'));
+
+        // Direct handlers per tab (reliable across desktop/mobile and overwrites previous bindings)
+        tabs.forEach((tab) => {
+          tab.onclick = (e) => {
+            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+            // Avoid double-trigger on mobile (touchend + click)
+            const now = Date.now();
+            const lastTouch = Number(root.dataset.lastTouch || '0');
+            if (now - lastTouch < 500) return;
+
+            console.log('Tab click:', tab.getAttribute('data-country-code'));
             handleTabSelection(tab);
           };
-          
-          // Agregar múltiples listeners para mayor compatibilidad
-          tab.addEventListener('click', handleEvent);
-          tab.addEventListener('touchend', handleEvent);
+
+          tab.ontouchend = (e) => {
+            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            root.dataset.lastTouch = String(Date.now());
+            console.log('Tab touch:', tab.getAttribute('data-country-code'));
+            handleTabSelection(tab);
+          };
         });
         
         // Initialize with first country
@@ -307,18 +333,26 @@ const headerColors = {
         }
       }
       
-      // Intentar inicializar inmediatamente
+      const safeInit = () => {
+        try {
+          initializeCountryTabs();
+        } catch (err) {
+          console.error('Error initializing country tabs:', err);
+        }
+      };
+
+      document.addEventListener('astro:page-load', safeInit);
+      document.addEventListener('astro:after-swap', safeInit);
+      window.addEventListener('load', safeInit);
+
       if (document.readyState === 'loading') {
-        // Si el documento aún se está cargando, esperar al evento DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', initializeCountryTabs);
+        document.addEventListener('DOMContentLoaded', safeInit, { once: true });
       } else {
-        // Si el documento ya está cargado, ejecutar inmediatamente
-        initializeCountryTabs();
+        safeInit();
       }
-      
-      // Como respaldo, intentar inicializar después de un breve retraso
-      // para asegurarnos de que todo esté correctamente cargado
-      setTimeout(initializeCountryTabs, 500);
+
+      // Fallback: in case scripts run before the section is in the DOM
+      setTimeout(safeInit, 0);
     </script>
   </div>
 </MainLayout>
