@@ -18,6 +18,7 @@ export interface Props {
 // Coerce incoming slides to a safe array to avoid `.map` on non-arrays
 const { slides: rawSlides, loading = false } = Astro.props as { slides?: any; loading?: boolean };
 const slides = Array.isArray(rawSlides) ? rawSlides : [];
+const hasMultipleSlides = slides.length > 1;
 
 // Log de depuración
 
@@ -38,10 +39,13 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
 <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <!-- Cargar scripts del carrusel solo en el cliente -->
-<script is:inline define:vars={{ carouselSelector: '.swiper-container.main-carousel' }}>
+<script is:inline define:vars={{ carouselSelector: '.swiper-container.main-carousel', hasMultipleSlides }}>
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       try {
+        if (!hasMultipleSlides) {
+          return;
+        }
         const swiper = new Swiper(carouselSelector, {
           loop: true,
           autoplay: {
@@ -88,6 +92,8 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
 
 {loading ? (
   <Skeleton items={3} />
+) : slides.length === 0 ? (
+  <Skeleton items={1} />
 ) : (
   <div class="relative overflow-hidden w-full mx-auto" transition:animate="fade">
     {preloadFirstImage && (
@@ -118,9 +124,13 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
       </div>
       
       <!-- Controles de navegación -->
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-pagination"></div>
+      {hasMultipleSlides && (
+        <>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </>
+      )}
     </div>
   </div>
 )}
