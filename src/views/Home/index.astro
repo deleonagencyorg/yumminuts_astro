@@ -82,7 +82,7 @@ const slides = Array.isArray(commonAssets)
     }))
   : [];
 
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
 
 // Load recipes via Vite glob (same strategy as Recipes page)
 interface Recipe { id: string; title: string; image?: string; preparation_time: number; type?: string }
