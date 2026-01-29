@@ -98,6 +98,7 @@ for (let i = 0; i < recipeItems.length; i += 1) {
     
     <!-- Seccion de recetas -->
     
+<<<<<<< HEAD
     <!-- Botones de filtro -->
     {!providedMode && (
     <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
@@ -116,6 +117,32 @@ for (let i = 0; i < recipeItems.length; i += 1) {
       </button>
     </div>
     )}
+=======
+    {recipeItems.length === 0 ? (
+      <div class="w-full text-center text-gray-500 py-8">
+        {currentLang === 'es' ? 'No hay recetas disponibles.' : 'No recipes available.'}
+      </div>
+    ) : (
+      <>
+        <!-- Botones de filtro -->
+        {!providedMode && (
+        <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
+          <button type="button" data-filter="breakfast" class="filter-btn text-[13px] xs:text-[14px] sm:text-[16px] md:text-[20px] w-full px-3 sm:px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white whitespace-normal break-words leading-tight min-h-[48px] flex items-center justify-center text-center">
+            {filterLabels.breakfast}
+          </button>
+          <button type="button" data-filter="snacks" class="filter-btn text-[13px] xs:text-[14px] sm:text-[16px] md:text-[20px] w-full px-3 sm:px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white whitespace-normal break-words leading-tight min-h-[48px] flex items-center justify-center text-center">
+            {filterLabels.snacks}
+          </button>
+          <button type="button" data-filter="lunch" class="filter-btn text-[13px] xs:text-[14px] sm:text-[16px] md:text-[20px] w-full px-3 sm:px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white whitespace-normal break-words leading-tight min-h-[48px] flex items-center justify-center text-center">
+            {filterLabels.lunch}
+          </button>
+
+          <button type="button" data-filter="all" class="filter-btn text-[13px] xs:text-[14px] sm:text-[16px] md:text-[20px] w-full px-3 sm:px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white whitespace-normal break-words leading-tight min-h-[48px] flex items-center justify-center text-center">
+            {filterLabels.all}
+          </button>
+        </div>
+        )}
+>>>>>>> 0d9dca1 (Fix generales)
      
     <!-- Carousel de recetas - MOBILE (1 por slide) - Solo visible en mobile -->
     <div class="recipes-carousel-mobile relative md:hidden">
