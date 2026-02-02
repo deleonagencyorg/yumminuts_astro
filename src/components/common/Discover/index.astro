@@ -27,15 +27,15 @@ const instagramPosts = locale === 'es'
 ---
 
 <div class="box-border flex flex-col gap-12 items-left justify-start container mx-auto  py-0 relative w-full bg-white">
-  <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+  <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-4xl tracking-tight text-left">
     {title}
   </h2>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 w-full">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 w-full px-4">
     {instagramPosts.map((post: any) => (
-      <div class="w-full aspect-[9/16] overflow-hidden rounded-xl">
+      <div class="w-full aspect-[9/18] overflow-hidden rounded-xl">
         <iframe
           src={post.embedUrl}
-          class="w-full h-full"
+          class="w-full h-auto min-h-full"
           allowtransparency="true"
           allowfullscreen
           frameborder="0"
