@@ -49,7 +49,12 @@
     const nextBtn = document.querySelector('.carousel-next');
     const brandIcons = document.querySelectorAll('.brand-icon-circle');
     
-    if (carousel && prevBtn && nextBtn && brandIcons.length > 0) {
+    if (carousel && prevBtn && nextBtn) {
+      if (brandIcons.length <= 1) {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        return;
+      }
       // Calcular el ancho de desplazamiento (aproximadamente 2-3 íconos)
       const scrollAmount = brandIcons[0].offsetWidth * 2 + 16; // Ancho de 2 íconos + gap
       

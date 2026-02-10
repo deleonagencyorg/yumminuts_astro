@@ -18,6 +18,7 @@ export interface Props {
 
 const { items = [] } = Astro.props as { items: RecipeItem[] };
 const currentLang = getLocale();
+const hasMultipleItems = items.length > 1;
 ---
 
 {items.length === 0 ? (
@@ -43,13 +44,16 @@ const currentLang = getLocale();
             </div>
           ))}
         </div>
-        <!-- Overlaid nav buttons -->
-        <button id="relPrevDesktop" class="hidden md:flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Prev">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-        </button>
-        <button id="relNextDesktop" class="hidden md:flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Next">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-        </button>
+        {hasMultipleItems && (
+          <>
+            <button id="relPrevDesktop" class="hidden md:flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Prev">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <button id="relNextDesktop" class="hidden md:flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Next">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </>
+        )}
       </div>
     </div>
 
@@ -71,13 +75,16 @@ const currentLang = getLocale();
           ))}
         </div>
       </div>
-      <!-- Overlaid nav buttons on mobile -->
-      <button id="relPrevMobile" class="md:hidden flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Prev">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      </button>
-      <button id="relNextMobile" class="md:hidden flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Next">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-      </button>
+      {hasMultipleItems && (
+        <>
+          <button id="relPrevMobile" class="md:hidden flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Prev">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button id="relNextMobile" class="md:hidden flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brown w-10 h-10 rounded-full shadow z-10" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </>
+      )}
     </div>
   </div>
 )}
