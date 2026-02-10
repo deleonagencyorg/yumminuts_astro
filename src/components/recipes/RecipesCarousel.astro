@@ -323,11 +323,19 @@ const hasMultipleRecipes = recipeItems.length > 1;
       }
 
       function updatePosition() {
-        // Calcular índice real de grupo visible
-        const targetGroup = visibleGroups[currentGroup];
-        const originalIndex = allGroups.indexOf(targetGroup);
-        const percent = Math.max(0, originalIndex) * 100;
-        track.style.transform = `translateX(-${percent}%)`;
+        if (!visibleGroups.length) {
+          track.style.transform = 'translateX(0)';
+          dotsContainer.innerHTML = '';
+          prevClone.classList.add('opacity-50');
+          nextClone.classList.add('opacity-50');
+          return;
+        }
+
+        const safeIndex = Math.min(Math.max(currentGroup, 0), visibleGroups.length - 1);
+        currentGroup = safeIndex;
+        // En mobile, cada grupo ocupa 100% del ancho. Al ocultar grupos, el layout colapsa,
+        // así que el translate debe basarse en el índice VISIBLE, no en el índice original.
+        track.style.transform = `translateX(-${currentGroup * 100}%)`;
 
         // Actualizar dots
         const dots = dotsContainer.querySelectorAll('button');
