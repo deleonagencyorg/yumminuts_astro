@@ -100,30 +100,26 @@ const hasMultipleRecipes = recipeItems.length > 1;
     
     <!-- Seccion de recetas -->
     
-    {recipeItems.length === 0 ? (
-      <div class="w-full text-center text-gray-500 py-8">
-        {currentLang === 'es' ? 'No hay recetas disponibles.' : 'No recipes available.'}
-      </div>
-    ) : (
-      <>
-        <!-- Botones de filtro -->
-        {!providedMode && (
-        <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
-          <button type="button" data-filter="breakfast" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
-            {filterLabels.breakfast}
-          </button>
-          <button type="button" data-filter="snacks" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
-            {filterLabels.snacks}
-          </button>
-          <button type="button" data-filter="lunch" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
-            {filterLabels.lunch}
-          </button>
-
-          <button type="button" data-filter="all" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
-            {filterLabels.all}
-          </button>
-        </div>
-        )}
+    <!-- Botones de filtro -->
+    {!providedMode && (
+    <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
+      <button type="button" data-filter="all" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.all}
+      </button>
+      <button type="button" data-filter="breakfast" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.breakfast}
+      </button>
+      <button type="button" data-filter="snacks" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.snacks}
+      </button>
+      <button type="button" data-filter="lunch" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.lunch}
+      </button>
+      <button type="button" data-filter="dinner" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.dinner}
+      </button>
+    </div>
+    )}
      
     <!-- Carousel de recetas - MOBILE (1 por slide) - Solo visible en mobile -->
     <div class="recipes-carousel-mobile relative md:hidden">
