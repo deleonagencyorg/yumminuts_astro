@@ -36,7 +36,7 @@
   "items": [
     {
       "id": "yummi-nut-mani-con-sal",
-      "name": "Yummi Nut Maní con Sal",
+      "name": "Yummi Nuts Salted Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
       "background_color": "#0073C1",
@@ -45,7 +45,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#0073C1",
-      "description": "¡Snack crujiente y delicioso en cada bocado! Dale un gusto a tu día con nuestro Maní con Sal: porciones perfectas de maní tostado con un toque de sal, ideal para llevar o disfrutar en casa. 100% natural, sin lácteos, sin gluten y lleno de sabor. ¡Tu nuevo favorito para picar!",
+      "description": "!Crunchy and delicious snack in every bite! Treat yourself to our Salted Peanuts: perfect portions of roasted peanuts with a touch of salt, ideal for on the go or enjoying at home. 100% natural, dairy-free, gluten-free, and packed with flavor. Your new favorite snack!",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -55,7 +55,7 @@
     },
       {
       "id": "yummi-nut-mani-japones-con-sabor-a-chile-toreado",
-      "name": "Yummi Nut Maní Japones con Sabor a Chile Toreado",
+      "name": "Japanese style Peanuts with Toreado Chile Flavor",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
       "background_color": "#008444",
@@ -64,7 +64,7 @@
       "header_background": "#008444",
       "header_text_color": "primary",
       "color_button": "#008444",
-      "description": "Maní estilo japonés con cobertura crujiente.",
+      "description": "Japanese style peanuts with a crispy coating.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
       "sizes": [
@@ -74,7 +74,7 @@
     },
     {
       "id": "yummi-nut-mani-con-limon",
-      "name": "Yummi Nut Maní con Limón",
+      "name": "Yummi Nut Peanuts with Lemon",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp",
       "background_color": "#B4BF8E",
@@ -83,7 +83,7 @@
       "header_background": "#B4BF8E",
       "header_text_color": "primary",
       "color_button": "#B4BF8E",
-      "description": "Maní con un toque cítrico de limón.",
+      "description": "Peanuts with a hint of lemon citrus.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -93,7 +93,7 @@
     },
     {
       "id": "yummi-nut-mani-japones",
-      "name": "Yummi Nut Maní Japonés",
+      "name": "Japanese style Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp",
       "background_color":"#796B6D",
@@ -102,7 +102,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#796B6D",
-      "description": "Maní estilo japonés con cobertura crujiente.",
+      "description": "Japanese style peanuts with a crispy coating.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -112,7 +112,7 @@
     },
     {
       "id": "yummi-nut-maranon-con-sal",
-      "name": "Yummi Nut Marañón con Sal",
+      "name": "Salted Cashews",
       "category": "Marañones",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
       "background_color":"#9AE3BE",
@@ -121,7 +121,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#9AE3BE",
-      "description": "Marañones tostados con sal, llenos de energía.",
+      "description": "Roasted cashews with salt, packed with energy.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -131,7 +131,7 @@
     },
     {
       "id": "yummi-nut-mix-almendras",
-      "name": "Yummi Nut Mix Almendras",
+      "name": "Almond Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
       "background_color": "#DC9EE5",
@@ -140,7 +140,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#DC9EE5",
-      "description": "Mezcla de frutos secos con almendras.",
+      "description": "Mixed nuts with almonds.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -150,7 +150,7 @@
     },
     {
       "id": "yummi-nut-omega-mix",
-      "name": "Yummi Nut Omega Mix",
+      "name": "Omega Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp",
       "background_color": "#DC9EE5",
@@ -159,7 +159,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#DC9EE5",
-      "description": "Mix de semillas y frutos con Omegas.",
+      "description": "Mix of seeds and nuts with Omegas.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -169,7 +169,7 @@
     },
     {
       "id": "yummi-nut-barra-fresa",
-      "name": "Barra Fresa",
+      "name": "Strawberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa2.webp",
       "background_color": "#E67DA0",
@@ -178,7 +178,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#E67DA0",
-      "description": "Barra de frutos con sabor a fresa, ideal para llevar y disfrutar en cualquier momento.",
+      "description": "Strawberry flavored fruit bar, ideal to take with you and enjoy anytime.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
@@ -188,7 +188,7 @@
     },
     {
       "id": "yummi-nut-barra-arandano",
-      "name": "Barra Arándano",
+      "name": "Blueberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-arandano.webp",
       "background_color": "#8C85C6",
@@ -197,9 +197,9 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#8C85C6",
-      "description": "Barra de frutos con sabor a arándano, deliciosa y práctica para tu día.",
-      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
+        "description": "Barra de frutos con sabor a arándano, deliciosa y práctica para tu día.",
+        "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
+        "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-arandano.webp" }
       ],
@@ -207,7 +207,7 @@
     },
     {
       "id": "yummi-nut-barra-coco",
-      "name": "Barra Coco",
+      "name": "Coconut Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-coco.webp",
       "background_color": "#D6B196",
@@ -216,7 +216,7 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#D6B196",
-      "description": "Barra con sabor a coco, suave y llena de sabor natural.",
+      "description": "Coconut flavored bar, soft and full of natural flavor.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
