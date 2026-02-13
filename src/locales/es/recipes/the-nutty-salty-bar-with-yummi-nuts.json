@@ -1,0 +1,32 @@
+{
+  "date": "2025-09-11",
+  "id": "the-nutty-salty-bar-with-yummi-nuts",
+  "slug": "the-nutty-salty-bar-with-yummi-nuts",
+  "title": "The Nutty Salty Bar con Yummi Nuts",
+  "people": "10",
+  "difficulty": "Fácil",
+  "image": "https://snack.yummiespromociones.com/yumminuts/the-nutty-salty-bar-with-yummi-nuts.webp",
+  "gallery": [
+    "the-nutty-salty-bar-with-yummi-nuts.webp"
+  ],
+  "type": "image",
+  "preparation_time": 20,
+  "ingredients": [
+    "Frascos",
+    "Conos de papel",
+    "Recipientes pequeños",
+    "Botellas vacías",
+    "Vasos",
+    "Paquetes de todos los productos Yummi Nuts"
+  ],
+  "instructions": [
+    "Paso 1: Crea una estación de dulces tipo candy bar con Yummi Nuts. Algunos servidos en frascos, otros en conos de papel, otros en recipientes pequeños.",
+    "Paso 2: Se complementa con botellas que no dicen lo que tienen dentro, copas y vasos.",
+    "Paso 3: Podríamos incorporar Yummies Snacks si lo permiten."
+  ],
+  "brand": [
+    "yumminuts",
+    "yummies"
+  ],
+  "category": "snacks"
+}
