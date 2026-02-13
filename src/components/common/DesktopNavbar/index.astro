@@ -75,8 +75,15 @@ const menuItems = t('menu_items', { namespace: 'common', locale: currentLang }) 
   <!-- Right Side - Language Switcher and Yummies One -->
   <div class="flex items-center space-x-5">
     <!-- Language Switcher -->
-    <LanguageSwitcher activeLocale={currentLang} headerColorConfig={headerColorConfig} />
-
+    <LanguageSwitcher
+  activeLocale={currentLang}
+  headerColorConfig={{
+    ...headerColorConfig,
+    // Usa la propiedad correcta para el texto
+    textColor: headerColorConfig.backgroundColor === '#FFFFFF' ? '#0066CC' : 'white',
+    // O tal vez 'fontColor', 'colorText', etc.
+  }}
+/>
     <!-- <div class="hidden md:flex">
       <SocialMediaIcons 
         currentLang={currentLang} 
