@@ -90,6 +90,8 @@ for (let i = 0; i < recipeItems.length; i += 1) {
   mobileGroups.push([recipeItems[i]].filter(Boolean));
 }
 
+const hasMultipleRecipes = recipeItems.length > 1;
+
 ---
 
 <div class="w-full" data-recipes-carousel>
@@ -101,6 +103,9 @@ for (let i = 0; i < recipeItems.length; i += 1) {
     <!-- Botones de filtro -->
     {!providedMode && (
     <div class="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto md:max-w-none md:flex md:justify-start md:gap-2.5 px-4 md:px-0" id="recipesFilters">
+      <button type="button" data-filter="all" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.all}
+      </button>
       <button type="button" data-filter="breakfast" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.breakfast}
       </button>
@@ -110,9 +115,8 @@ for (let i = 0; i < recipeItems.length; i += 1) {
       <button type="button" data-filter="lunch" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
         {filterLabels.lunch}
       </button>
-
-      <button type="button" data-filter="all" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
-        {filterLabels.all}
+      <button type="button" data-filter="dinner" class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        {filterLabels.dinner}
       </button>
     </div>
     )}
@@ -143,8 +147,7 @@ for (let i = 0; i < recipeItems.length; i += 1) {
         </div>
       </div>
 
-      <!-- Controles de navegación mobile (flechas y puntos) -->
-      <div class="flex justify-center items-center gap-4 mt-6">
+      <div class="flex justify-center items-center gap-4 mt-6" style={hasMultipleRecipes ? '' : 'display:none'} data-recipes-controls-mobile>
         <button class="carousel-prev bg-white text-brown p-2 rounded-full shadow-lg z-10" aria-label="Anterior" id="prevBtnMobile">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -183,19 +186,15 @@ for (let i = 0; i < recipeItems.length; i += 1) {
         </div>
       </div>
       
-      <!-- Controles de navegación desktop (flechas y puntos en la parte inferior) -->
-      <div class="flex justify-center items-center gap-4 mt-8">
-        <!-- Flecha anterior -->
+      <div class="flex justify-center items-center gap-4 mt-8" style={hasMultipleRecipes ? '' : 'display:none'} data-recipes-controls-desktop>
         <button class="carousel-prev bg-white text-primary p-2 rounded-full shadow-lg z-10" aria-label="Anterior" id="prevBtnDesktop">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         
-        <!-- Puntos indicadores -->
         <div class="carousel-dots-desktop flex gap-2"></div>
         
-        <!-- Flecha siguiente -->
         <button class="carousel-next bg-white text-primary p-2 rounded-full shadow-lg z-10" aria-label="Siguiente" id="nextBtnDesktop">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -212,6 +211,7 @@ for (let i = 0; i < recipeItems.length; i += 1) {
       </a>
     </div>
     )}
+      </>
   </div>
 </div>
 

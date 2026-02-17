@@ -2,17 +2,6 @@
 import { getCurrentLanguage } from '../../../i18n/utils';
 import LazyImage from '../LazyImage.astro';
 
-/**
- * InstagramEmbed component - Mejorado con sistema de fallback
- * Renderiza posts de Instagram usando iframe estándar con imagen de respaldo
- * @param {string} postUrl - URL del post de Instagram
- * @param {string} width - Ancho del contenedor (default: "100%")
- * @param {string} height - Alto del contenedor (default: "600px")
- * @param {string} className - Clases CSS adicionales
- * @param {string} fallbackImageUrl - URL de imagen de respaldo si el iframe no carga
- * @param {string} alt - Texto alternativo para la imagen
- */
-
 export interface Props {
   postUrl: string;
   width?: string;
@@ -25,176 +14,161 @@ export interface Props {
 const { 
   postUrl, 
   width = "100%", 
-  height = "600px", 
+  height = "auto",  
   className = "",
-  fallbackImageUrl = "", // URL de imagen de respaldo
-  alt = "Instagram Post" // Texto alternativo para la imagen
+  fallbackImageUrl = "",
+  alt = "Instagram Post"
 } = Astro.props;
 
-// Extraer el ID del post de la URL
+// Extraer el ID del post
 function extractInstagramId(url: string): string {
-  // Patrones para diferentes formatos de URL de Instagram
   const patterns = [
-    /instagram\.com\/p\/([\w-]+)/i,        // Posts normales
-    /instagram\.com\/reel\/([\w-]+)/i,     // Reels
-    /instagram\.com\/tv\/([\w-]+)/i       // IGTV
+    /instagram\.com\/p\/([\w-]+)/i,
+    /instagram\.com\/reel\/([\w-]+)/i,
+    /instagram\.com\/tv\/([\w-]+)/i
   ];
   
   for (const pattern of patterns) {
     const match = url.match(pattern);
     if (match && match[1]) {
-      return match[1].split(/\?|\//)[0]; // Eliminar parámetros de consulta
+      return match[1].split(/\?|\//)[0];
     }
   }
   
-  // Si no se encuentra un ID, usar la última parte de la URL
   const urlParts = url.split('/');
   return urlParts[urlParts.length - 1].split('?')[0];
 }
 
 const postId = extractInstagramId(postUrl);
-const embedUrl = `https://www.instagram.com/p/${postId}/embed/`;
+const embedUrl = `https://www.instagram.com/p/${postId}/embed/captioned/?hidecaption=0`;
 ---
 
-<div class={`instagram-embed ${className}`} style={{width, height, maxWidth: "100%", margin: "0 auto"}}>
-  {/* Sistema de fallback con imagen estática */}
-  <div class="instagram-fallback">
-    <a href={postUrl} target="_blank" rel="noopener noreferrer" class="instagram-link">
+<!-- Contenedor principal responsive -->
+<div 
+  class={`instagram-embed-container ${className}`}
+  style="width: 100%; max-width: 100vw;"
+>
+  <!-- Contenedor del iframe con altura dinámica -->
+  <div class="w-full min-h-[500px] h-[600px] max-h-[800px] sm:h-[650px] md:h-[600px] lg:h-[650px] xl:h-[700px] rounded-lg sm:rounded-xl overflow-hidden bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
+    
+    <!-- Iframe con dimensiones responsivas -->
+    <iframe 
+      src={embedUrl}
+      class="w-full h-full border-0"
+      frameborder="0" 
+      scrolling="no"
+      allowtransparency="true"
+      allow="encrypted-media"
+      loading="lazy"
+      title="Instagram Post"
+      sandbox="allow-scripts allow-same-origin allow-popups"
+      onload="
+        try {
+          // Intentar ajustar dinámicamente
+          const iframe = this;
+          const container = iframe.closest('.instagram-embed-container');
+          
+          // Verificar si el iframe cargó correctamente
+          setTimeout(() => {
+            try {
+              if (iframe.contentDocument && iframe.contentDocument.body) {
+                // Ocultar fallback si existe
+                const fallback = container.querySelector('.instagram-fallback');
+                if (fallback) fallback.style.display = 'none';
+              }
+            } catch(e) {
+              // Error de CORS, mantener fallback oculto
+            }
+          }, 1000);
+        } catch(e) {
+          console.log('Error loading Instagram embed:', e);
+        }
+      "
+      onerror="
+        this.style.display = 'none';
+        const container = this.closest('.instagram-embed-container');
+        const fallback = container.querySelector('.instagram-fallback');
+        if (fallback) fallback.style.display = 'block';
+      "
+    ></iframe>
+    
+    <!-- Fallback simplificado -->
+    <div class="instagram-fallback absolute inset-0 bg-gray-50 hidden flex-col items-center justify-center p-4 text-center">
       {fallbackImageUrl ? (
-        <LazyImage 
-          src={fallbackImageUrl} 
-          alt={alt} 
-          width="100%" 
-          height="100%" 
-          class="fallback-image"
-          loading="lazy"
-        />
+        <a href={postUrl} target="_blank" rel="noopener noreferrer" class="block w-full h-full">
+          <LazyImage 
+            src={fallbackImageUrl} 
+            alt={alt}
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+            <span class="text-white text-sm font-medium">Ver en Instagram</span>
+          </div>
+        </a>
       ) : (
-        <div class="fallback-placeholder">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-          <p>{getCurrentLanguage()}</p>
+        <div class="p-6">
+          <div class="w-12 h-12 mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#888" stroke="#888" stroke-width="1">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </div>
+          <p class="text-gray-600 mb-4">Contenido de Instagram no disponible</p>
+          <a 
+            href={postUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 bg-[#E1306C] text-white px-4 py-2 rounded-lg hover:bg-[#C13584] transition-colors"
+          >
+            <span>Ver en Instagram</span>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.826 0 1.573.349 2.098.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z"/>
+            </svg>
+          </a>
         </div>
       )}
-      <div class="instagram-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-        </svg>
-      </div>
-    </a>
+    </div>
+    
   </div>
-  
-  {/* Iframe de Instagram */}
-  <iframe 
-    src={embedUrl}
-    width="100%" 
-    height="100%" 
-    frameborder="0" 
-    scrolling="no" 
-    allowtransparency="true"
-    loading="lazy"
-    title="Instagram Post"
-    class="instagram-iframe"
-    onload="this.parentNode.querySelector('.instagram-fallback').style.display='none';"
-    onerror="this.style.display='none';"
-  ></iframe>
 </div>
 
 <style>
-  .instagram-embed {
+  .instagram-embed-container {
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-height: 450px;
     position: relative;
   }
   
+  /* Asegurar que el iframe sea responsive */
+  iframe[src*="instagram.com"] {
+    min-height: 500px !important;
+  }
+  
+  /* Para pantallas muy pequeñas */
+  @media (max-width: 365px) {
+    .instagram-embed-container > div {
+      min-height: 450px !important;
+      height: 450px !important;
+    }
+    
+    iframe[src*="instagram.com"] {
+      min-height: 450px !important;
+    }
+  }
+  
+  /* Para pantallas medianas */
+  @media (min-width: 366px) and (max-width: 639px) {
+    .instagram-embed-container > div {
+      min-height: 500px !important;
+      height: 500px !important;
+    }
+  }
+  
+  /* Smooth transitions */
   .instagram-fallback {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f8f8;
-    z-index: 1;
-  }
-  
-  .instagram-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    text-decoration: none;
-    color: #333;
-  }
-  
-  .fallback-image {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .fallback-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: #888;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .fallback-placeholder svg {
-    margin-bottom: 12px;
-    color: #888;
-  }
-  
-  .instagram-logo {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 4px;
-    padding: 4px;
-  }
-  
-  .instagram-iframe {
-    position: relative;
-    z-index: 2;
+    transition: opacity 0.3s ease;
   }
 </style>
-
-<script>
-  // Script para manejar errores de carga del iframe
-  document.addEventListener('DOMContentLoaded', () => {
-    const iframes = document.querySelectorAll('.instagram-iframe');
-    
-    iframes.forEach(iframe => {
-      // Verificar si el iframe se cargó correctamente después de un tiempo
-      setTimeout(() => {
-        try {
-          // Intentar acceder al contenido del iframe
-          // Si hay un error de seguridad, mostrará el fallback
-          if ((iframe as HTMLIFrameElement).contentDocument === null) {
-            iframe.style.display = 'none';
-            const fallback = iframe.parentNode?.querySelector('.instagram-fallback');
-            if (fallback) fallback.style.display = 'flex';
-          }
-        } catch (e) {
-          // Error de seguridad al intentar acceder al iframe
-          iframe.style.display = 'none';
-          const fallback = iframe.parentNode?.querySelector('.instagram-fallback');
-          if (fallback) fallback.style.display = 'flex';
-        }
-      }, 1000);
-    });
-  });
-</script>
