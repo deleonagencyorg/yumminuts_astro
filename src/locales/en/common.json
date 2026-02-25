@@ -195,16 +195,17 @@
       "text": "Recipes",
       "href": "/en/recipes"
     },
+     {
+      "id": "health",
+      "text": "Health",
+      "href": "/en/health"
+    },
     {
       "id": "news",
       "text": "News",
       "href": "/en/blog"
     },
-    {
-      "id": "health",
-      "text": "Health",
-      "href": "/en/health"
-    },
+   
     {
       "id": "contact",
       "text": "Contact",
@@ -316,6 +317,14 @@
   },
   "subscribe": {
     "success": "Thank you for subscribing!"
+  },
+  "not_found": {
+    "code": "404",
+    "title": "Oops! Page not found",
+    "description": "It looks like the page you're looking for doesn't exist or has been moved. But don't worry, we have plenty of delicious things for you!",
+    "go_home": "Go home",
+    "explore_products": "Explore products",
+    "products_title": "In the meantime, discover our products"
   },
   "discover": {
     "title": "Discover Us",
