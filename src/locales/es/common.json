@@ -304,12 +304,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
+      "title":"💪 ¡Bienvenidos a Yummi Nuts! El snack natural que tu cuerpo y tu antojo necesitan. 🌿",
       "link":""
     },
     {
       "id":"2",
-      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
+      "title":"💪 ¡Bienvenidos a Yummi Nuts! El snack natural que tu cuerpo y tu antojo necesitan. 🌿",
       "link":""
     }
   ],
@@ -321,5 +321,13 @@
   },
   "subscribe": {
     "success": "¡Gracias por suscribirte!"
+  },
+  "not_found": {
+    "code": "404",
+    "title": "Oops! Pagina no encontrada",
+    "description": "Parece que la pagina que buscas no existe o fue movida. Pero no te preocupes, tenemos muchas cosas deliciosas para ti!",
+    "go_home": "Ir al inicio",
+    "explore_products": "Explorar productos",
+    "products_title": "Mientras tanto, descubre nuestros productos"
   }
 }
