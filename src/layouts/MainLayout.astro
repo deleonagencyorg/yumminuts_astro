@@ -54,52 +54,91 @@ if (headerColors) {
 <html lang={currentLang}>
   <head>
     <Favicon />
-    
+
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-T82M4TL');
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script is:inline>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '659088449824719');
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=659088449824719&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+
+    <!-- TikTok Pixel Code Start -->
+    <script is:inline>
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+        var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+        ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+        ttq.load('D6G5I5BC77UAI8907R2G');
+        ttq.page();
+      }(window, document, 'ttq');
+    </script>
+    <!-- TikTok Pixel Code End -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {title && <title> Yummi Nuts -  {title}</title>}
     {description && <meta name="description" content={description} />}
     <ViewTransitions />
     <slot name="head" />
-  
+
   <!-- Script para prevenir carga de URLs de imágenes incorrectas -->
-  <script is:inline>
+    <script is:inline>
     // Interceptar requests de imágenes con URLs relativas problemáticas
-    if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator) {
       // Limpiar cualquier cache problemático al cargar la página
-      if (window.caches) {
-        caches.keys().then(function(cacheNames) {
-          cacheNames.forEach(function(cacheName) {
-            if (cacheName.includes('image') || cacheName.includes('asset')) {
-              caches.delete(cacheName);
-            }
+        if (window.caches) {
+          caches.keys().then(function(cacheNames) {
+            cacheNames.forEach(function(cacheName) {
+              if (cacheName.includes('image') || cacheName.includes('asset')) {
+                caches.delete(cacheName);
+              }
+            });
           });
-        });
+        }
       }
-    }
     
     // Prevenir navegación a URLs de imágenes
-    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function() {
       // Interceptar clicks en elementos que puedan tener URLs de imagen incorrectas
-      document.addEventListener('click', function(e) {
-        const href = e.target.href || (e.target.closest('a') && e.target.closest('a').href);
-        if (href && href.includes('.webp') && !href.startsWith('http')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
+        document.addEventListener('click', function(e) {
+          const href = e.target.href || (e.target.closest('a') && e.target.closest('a').href);
+          if (href && href.includes('.webp') && !href.startsWith('http')) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        });
       });
-    });
-  </script>
+    </script>
   </head>
   <body class={`font-sans ${className || ''}`}>
     <!-- Google Tag Manager (noscript) -->
-  <noscript>
-  <iframe
-    src="https://www.googletagmanager.com/ns.html?id=GTM-T82M4TL"
-    height="0" width="0" style="display:none;visibility:hidden">
-  </iframe>
-</noscript>
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-T82M4TL"
+        height="0" width="0" style="display:none;visibility:hidden">
+      </iframe>
+    </noscript>
     <!-- End Google Tag Manager (noscript) -->
     {/* <GoogleTagManagerNoScript /> */}
     <I18nProvider>
@@ -111,7 +150,7 @@ if (headerColors) {
       </main>
       <Footer currentLang={currentLang} />
     </I18nProvider>
-    
+
     <!-- Menú móvil al final del body para máximo z-index -->
     <MobileMenu currentLang={currentLang} headerColorConfig={customHeaderConfig} />
 
