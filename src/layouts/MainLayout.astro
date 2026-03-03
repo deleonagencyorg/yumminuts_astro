@@ -1,8 +1,10 @@
 ---
 import Favicon from '../components/Favicon.astro';
-// import GoogleTagManager from './i18n/GoogleTagManager.astro';
-// import GoogleTagManagerNoScript from './i18n/GoogleTagManagerNoScript.astro';
-import { type Locale } from '../i18n/i18n'; // t is not used, Locale type might be needed
+// --- NUEVOS IMPORTS ---
+import MetaPixel from '../components/common/MetaPixel.astro';
+import TikTokPixel from '../components/common/TikTokPixel.astro';
+// ----------------------
+import { type Locale } from '../i18n/i18n'; 
 import Header from '../components/common/Header/index.astro';
 import Footer from '../components/common/Footer/index.astro';
 import MobileMenu from '../components/common/MobileMenu/index.astro';
@@ -11,7 +13,6 @@ import { routesConfig } from '../config/routes';
 import { getHeaderColors } from '../config/headerColors';
 import { ViewTransitions } from 'astro:transitions';
 import "../styles/global.css";
-import { head } from 'framer-motion/m';
 
 export interface Props {
   title?: string;
@@ -25,18 +26,13 @@ export interface Props {
 
 const { title, description, class: className, headerColors } = Astro.props;
 
-// Determine language for <html lang=...> and for key prop from the URL
 const pathSegments = Astro.url.pathname.split('/');
 const langFromUrl = pathSegments[1] as Locale;
 const validLocales: Locale[] = ['es', 'en'];
-const currentLang = validLocales.includes(langFromUrl) ? langFromUrl : 'es'; // Default to 'es'
-// Obtener configuración de colores basada en la ruta actual
+const currentLang = validLocales.includes(langFromUrl) ? langFromUrl : 'es'; 
 const { pathname } = Astro.url;
 const headerColorConfig = getHeaderColors(pathname);
 
-// Si se pasan colores de header específicos (por ejemplo, desde un producto),
-// crear una configuración personalizada. Soportar hex (#xxxxxx) como arbitrary value
-// y clases tailwind directas como 'bg-white'.
 let customHeaderConfig = headerColorConfig;
 if (headerColors) {
   const bg = headerColors.backgroundColor || '';
@@ -53,6 +49,8 @@ if (headerColors) {
 ---
 <html lang={currentLang}>
   <head>
+    <MetaPixel />
+    <TikTokPixel />
     <Favicon />
 
     <script is:inline>
@@ -101,11 +99,15 @@ if (headerColors) {
     <ViewTransitions />
     <slot name="head" />
 
-  <!-- Script para prevenir carga de URLs de imágenes incorrectas -->
     <script is:inline>
-    // Interceptar requests de imágenes con URLs relativas problemáticas
+      document.addEventListener('astro:page-load', () => {
+        if (window.fbq) fbq('track', 'PageView');
+        if (window.ttq) ttq.page();
+      });
+    </script>
+  
+    <script is:inline>
       if ('serviceWorker' in navigator) {
-      // Limpiar cualquier cache problemático al cargar la página
         if (window.caches) {
           caches.keys().then(function(cacheNames) {
             cacheNames.forEach(function(cacheName) {
@@ -116,10 +118,8 @@ if (headerColors) {
           });
         }
       }
-    
-    // Prevenir navegación a URLs de imágenes
+      
       document.addEventListener('DOMContentLoaded', function() {
-      // Interceptar clicks en elementos que puedan tener URLs de imagen incorrectas
         document.addEventListener('click', function(e) {
           const href = e.target.href || (e.target.closest('a') && e.target.closest('a').href);
           if (href && href.includes('.webp') && !href.startsWith('http')) {
@@ -132,15 +132,13 @@ if (headerColors) {
     </script>
   </head>
   <body class={`font-sans ${className || ''}`}>
-    <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-T82M4TL"
         height="0" width="0" style="display:none;visibility:hidden">
       </iframe>
     </noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    {/* <GoogleTagManagerNoScript /> */}
+
     <I18nProvider>
       <slot name="header">
         <Header currentLang={currentLang} headerColors={headerColors} />
@@ -150,11 +148,9 @@ if (headerColors) {
       </main>
       <Footer currentLang={currentLang} />
     </I18nProvider>
-
-    <!-- Menú móvil al final del body para máximo z-index -->
+    
     <MobileMenu currentLang={currentLang} headerColorConfig={customHeaderConfig} />
 
-    <!-- Global reveal-on-scroll animation script -->
     <script is:inline>
       (function(){
         const cls = 'reveal-on-scroll';
