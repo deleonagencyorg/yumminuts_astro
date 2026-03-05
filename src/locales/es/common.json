@@ -203,11 +203,6 @@
       "href": "/es/salud"
     },
     {
-      "id": "news",
-      "text": "Noticias",
-      "href": "/es/blog"
-    },
-    {
       "id": "contact",
       "text": "Contacto",
       "href": "/es/contacto"
@@ -304,12 +299,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"💪 ¡Bienvenidos a Yummi Nuts! El snack natural que tu cuerpo y tu antojo necesitan. 🌿",
+      "title":"🥜 ¡Hola! Snacks altos en proteína, fibra y energía para que disfrutes cada momento. 💚",
       "link":""
     },
     {
       "id":"2",
-      "title":"💪 ¡Bienvenidos a Yummi Nuts! El snack natural que tu cuerpo y tu antojo necesitan. 🌿",
+      "title":"🥜 ¡Hola! Snacks altos en proteína, fibra y energía para que disfrutes cada momento. 💚",
       "link":""
     }
   ],

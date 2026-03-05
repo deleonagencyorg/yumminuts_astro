@@ -201,12 +201,6 @@
       "href": "/en/health"
     },
     {
-      "id": "news",
-      "text": "News",
-      "href": "/en/blog"
-    },
-   
-    {
       "id": "contact",
       "text": "Contact",
       "href": "/en/contact"
@@ -300,12 +294,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"😎 Welcome to Snacks Yummies! If you're craving a snack, you're in the right place 🎉",
+      "title":"🥜 Hello! Snacks high in protein, fiber, and energy so you can enjoy every moment. 💚",
       "link":""
     },
     {
       "id":"2",
-      "title":"😎 Welcome to Snacks Yummies! If you're craving a snack, you're in the right place 🎉",
+      "title":"🥜 Hello! Snacks high in protein, fiber, and energy so you can enjoy every moment. 💚",
       "link":""
     }
   ],
