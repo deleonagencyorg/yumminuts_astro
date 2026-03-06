@@ -1,7 +1,5 @@
 ---
 import Favicon from '../components/Favicon.astro';
-// --- NUEVOS IMPORTS ---
-import MetaPixel from '../components/common/MetaPixel.astro';
 // ----------------------
 import { type Locale } from '../i18n/i18n'; 
 import Header from '../components/common/Header/index.astro';
@@ -48,7 +46,6 @@ if (headerColors) {
 ---
 <html lang={currentLang}>
   <head>
-    <MetaPixel />
     <Favicon />
 
     <meta charset="UTF-8" />
