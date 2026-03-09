@@ -47,7 +47,6 @@ interface Product {
     value: string;
     icono: string;
   }>;
-  // relatedProducts es opcional ya que no existe en la estructura actual
   relatedProducts?: string[];
   weight?: string[];
 }
@@ -60,7 +59,7 @@ const commonAssets = t('home.slider', { namespace: 'products', locale: currentLa
 const slides = commonAssets;
 const products = t('items', { namespace: 'products', locale: currentLang as Locale }) || [];
 const stockists = t('stockist', { namespace: 'products', locale: currentLang as Locale }) || [];
-const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
+const newsAssets = t('', { namespace: 'news', locale: currentLang }) || {};
 const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 // Helper: get category key from a slug (supports es/en)
@@ -116,6 +115,10 @@ const safeProduct: Product = {
   
 };
 
+// Nutrition data
+const detailPage = t('detailPage', { namespace: 'products', locale: currentLang as Locale }) || {};
+const nutrition = (product as any)?.nutrition || (detailPage as any)?.nutrition || null;
+
 // Obtener todos los productos como un array
 const productsData = t('items', { locale: currentLang, namespace: 'products' }) || [];
 const allProductsArray = Array.isArray(productsData) ? productsData : [];
@@ -146,19 +149,16 @@ let relatedProducts: any[] = [];
 if (allProductsArray.length > 1) {
   const key = normalizeCategory(safeProduct.category);
   relatedProducts = allProductsArray
-    .filter((p: any) => p.id !== safeProduct.id && normalizeCategory(p.category) === key)
+    .filter((p: any) => p.id !== safeProduct.id && normalizeCategory((p as any).category || '') === key)
     .slice(0, 3);
-}
 
-// Preparar imágenes para el carousel (usando la imagen principal y variaciones)
-const carouselImages = [
-  safeProduct.image,
-  // Para demo, duplicamos la imagen. En producción, estas serían diferentes vistas del producto
-  safeProduct.image,
-  safeProduct.image,
-  safeProduct.image,
-  safeProduct.image
-];
+  // Si no hay productos de la misma categoría, mostrar cualquier otro
+  if (relatedProducts.length === 0) {
+    relatedProducts = allProductsArray
+      .filter((p: any) => p.id !== safeProduct.id)
+      .slice(0, 3);
+  }
+}
 
 // Preparar beneficios del producto
 const productBenefits = [
@@ -168,7 +168,7 @@ const productBenefits = [
     alt: "Gluten free icon"
   },
   {
-    icon: "https://snack.yummiespromociones.com/yumminuts/gluten-free.svg", 
+    icon: "https://snack.yummiespromociones.com/yumminuts/gluten-free.svg",
     text: currentLang === 'es' ? "Sin conservantes" : "No preservatives",
     alt: "No preservatives icon"
   },
@@ -186,80 +186,111 @@ const productBenefits = [
 <main class="w-full flex flex-col items-center justify-center mt-0">
 
 
-<div class="container mx-auto px-4 reveal-on-scroll">
-  <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
-</div>
-
-<!-- Product Detail Two-Column Layout -->
-<section class="container mx-auto px-4 py-10 bg-white reveal-on-scroll">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-    <!-- Left: Product visual using ProductCard -->
-    <div>
-      <ProductCard 
-        title={safeProduct.name}
-        image={safeProduct.image}
-        bgColor={safeProduct.background_color || safeProduct.color_button}
-        description={''}
-        size="lg"
-        hideText={true}
-      />
-    </div>
-
-    <!-- Right: Category, Name, Description, Benefits -->
-    <div>
-      {(() => {
-        const key = normalizeCategory(safeProduct.category);
-        const catCfg = ((categoriesConfig as any).categories || []).find((c: any) => c.key === key) || {};
-        const catLabel = (catCfg.labels?.[currentLang] || safeProduct.category) as string;
-        return (
-          <>
-            <p class="text-xl text-gray-700 mb-2">{catLabel}</p>
-            <h1 class="font-heading text-4xl md:text-6xl font-extrabold text-black tracking-tight mb-4">{safeProduct.name.replace(/^Yummi\s*Nuts?\s*/i, '')}</h1>
-            {safeProduct.description && (
-              <p class="text-gray-700 text-lg leading-relaxed mb-6">{safeProduct.description}</p>
-            )}
-
-            {/* Benefits icons row (3 placeholders based on productBenefits) */}
-            <div class="flex flex-row flex-wrap justify-start gap-4 mt-4 mb-8">
-              {productBenefits.slice(0,3).map((b) => (
-                <div class="flex flex-col items-center text-center w-[120px]">
-                  <img src={b.icon} alt={b.alt} class="w-10 h-10 mb-2" />
-                  <span class="text-primary text-sm font-medium">{b.text}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Related smaller product cards from same category */}
-            {relatedProducts.length > 0 && (
-              <div class="mt-6">
-                <h3 class="text-2xl font-bold mb-4">{currentLang === 'es' ? 'Otros productos' : 'Other products'}</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {relatedProducts.map((p: any) => (
-                    <a href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}/${p.slug || p.id}`} class="block">
-                      <ProductCard
-                        title={p.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
-                        image={p.image}
-                        bgColor={p.background_color || safeProduct.background_color}
-                        size="sm"
-                      />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        );
-      })()}
-    </div>
+  <div class="container mx-auto px-4 reveal-on-scroll">
+    <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
   </div>
 
-</section>
+  <!-- Product Detail Two-Column Layout -->
+  <section class="container mx-auto px-4 py-10 bg-white reveal-on-scroll">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+    <!-- Left: Product visual using ProductCard -->
+      <div>
+        <ProductCard
+          title={safeProduct.name}
+          image={safeProduct.image}
+          bgColor={safeProduct.background_color || safeProduct.color_button}
+          description={''}
+          size="lg"
+          hideText={true}
+        />
+      </div>
+
+      <!-- Right: Category, Name, Description, Benefits, Nutrition, Related -->
+      <div>
+        {(() => {
+          const key = normalizeCategory(safeProduct.category);
+          const catCfg = ((categoriesConfig as any).categories || []).find((c: any) => c.key === key) || {};
+          const catLabel = (catCfg.labels?.[currentLang] || safeProduct.category) as string;
+          return (
+            <>
+              <p class="text-xl text-gray-700 mb-2">{catLabel}</p>
+              <h1 class="font-heading text-4xl md:text-6xl font-extrabold text-black tracking-tight mb-4">
+                {safeProduct.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
+              </h1>
+              {safeProduct.description && (
+                <p class="text-gray-700 text-lg leading-relaxed mb-6">{safeProduct.description}</p>
+              )}
+
+            {/* Benefits icons row (3 placeholders based on productBenefits) */}
+              <div class="flex flex-row flex-wrap justify-start gap-4 mt-4 mb-8">
+                {productBenefits.slice(0, 3).map((b) => (
+                  <div class="flex flex-col items-center text-center w-[120px]">
+                    <img src={b.icon} alt={b.alt} class="w-10 h-10 mb-2" />
+                    <span class="text-primary text-sm font-medium">{b.text}</span>
+                  </div>
+                ))}
+              </div>
+            {/* nutrition facts*/}
+              {nutrition && (
+                <details class="mt-4 rounded-2xl bg-gray-50 border-2 border-gray-200">
+                  <summary class="cursor-pointer px-5 py-4 flex items-center justify-between font-bold text-lg">
+                    <span>{nutrition.title}</span>
+                    <span>+</span>
+                  </summary>
+                  <div class="px-5 pb-5">
+                    {nutrition.serving && (
+                      <div class="text-sm text-gray-600 mb-3">{nutrition.serving}</div>
+                    )}
+                    <table class="w-full text-left border rounded-xl overflow-hidden">
+                      <tbody>
+                        {nutrition.rows.map((row: any) => (
+                          <tr class="border-b last:border-b-0">
+                            <td class="px-4 py-3 text-sm">{row.label}</td>
+                            <td class="px-4 py-3 text-sm font-bold">{row.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {nutrition.disclaimer && (
+                      <div class="mt-3 text-xs text-gray-500">{nutrition.disclaimer}</div>
+                    )}
+                  </div>
+                </details>
+              )}
+
+            {/* Related smaller product cards from same category */}
+              {relatedProducts.length > 0 && (
+                <div class="mt-8">
+                  <h3 class="text-2xl font-bold mb-4">
+                    {currentLang === 'es' ? 'Otros productos' : 'Other products'}
+                  </h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {relatedProducts.map((p: any) => (
+                      <a href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}/${p.slug || p.id}`} class="block">
+                        <ProductCard
+                          title={p.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
+                          image={p.image}
+                          bgColor={p.background_color || safeProduct.background_color}
+                          size="sm"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()}
+      </div>
+    </div>
+
+  </section>
 {/* Removed nutsCategories section; categories are not sourced here anymore */}
    <!-- Sección de Productos por Categoría -->
-   {categoryCards.length > 0 && (
+  {categoryCards.length > 0 && (
     <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <div class="container mx-autxo px-4">
-        <Categories 
+      <div class="container mx-auto px-4">
+        <Categories
           products={categoryCards}
           title={currentLang === 'es' ? 'Categorías' : 'Categories'}
         />
@@ -268,12 +299,12 @@ const productBenefits = [
   )}
 
 
- <div>
-  <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-    <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-  </section>
- </div>
-  
+  <div>
+    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+    </section>
+  </div>
+
   
   
 </main>
