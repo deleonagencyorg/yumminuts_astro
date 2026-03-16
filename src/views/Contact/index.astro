@@ -87,7 +87,7 @@ const headerColors = {
                 </h3>
                 
                 <div class="flex items-start space-x-3">
-                  <p id="officeAddress" class="text-black leading-relaxed font-semibold ">  {`+ ${contact.offices.locations["+504"].address}`}</p>
+                  <p id="officeAddress" class="text-black leading-relaxed font-semibold ">{` ${contact.offices.locations["+504"].address}`}</p>
                 </div>
                 
                 <div class="flex items-center space-x-3">
@@ -212,7 +212,7 @@ const headerColors = {
           
           // Update text content and attributes
           if (officeName) officeName.textContent = office.name;
-          if (officeAddress) officeAddress.textContent = `+ ${office.address}`;
+          if (officeAddress) officeAddress.textContent = ` ${office.address}`;
           
           // Update phone numbers
           if (officePhones) {
