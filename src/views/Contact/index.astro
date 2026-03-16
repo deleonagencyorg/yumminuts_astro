@@ -91,9 +91,9 @@ const headerColors = {
                 </div>
                 
                 <div class="flex items-center space-x-3">
-                  <div id="officePhones" class="flex flex-col text-white">
+                  <div id="officePhones" class="text-black flex flex-col">
                     {contact.offices.locations["+504"].phones.map((phone: string) => (
-                     <div> <a href={`tel:${phone}`} class="text-white hover:text-primary transition-colors">
+                     <div> <a href={`tel:${phone}`} class="text-black hover:text-primary transition-colors">
                         {phone}
                       </a></div>
                     ))}
@@ -224,7 +224,7 @@ const headerColors = {
               const phoneLink = document.createElement('a');
               phoneLink.href = `tel:${phone}`;
               phoneLink.textContent = `+${phone}`;
-              phoneLink.className = 'text-white hover:text-primary font-medium font-semibold transition-colors';
+              phoneLink.className = 'text-black hover:text-primary font-medium font-semibold transition-colors';
               phoneContainer.appendChild(phoneLink);
               officePhones.appendChild(phoneContainer);
             });
