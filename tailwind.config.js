@@ -33,7 +33,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['bespoke-serif', 'sans-serif'],
-        title: ['a-love-of-thunder', 'serif'],
+        title: ['bespoke-bold', 'sans-serif'],
         heading: ['bespoke-bold', 'sans-serif'],
         text: ['bespoke-serif', 'sans-serif']
       },

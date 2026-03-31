@@ -16,19 +16,19 @@ const { currentLang } = Astro.props;
 const messages = t('messagetop', { namespace: 'common', locale: currentLang }) as Message[] || [];
 ---
 
-<div id="message-carousel" class="w-full bg-blue text-white h-10 relative overflow-hidden z-10">
+<div id="message-carousel" class="w-full bg-blue text-white h-16 md:h-12 relative overflow-hidden z-10">
   <div class="container mx-auto px-4 h-full">
     <div class="message-slider flex items-center justify-center h-full relative">
       {messages.map((message: Message, index: number) => (
-        <div class="message-slide absolute w-full text-center transition-all duration-700 transform" 
+        <div class="message-slide absolute w-full text-center transition-all duration-700 transform pl-7 pr-7" 
              data-index={index} 
              style={index === 0 ? "opacity: 1; transform: translateY(0)" : "opacity: 0; transform: translateY(20px)"}>
           {message.link ? (
-            <a href={message.link} class="text-white hover:underline text-md md:text-lg font-medium">
+            <a href={message.link} class="text-white hover:underline text-sm md:text-lg font-medium">
               {message.title}
             </a>
           ) : (
-            <span class="text-md md:text-lg font-medium">{message.title}</span>
+            <span class="text-sm md:text-lg font-medium">{message.title}</span>
           )}
         </div>
       ))}
