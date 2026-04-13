@@ -3,12 +3,57 @@
 import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
+import { getAllRecipes } from '../../../services/api/recipes';
 
 export async function getStaticPaths() {
-  const paths: any[] = [];
   const locale = 'es';
-  // Cargar recetas desde archivos JSON con glob estático
-  const modules = import.meta.glob('../../../locales/es/recipes/*.json', { eager: true });
+
+// Cargar recetas desde el CMS
+const locales = ['es', 'en'];  
+const recipes = await getAllRecipes(locale);
+const paths = recipes.map((recipe: any) => ({
+  params: { lang: locale, recipeId: recipe.slug },
+  props: { recipe, currentLang: locale }
+}));
+return paths;
+}
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      cmsRecipes = [...data.data];
+      console.log(`Recetas obtenidas del CMS: ${data}`, data);
+      cmsRecipes = data.data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        image: item.image?.url || '/images/recipes/placeholder.jpg',
+        
+        preparation_time: item.preparation_time,
+        category: item.category
+      }));
+
+      for (const cmsRecipe of cmsRecipes) {
+    const recipe = cmsRecipe ;
+    if (!recipe?.id) continue;
+    paths.push({
+      params: { lang: locale, recipeId: recipe.id },
+      props: { recipe, currentLang: locale }
+    });
+  }
+  console.log(`Generadas ${paths.length} rutas de recetas en español`);
+  return paths;
+
+
+    } else {
+      console.error('Error fetching:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching:', error);
+  }
+console.log(`Recetas obtenidas del CMS: ${cmsRecipes.length}`);
+
+
   const files = Object.values(modules) as any[];
   console.log(`Encontradas ${files.length} recetas para idioma ${locale}`);
   for (const mod of files) {
@@ -30,6 +75,7 @@ const { lang, recipeId } = Astro.params;
 setLocale(lang as Locale);
 
 console.log(`Renderizando receta: ${recipeId} en idioma: ${lang}`);
+
 ---
 
 <MainLayout title={recipe.title}>

@@ -23,7 +23,7 @@ interface RecipeItem {
   product_image?: string;
 }
 
-const { currentLang, recipeId } = Astro.props;
+const { currentLang, recipeId, recipe } = Astro.props;
 
 // Import all recipe files with static glob and filter by language
 const recipeModules = import.meta.glob<{ default: RecipeItem }>("../../../locales/*/recipes/*.json");
@@ -39,7 +39,7 @@ for (const path in recipeModules) {
 }
 
 // Find current recipe
-const recipe = allRecipes.find((item: RecipeItem) => item.id === recipeId);
+//const recipe = allRecipes.find((item: RecipeItem) => item.id === recipeId);
 
 // Get related recipes (filter current and limit to 3)
 const relatedRecipes = allRecipes
