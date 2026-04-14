@@ -50,13 +50,13 @@ function productHref(p: Product): string {
   </div>
 
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
-    <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0">
+    <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0 overflow-">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
+      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0 isolate">
         {displayProducts.map((product) => {
           const isBars = (product.title || '').toLowerCase().includes('barra') || (product.title || '').toLowerCase().includes('bar');
           return (
-          <a href={productHref(product)} class={`categories-card content-stretch flex flex-col h-[421px] items-start justify-start relative shrink-0 snap-start w-[280px] md:w-[350px] opacity-0 translate-y-6 transition-all duration-700 ease-out`} data-reveal-child>
+          <a href={productHref(product)} class={`categories-card content-stretch flex flex-col h-[421px] items-start justify-start relative shrink-0 snap-start w-[280px] md:w-[350px] opacity-0 translate-y-6 transition-all duration-700 ease-out isolation-isolate`} data-reveal-child>
             <div class={`h-[374.054px] relative shrink-0 w-[275px] ${isBars ? 'overflow-visible' : 'overflow-clip'}`}>
               <!-- SVG background filled by product.bgColor -->
               <div class="absolute inset-0 rounded-lg transition-all duration-300">
@@ -75,7 +75,7 @@ function productHref(p: Product): string {
 
       <!-- Arrow positioned absolutely to the RIGHT of the entire product row -->
       <!-- This is now placed outside the flex container, but still within the relative parent -->
-      <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-0">
+      <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-0 z-20 overflow-visible pointer-events-auto hidden md:flex">
         <div class="flex items-center justify-center ml-4">
           <div class="flex-none">
             <button type="button" class="js-categories-next relative size-[50.935px]" aria-label="Siguiente">

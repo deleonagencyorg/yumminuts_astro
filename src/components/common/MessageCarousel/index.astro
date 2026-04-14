@@ -14,6 +14,9 @@ const { currentLang } = Astro.props;
 
 // Obtener los mensajes del archivo de traducción
 const messages = t('messagetop', { namespace: 'common', locale: currentLang }) as Message[] || [];
+const messageCount = Array.isArray(messages) ? messages.length : 0;
+const showControls = messageCount > 1;
+const safeMessages = messageCount > 0 ? messages : [{ title: '' }];
 ---
 
 <div id="message-carousel" class="w-full bg-blue text-white h-16 md:h-12 relative overflow-hidden z-10">
@@ -51,88 +54,161 @@ const messages = t('messagetop', { namespace: 'common', locale: currentLang }) a
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const slides = document.querySelectorAll('.message-slide');
-    const totalSlides = slides.length;
-    let currentSlide = 0;
-    let interval: ReturnType<typeof setInterval> | null = null;
-    
-    // Define button references at the top level
-    const prevButton: HTMLElement | null = document.getElementById('prev-message');
-    const nextButton: HTMLElement | null = document.getElementById('next-message');
+  // Variables globales para gestionar el carrusel
+  window.messageCarouselState = window.messageCarouselState || {
+    interval: null,
+    currentSlide: 0,
+    isInitialized: false,
+    prevClickHandler: null,
+    nextClickHandler: null
+  };
 
-    function showSlide(index: number) {
-      slides.forEach((slide, i: number) => {
-        const slideElement = slide as HTMLElement;
-        if (i === index) {
-          slideElement.style.opacity = '1';
-          slideElement.style.transform = 'translateY(0)';
-          slideElement.style.zIndex = '1';
-          // Añadir un efecto visual al botón activo
-          slideElement.classList.add('active-slide');
-        } else {
-          slideElement.style.opacity = '0';
-          slideElement.style.transform = 'translateY(20px)';
-          slideElement.style.zIndex = '0';
-          slideElement.classList.remove('active-slide');
-        }
-      });
+  function initMessageCarousel() {
+    // Limpiar estado anterior
+    if (window.messageCarouselState.interval) {
+      clearInterval(window.messageCarouselState.interval);
+      window.messageCarouselState.interval = null;
+    }
+
+    // Esperar a que el DOM esté completamente listo
+    const attemptInit = () => {
+      const slides = document.querySelectorAll('.message-slide');
+      const prevButton = document.getElementById('prev-message');
+      const nextButton = document.getElementById('next-message');
       
-      // Añadir un efecto visual a los botones
-      if (prevButton && nextButton) {
-        prevButton.classList.add('pulse-animation');
-        nextButton.classList.add('pulse-animation');
-        
-        setTimeout(() => {
-          prevButton.classList.remove('pulse-animation');
-          nextButton.classList.remove('pulse-animation');
-        }, 300);
+      if (!slides.length) {
+        return;
       }
-    };
-    
-    const nextSlide = () => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      showSlide(currentSlide);
-    };
-    
-    const prevSlide = () => {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      showSlide(currentSlide);
-    };
-    
-    // Iniciar rotación automática
-    const startAutoRotation = () => {
-      interval = setInterval(nextSlide, 5000); // Cambiar cada 5 segundos
-    };
-    
-    // Detener rotación al interactuar
-    // Limpiar el intervalo anterior si existe
-    const stopAutoRotation = () => {
-      if (interval) clearInterval(interval);
-    };
-    
-    // Reiniciar rotación después de interactuar
-    const resetAutoRotation = () => {
-      stopAutoRotation();
-      startAutoRotation();
-    };
-    
-    // Configurar botones de navegación
-    if (prevButton) {
-      prevButton.addEventListener('click', () => {
+
+      const totalSlides = slides.length;
+      
+      // Si solo hay un slide, ocultar controles
+      if (totalSlides <= 1) {
+        if (prevButton) prevButton.style.display = 'none';
+        if (nextButton) nextButton.style.display = 'none';
+        return;
+      }
+
+      // Remover event listeners anteriores si existen
+      if (prevButton && window.messageCarouselState.prevClickHandler) {
+        prevButton.removeEventListener('click', window.messageCarouselState.prevClickHandler);
+      }
+      if (nextButton && window.messageCarouselState.nextClickHandler) {
+        nextButton.removeEventListener('click', window.messageCarouselState.nextClickHandler);
+      }
+
+      // Función para mostrar slide
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          const slideElement = slide;
+          if (i === index) {
+            slideElement.style.opacity = '1';
+            slideElement.style.transform = 'translateY(0)';
+            slideElement.style.zIndex = '1';
+            slideElement.classList.add('active-slide');
+          } else {
+            slideElement.style.opacity = '0';
+            slideElement.style.transform = 'translateY(20px)';
+            slideElement.style.zIndex = '0';
+            slideElement.classList.remove('active-slide');
+          }
+        });
+        
+        // Efecto visual en botones
+        if (prevButton && nextButton) {
+          prevButton.classList.add('pulse-animation');
+          nextButton.classList.add('pulse-animation');
+          
+          setTimeout(() => {
+            if (prevButton && nextButton) {
+              prevButton.classList.remove('pulse-animation');
+              nextButton.classList.remove('pulse-animation');
+            }
+          }, 300);
+        }
+      }
+      
+      const nextSlide = () => {
+        window.messageCarouselState.currentSlide = (window.messageCarouselState.currentSlide + 1) % totalSlides;
+        showSlide(window.messageCarouselState.currentSlide);
+      };
+      
+      const prevSlide = () => {
+        window.messageCarouselState.currentSlide = (window.messageCarouselState.currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(window.messageCarouselState.currentSlide);
+      };
+      
+      // Iniciar rotación automática
+      const startAutoRotation = () => {
+        if (window.messageCarouselState.interval) {
+          clearInterval(window.messageCarouselState.interval);
+        }
+        window.messageCarouselState.interval = setInterval(nextSlide, 5000);
+      };
+      
+      // Detener rotación
+      const stopAutoRotation = () => {
+        if (window.messageCarouselState.interval) {
+          clearInterval(window.messageCarouselState.interval);
+          window.messageCarouselState.interval = null;
+        }
+      };
+      
+      // Reiniciar rotación después de interactuar
+      const resetAutoRotation = () => {
+        stopAutoRotation();
+        startAutoRotation();
+      };
+      
+      // Crear y guardar event handlers
+      window.messageCarouselState.prevClickHandler = () => {
         prevSlide();
         resetAutoRotation();
-      });
-    }
-    
-    if (nextButton) {
-      nextButton.addEventListener('click', () => {
+      };
+      
+      window.messageCarouselState.nextClickHandler = () => {
         nextSlide();
         resetAutoRotation();
-      });
+      };
+      
+      // Configurar botones de navegación
+      if (prevButton) {
+        prevButton.addEventListener('click', window.messageCarouselState.prevClickHandler);
+      }
+      
+      if (nextButton) {
+        nextButton.addEventListener('click', window.messageCarouselState.nextClickHandler);
+      }
+      
+      // Mostrar el primer slide
+      showSlide(window.messageCarouselState.currentSlide);
+      
+      // Iniciar rotación automática
+      startAutoRotation();
+      
+      window.messageCarouselState.isInitialized = true;
+    };
+
+    // Pequeño delay para asegurar que el DOM esté listo
+    setTimeout(attemptInit, 100);
+  }
+
+  // Inicializar en carga inicial
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMessageCarousel);
+  } else {
+    initMessageCarousel();
+  }
+
+  // Reinicializar en navegaciones de Astro (cambio de idioma)
+  document.addEventListener('astro:page-load', initMessageCarousel);
+  document.addEventListener('astro:after-swap', initMessageCarousel);
+
+  // Limpiar cuando se va a cambiar de página
+  document.addEventListener('astro:before-preparation', () => {
+    if (window.messageCarouselState && window.messageCarouselState.interval) {
+      clearInterval(window.messageCarouselState.interval);
+      window.messageCarouselState.interval = null;
     }
-    
-    // Iniciar rotación automática
-    startAutoRotation();
   });
 </script>
