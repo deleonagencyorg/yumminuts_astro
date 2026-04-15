@@ -1,44 +1,75 @@
-// src/services/api/client.ts
- const apiUrl = import.meta.env.PUBLIC_CMS_URL;    
-  const token = import.meta.env.PUBLIC_CMS_TOKEN;     
+// src/services/api/recipes.ts
+import { cmsClient } from "./client";
+import type { Recipe, CMSRecipesResponse, CMSRecipeDetailResponse } from "./types";
 
-  let cmsRecipes = [];
+const BRAND_SLUG = import.meta.env.PUBLIC_BRAND_SLUG ?? 'yummi-nuts';
+
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLocaleLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
   try {
-    const response = await fetch(`${apiUrl}/v1/recipes?page=1&pageSize=30&brandSlug=bd7b23b4-d8b7-4aea-9f28-6ce6d1927d69&languageCode=${locale}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await cmsClient.get<CMSRecipesResponse>('v1/recipes', {
+      page: 1,
+      pageSize: 100,
+      brandSlug: BRAND_SLUG,
+      languageCode: locale,
     });
-    if (response.ok) {
-      const data = await response.json();
-      cmsRecipes = [...data.data];
-      console.log(`Recetas obtenidas del CMS: ${data}`, data);
-      cmsRecipes = data.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        image: item.image?.url || '/images/recipes/placeholder.jpg',
-        
-        preparation_time: item.preparation_time,
-        category: item.category
-      }));
 
-      for (const cmsRecipe of cmsRecipes) {
-    const recipe = cmsRecipe ;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: locale, recipeId: recipe.id },
-      props: { recipe, currentLang: locale }
-    });
-  }
-  console.log(`Generadas ${paths.length} rutas de recetas en español`);
-  return paths;
+    return response.data.map((item): Recipe => ({
+      id: item.id,
+      slug: item.slug || slugify(item.title),
+      title: item.title,
+      image: item.image,
+      preparation_time: item.preparation_time,
+      category: item.category,
 
-
-    } else {
-      console.error('Error fetching:', response.statusText);
-    }
+      description: item.description,
+      ingredients: item.ingredients ?? [],
+      instructions: item.instructions ?? [],
+      people: item.people,
+      difficulty: item.difficulty,
+      tags: item.tags,
+    }));
   } catch (error) {
-    console.error('Error fetching:', error);
+    console.error('Error fetching recipes:', error);
+    return [];
   }
-console.log(`Recetas obtenidas del CMS: ${cmsRecipes.length}`);
+}
 
+export async function getRecipeBySlug(slug: string, locale: string = 'es'): Promise<Recipe | null> {
+  try {
+    const response = await cmsClient.get<CMSRecipeDetailResponse>(`v1/recipes/${slug}`, {
+      languageCode: locale,
+    });
+
+    const item = response.data;
+
+    return {
+      id: item.id,
+      slug: item.slug || slugify(item.title),
+      title: item.title,
+      image: item.image,
+      preparation_time: item.preparation_time,
+      category: item.category,
+      description: item.description,
+      ingredients: item.ingredients ?? [],
+      instructions: item.instructions ?? [],
+      people: item.people,
+      difficulty: item.difficulty,
+      tags: item.tags,
+    };
+  } catch (error) {
+    console.error(`Error fetching recipe ${slug}:`, error);
+    return null;
+  }
+}

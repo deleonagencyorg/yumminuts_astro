@@ -6,78 +6,26 @@ import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 
 export async function getStaticPaths() {
-  const locale = 'es';
-
-// Cargar recetas desde el CMS
-const locales = ['es', 'en'];  
-const recipes = await getAllRecipes(locale);
-const paths = recipes.map((recipe: any) => ({
-  params: { lang: locale, recipeId: recipe.slug },
-  props: { recipe, currentLang: locale }
-}));
-return paths;
-}
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      cmsRecipes = [...data.data];
-      console.log(`Recetas obtenidas del CMS: ${data}`, data);
-      cmsRecipes = data.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        image: item.image?.url || '/images/recipes/placeholder.jpg',
-        
-        preparation_time: item.preparation_time,
-        category: item.category
-      }));
-
-      for (const cmsRecipe of cmsRecipes) {
-    const recipe = cmsRecipe ;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: locale, recipeId: recipe.id },
-      props: { recipe, currentLang: locale }
-    });
-  }
-  console.log(`Generadas ${paths.length} rutas de recetas en español`);
-  return paths;
-
-
-    } else {
-      console.error('Error fetching:', response.statusText);
-    }
-  } catch (error) {
-    console.error('Error fetching:', error);
-  }
-console.log(`Recetas obtenidas del CMS: ${cmsRecipes.length}`);
-
-
-  const files = Object.values(modules) as any[];
-  console.log(`Encontradas ${files.length} recetas para idioma ${locale}`);
-  for (const mod of files) {
-    const recipe = (mod as any).default;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: locale, recipeId: recipe.id },
-      props: { recipe, currentLang: locale }
-    });
-  }
-  console.log(`Generadas ${paths.length} rutas de recetas en español`);
-  return paths;
+  const recipes = await getAllRecipes('es');
+  
+  console.log('Total recetas:', recipes.length);
+  console.log('Slugs:', recipes.map(r => r.slug));
+  
+  return recipes.map((recipe) => ({
+    params: { lang: 'es', recipeId: recipe.slug || recipe.id },
+    props: { recipe, currentLang: 'es' }
+  }));
 }
 
 const { recipe, currentLang } = Astro.props;
 const { lang, recipeId } = Astro.params;
 
-// Establecer el idioma para las traducciones
+console.log('recipeId en params:', recipeId);
+console.log('recipe en props:', recipe?.title);
+
 setLocale(lang as Locale);
-
-console.log(`Renderizando receta: ${recipeId} en idioma: ${lang}`);
-
 ---
 
-<MainLayout title={recipe.title}>
-  <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
+<MainLayout title={recipe?.title || 'Receta'}>
+  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} />
 </MainLayout>
