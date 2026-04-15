@@ -20,6 +20,7 @@
     "@formkit/auto-animate": "^0.8.2",
     "aos": "^2.3.4",
     "astro": "^5.8.0",
+    "flag-icons": "^7.5.0",
     "framer-motion": "^12.23.0",
     "geoip-lite": "^1.4.10",
     "react": "^19.1.0",
