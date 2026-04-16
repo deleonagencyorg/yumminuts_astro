@@ -1,31 +1,64 @@
 ---
 // src/pages/[lang]/recetas/[recipeId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 
 export async function getStaticPaths() {
-  const recipes = await getAllRecipes('es');
+  console.log('[getStaticPaths] Generando rutas estáticas para recetas...');
+
+  // Fetch paralelo para ambos idiomas (buena práctica)
+  const [recipesEs, recipesEn] = await Promise.all([
+    getAllRecipes('es'),
+    getAllRecipes('en'),
+  ]);
+
+  console.log(`[getStaticPaths] Recetas ES: ${recipesEs.length} | EN: ${recipesEn.length}`);
+
+  // Generación de rutas de forma inmutable
+  const paths = [...recipesEs.map((recipe) => ({
+      params: { 
+        lang: 'es' as const, 
+        recipeId: recipe.slug || recipe.id 
+      },
+      props: { 
+        recipe, 
+        currentLang: 'es' as const 
+      },
+    })),
+    ...recipesEn.map((recipe) => ({
+      params: { 
+        lang: 'en' as const, 
+        recipeId: recipe.slug || recipe.id 
+      },
+      props: { 
+        recipe, 
+        currentLang: 'en' as const 
+      },
+    })),
+  ];
+
+  console.log(`[getStaticPaths] Total de rutas generadas: ${paths.length}`);
   
-  console.log('Total recetas:', recipes.length);
-  console.log('Slugs:', recipes.map(r => r.slug));
-  
-  return recipes.map((recipe) => ({
-    params: { lang: 'es', recipeId: recipe.slug || recipe.id },
-    props: { recipe, currentLang: 'es' }
-  }));
+  return paths;
 }
 
+// Props recibidos desde getStaticPaths
 const { recipe, currentLang } = Astro.props;
 const { lang, recipeId } = Astro.params;
 
-console.log('recipeId en params:', recipeId);
-console.log('recipe en props:', recipe?.title);
-
 setLocale(lang as Locale);
+
+if (!recipe) {
+  console.warn(`Receta no encontrada para slug: ${recipeId}`);
+}
 ---
 
-<MainLayout title={recipe?.title || 'Receta'}>
-  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} />
+<MainLayout title={recipe?.title || 'Receta no encontrada'}>
+  <RecipeDetail 
+    currentLang={currentLang}
+    recipeId={recipeId}
+    recipe={recipe} 
+  />
 </MainLayout>

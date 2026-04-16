@@ -1,8 +1,8 @@
 // src/services/api/recipes.ts
-import { cmsClient } from "./client";
-import type { Recipe, CMSRecipesResponse, CMSRecipeDetailResponse } from "./types";
+import { cmsClient } from './client';
+import type { Recipe, CMSRecipesResponse, CMSRecipeRaw } from './types';
 
-const BRAND_SLUG = import.meta.env.PUBLIC_BRAND_SLUG ?? 'yummi-nuts';
+const BRAND_SLUG = import.meta.env.PUBLIC_CMS_BRAND_SLUG ?? 'yummi-nuts';
 
 function slugify(text: string): string {
   return text
@@ -16,7 +16,25 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+function mapRecipe(item: CMSRecipeRaw): Recipe {
+  return {
+    id: item.id,
+    slug: item.slug || slugify(item.title),
+    title: item.title,
+    image: item.image,
+    preparation_time: item.preparation_time,
+    category: item.category,
+    description: item.description,
+    ingredients: item.ingredients ?? [],
+    instructions: item.instructions ?? [],
+    people: item.people,
+    difficulty: item.difficulty,
+    tags: item.tags,
+  };
+}
+
 export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
+  console.log(`Obteniendo recetas para idioma: ${locale}`);
   try {
     const response = await cmsClient.get<CMSRecipesResponse>('v1/recipes', {
       page: 1,
@@ -25,51 +43,22 @@ export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
       languageCode: locale,
     });
 
-    return response.data.map((item): Recipe => ({
-      id: item.id,
-      slug: item.slug || slugify(item.title),
-      title: item.title,
-      image: item.image,
-      preparation_time: item.preparation_time,
-      category: item.category,
-
-      description: item.description,
-      ingredients: item.ingredients ?? [],
-      instructions: item.instructions ?? [],
-      people: item.people,
-      difficulty: item.difficulty,
-      tags: item.tags,
-    }));
+    console.log(`Recetas cargadas: ${response.data.length}`);
+    return response.data.map(mapRecipe);
   } catch (error) {
-    console.error('Error fetching recipes:', error);
+    console.error('Error al conectar con CMS:', error);
     return [];
   }
 }
 
 export async function getRecipeBySlug(slug: string, locale: string = 'es'): Promise<Recipe | null> {
   try {
-    const response = await cmsClient.get<CMSRecipeDetailResponse>(`v1/recipes/${slug}`, {
+    const response = await cmsClient.get<{ data: CMSRecipeRaw }>(`v1/recipes/${slug}`, {
       languageCode: locale,
     });
-
-    const item = response.data;
-
-    return {
-      id: item.id,
-      slug: item.slug || slugify(item.title),
-      title: item.title,
-      image: item.image,
-      preparation_time: item.preparation_time,
-      category: item.category,
-      description: item.description,
-      ingredients: item.ingredients ?? [],
-      instructions: item.instructions ?? [],
-      people: item.people,
-      difficulty: item.difficulty,
-      tags: item.tags,
-    };
+    return mapRecipe(response.data);
   } catch (error) {
-    console.error(`Error fetching recipe ${slug}:`, error);
+    console.error(`Error al obtener receta ${slug}:`, error);
     return null;
   }
 }
