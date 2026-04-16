@@ -6,59 +6,36 @@ import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 
 export async function getStaticPaths() {
-  console.log('[getStaticPaths] Generando rutas estáticas para recetas...');
+  const locales: Locale[] = ['es', 'en'];
 
-  // Fetch paralelo para ambos idiomas (buena práctica)
-  const [recipesEs, recipesEn] = await Promise.all([
-    getAllRecipes('es'),
-    getAllRecipes('en'),
-  ]);
+  const allRecipesByLang = await Promise.all(
+    locales.map(lang => getAllRecipes(lang))
+  );
 
-  console.log(`[getStaticPaths] Recetas ES: ${recipesEs.length} | EN: ${recipesEn.length}`);
+  const paths = locales.flatMap((locale, index) => 
+    allRecipesByLang[index].map((recipe) => ({
+      params: { lang: locale, recipeId: recipe.slug 
+      },
+      props: { recipe, currentLang: locale 
+      }
+    }))
+  );
 
-  // Generación de rutas de forma inmutable
-  const paths = [...recipesEs.map((recipe) => ({
-      params: { 
-        lang: 'es' as const, 
-        recipeId: recipe.slug || recipe.id 
-      },
-      props: { 
-        recipe, 
-        currentLang: 'es' as const 
-      },
-    })),
-    ...recipesEn.map((recipe) => ({
-      params: { 
-        lang: 'en' as const, 
-        recipeId: recipe.slug || recipe.id 
-      },
-      props: { 
-        recipe, 
-        currentLang: 'en' as const 
-      },
-    })),
-  ];
-
-  console.log(`[getStaticPaths] Total de rutas generadas: ${paths.length}`);
-  
+  console.log(`Generadas ${paths.length} rutas estáticas de recetas (${locales.join(', ')})`);
   return paths;
 }
 
-// Props recibidos desde getStaticPaths
 const { recipe, currentLang } = Astro.props;
 const { lang, recipeId } = Astro.params;
 
 setLocale(lang as Locale);
 
 if (!recipe) {
-  console.warn(`Receta no encontrada para slug: ${recipeId}`);
+  console.warn(`Receta no encontrada: ${recipeId}`);
 }
 ---
 
-<MainLayout title={recipe?.title || 'Receta no encontrada'}>
-  <RecipeDetail 
-    currentLang={currentLang}
-    recipeId={recipeId}
-    recipe={recipe} 
+<MainLayout title={recipe?.title || 'Receta'}>
+  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} 
   />
 </MainLayout>
