@@ -6,6 +6,7 @@ if (!CMS_URL || !CMS_TOKEN) {
   console.warn('Faltan PUBLIC_CMS_URL o PUBLIC_CMS_TOKEN');
 }
 
+
 export const cmsClient = {
   async get<T>(endpoint: string, params: Record<string, string | number | boolean> = {}): Promise<T> {
     const base = `${CMS_URL}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
