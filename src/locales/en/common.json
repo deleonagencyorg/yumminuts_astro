@@ -231,8 +231,8 @@
       "instagramPosts": [
         {
           "id": "post1",
-          "postUrl": "https://www.instagram.com/reel/DVhme3_DfT_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DVhme3_DfT_/embed",
+          "postUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-1.jpg",
           "fallbackImage": "/images/instagram-fallback-1.jpg",
           "alt": "Yummi Nuts Instagram Post 1"
