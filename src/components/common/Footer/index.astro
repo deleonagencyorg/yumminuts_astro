@@ -110,11 +110,11 @@ function langPath(routeId: string): string {
 
         <!-- Columna CONTACTO (Teléfonos) -->
         <div class="col-span-2 w-[100%] mx-auto flex flex-col items-center gap-6 md:gap-8 md:items-start md:w-auto md:mx-0">
-          <div class="font-title text-xl sm:text-2xl md:text-3xl font-bold text-primary text-center md:text-left">
+          <div class="font-title text-lg sm:text-2xl font-bold text-center md:text-left uppercase">
             {currentLang === 'es' ? 'Contacto' : 'Contact'}
           </div>
-          <ul class="grid grid-cols-2 font-sans gap-3 md:gap-4 text-primary text-base md:text-lg justify-items-center md:flex md:flex-col md:items-start md:justify-items-start [&>li]:whitespace-nowrap">
-            <li class="flex items-center gap-2">
+              <ul class="grid grid-cols-2 font-sans gap-4 md:gap-2 text-sm md:text-lg justify-items-center md:grid-cols-2 justify-items-center md:justify-items-start [&>li]:whitespace-nowrap">
+              <li class="flex items-center gap-2">
               <img src="https://snack.yummiespromociones.com/SnacksyummiesAssets/gt.webp" alt="Guatemala" class="w-4 h-4 md:w-5 md:h-4 object-contain">
               <a href="tel:+50225027050" class="hover:underline hover:text-blue">(+502) 2502-7050</a>
             </li>
