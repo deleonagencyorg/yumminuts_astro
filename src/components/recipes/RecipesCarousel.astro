@@ -1,23 +1,11 @@
 ---
 import RecipeCardCarousel from './RecipeCardCarousel.astro';
 import { getLocale } from '../../i18n/i18n';
+import { getAllRecipes} from '../../services/api/recipes';   
+import type { Recipe } from '../../services/api/types';
 
 // Import all recipe files dynamically (use static glob and filter by lang)
 const currentLang = getLocale();
-interface Recipe {
-  id: string;
-  title: string;
-  image: string;
-  hover_image?: string;
-  preparation_time: number;
-  category?: string;
-  category_en?: string;
-  categories?: string[];
-  categories_en?: string[];
-  difficulty?: string;
-  servings?: number;
-  rating?: number;
-}
 
 // Optional items can be passed from parent (e.g., related recipes)
 export interface Props {
@@ -36,16 +24,7 @@ const {
 // If items provided, use them; otherwise load all by lang
 let recipeItems: Recipe[] = Array.isArray(items) ? (items as unknown as Recipe[]) : [];
 if (!recipeItems.length) {
-  const recipeModules = import.meta.glob<{ default: Recipe }>("../../locales/*/recipes/*.json");
-  for (const path in recipeModules) {
-    // Path format: ../../locales/es/recipes/file.json
-    const pathParts = path.split('/');
-    const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
-    if (lang === currentLang) {
-      const mod = await recipeModules[path]();
-      recipeItems.push(mod.default);
-    }
-  }
+  recipeItems = await getAllRecipes(currentLang);
 }
 
 // Aplicar límite si está definido
