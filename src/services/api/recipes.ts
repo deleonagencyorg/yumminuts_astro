@@ -17,6 +17,7 @@ function slugify(text: string): string {
 }
 
 function mapRecipe(item: CMSRecipeRaw): Recipe {
+  console.log(`[mapRecipe] id=${item.id} slug=${item.slug} title=${item.title}`);
   return {
     id: item.id,
     slug: item.slug || slugify(item.title),
@@ -34,7 +35,10 @@ function mapRecipe(item: CMSRecipeRaw): Recipe {
 }
 
 export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
-  console.log(`Obteniendo recetas para idioma: ${locale}`);
+  console.log(`[CMS] URL: ${import.meta.env.PUBLIC_CMS_URL}`);
+  console.log(`[CMS] Brand: ${import.meta.env.PUBLIC_CMS_BRAND_SLUG}`);
+  console.log(`[CMS] Locale: ${locale}`);
+  
   try {
     const response = await cmsClient.get<CMSRecipesResponse>('v1/recipes', {
       page: 1,
@@ -43,10 +47,12 @@ export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
       languageCode: locale,
     });
 
-    console.log(`Recetas cargadas: ${response.data.length}`);
+    console.log(`[CMS] Respuesta completa:`, JSON.stringify(response, null, 2));
+    console.log(`[CMS] Recetas encontradas: ${response?.data?.length ?? 'undefined'}`);
+    
     return response.data.map(mapRecipe);
   } catch (error) {
-    console.error('Error al conectar con CMS:', error);
+    console.error('[CMS] Error completo:', error);
     return [];
   }
 }

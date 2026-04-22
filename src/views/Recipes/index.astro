@@ -4,31 +4,15 @@ import { getLocale } from '../../i18n/i18n';
 import './styles.css';
 import RecipeCard from '../../components/recipes/RecipeCard.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
-
-interface Recipe {
-  id: string;
-  title: string;
-  image?: string;
-  preparation_time: number;
-  type?: string;
-}
+import type { Recipe } from '../../services/api/types';
 
 const currentLang = getLocale();
 
 // Get all recipe files with correct Vite glob typing
-const recipeModules = import.meta.glob<{default: Recipe}>('../../locales/*/recipes/*.json');
-const allRecipes: Recipe[] = [];
+import { getAllRecipes } from '../../services/api/recipes';
+const allRecipes = await getAllRecipes(currentLang);
 
-// Process each file
-for (const path in recipeModules) {
-  // Path format: ../../locales/es/recipes/file.json
-  const pathParts = path.split('/');
-  const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
-  if (lang === currentLang) {
-    const module = await recipeModules[path]();
-    allRecipes.push(module.default);
-  }
-}
+
 
 // Shared translations
 const noRecipesText = currentLang === 'es' 
@@ -102,10 +86,13 @@ function normalizeType(r: Recipe): string {
         {allRecipes.map((recipe: Recipe) => (
           <div class="recipe-card" data-type={normalizeType(recipe)}>
             <RecipeCard
-              image={recipe.image || '/images/recipes/placeholder.jpg'}
+              image={typeof recipe.image === 'string' 
+  ? recipe.image 
+  : recipe.image?.url ?? '/images/recipes/placeholder.jpg'}
               title={recipe.title}
               time={`${recipe.preparation_time}MIN`}
               id={recipe.id}
+              slug={recipe.slug ?? recipe.id} 
               textColor="text-white"
               iconColor="text-white"
             />

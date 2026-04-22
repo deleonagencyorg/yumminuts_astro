@@ -23,6 +23,7 @@ export async function getStaticPaths() {
       }
     }))
   );
+  console.log('Rutas generadas:', paths.map(p => `/${p.params.lang}/${p.params.recipeId}`));
 
   console.log(`Generadas ${paths.length} rutas estáticas de recetas (${locales.join(', ')})`);
   console.log(allRecipesByLang);
