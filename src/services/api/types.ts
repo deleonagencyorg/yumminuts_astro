@@ -1,3 +1,5 @@
+import { any } from "astro:schema";
+
 // src/services/api/types.ts
 export interface Recipe {
   id: string;
@@ -41,6 +43,46 @@ export interface CMSRecipesResponse {
   };
 }
 
-export interface CMSRecipeDetailResponse {
-  data: CMSRecipeRaw;
+export interface Product {
+  id: string;
+  slug?: string;
+  name: string;
+  category?: string;
+  image?: string | { url: string };
+  description?: string;
+  background_color?: string;
+  header_color?: string;
+  text_color?: string;
+  color_button?: string;
+  weight?: string[];
+  nutrition?: {
+    title?: string;
+    serving?: string;
+    rows?: { label: string; value: string }[];
+    disclaimer?: string;
+  };
+}
+
+export interface CMSProductRaw {
+  id: string;
+  slug?: string;
+  name: string;
+  category?: string;
+  image?: string | { url: string };
+  description?: string;
+  background_color?: string;
+  header_color?: string;
+  text_color?: string;
+  color_button?: string;
+  weight?: string[];
+  nutrition?: any;
+}
+
+export interface CMSProductsResponse {
+  data: CMSProductRaw[];
+  pagination?: {
+    page: number;
+    pageSize: number;
+    total: number;
+  };
 }
