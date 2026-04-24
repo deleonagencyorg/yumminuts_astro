@@ -183,6 +183,16 @@ function normalizeType(r: Recipe): string {
         revealedCount = 0;
         hideAll();
         revealNextPage();
+        setTimeout(() => {
+          if (sentinel) { 
+            const rect = sentinel.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+              revealNextPage();
+            }
+            observer.disconnect();
+            observer.observe(sentinel);
+          }
+        }, 100);
       }
 
       function setActive(btn) {
