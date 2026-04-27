@@ -34,47 +34,6 @@
     }
   ],
   "items": [
-    {
-      "id": "yummi-nut-mani-con-sal",
-      "name": "Yummi Nut Maní con Sal",
-      "category": "Maní",
-      "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
-      "background_color": "#0073C1",
-      "header_color": "#0073C1",
-      "text_color": "primary",
-      "header_background": "white",
-      "header_text_color": "primary",
-      "color_button": "#0073C1",
-      "description": "¡Snack crujiente y delicioso en cada bocado! Dale un gusto a tu día con nuestro Maní con Sal: porciones perfectas de maní tostado con un toque de sal, ideal para llevar o disfrutar en casa. 100% natural, sin lácteos, sin gluten y lleno de sabor. ¡Tu nuevo favorito para picar!",
-      "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
-      "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
-      "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp" }
-      ],
-      "weight": ["30g", "60g", "120g"],
-      "nutrition": {
-        "title": "Datos de Nutrición",
-        "serving": "Tamaño de la Porción: 30g. Porciones por envase: 0.67",
-        "rows": [
-          { "label": "Energía", "value": "800 kJ (190 kcal)" },
-          { "label": "Energía de grasa", "value": "600 kJ (140 kcal)" },
-          { "label": "Grasa total", "value": "15g (19% VD)" },
-          { "label": "Grasa saturada", "value": "3.5g (18% VD)" },
-          { "label": "Grasa trans", "value": "0g" },
-          { "label": "Colesterol", "value": "0mg (0% VD)" },
-          { "label": "Sodio", "value": "150mg (7% VD)" },
-          { "label": "Carbohidratos totales", "value": "5g (2% VD)" },
-          { "label": "Fibra dietética", "value": "3g (11% VD)" },
-          { "label": "Azúcares", "value": "menos de 1g" },
-          { "label": "Proteínas", "value": "8g" },
-          { "label": "Vitamina D", "value": "0% VD" },
-          { "label": "Calcio", "value": "2% VD" },
-          { "label": "Hierro", "value": "2% VD" },
-          { "label": "Potasio", "value": "4% VD" }
-        ],
-        "disclaimer": "Los Valores de los Porcentajes Diarios están basados en una dieta de 8,378 kJ (2,000 cal). Sus Valores diarios pueden ser mayor o menor dependiendo de sus necesidades calóricas. SEGÚN FDA."
-      }
-    }
   ]
 }
     

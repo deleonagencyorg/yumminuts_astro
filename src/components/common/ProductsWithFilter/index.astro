@@ -1,13 +1,13 @@
 ---
 // Hybrid component combining Categories products display with Recipe-style filtering
-import { t } from '../../../i18n/i18n';
 import { getLocale } from '../../../i18n/i18n';
 import ProductCard from '../ProductCard/index.astro';
 import categoriesConfig from '../../../config/categories.json';
+import { getAllProducts } from '../../../services/api/products';
 
 const currentLang = getLocale();
 // Load all products from localized JSON
-const products = t('items', { namespace: 'products', locale: currentLang }) || [];
+const products = await getAllProducts(currentLang);
 
 export interface Props {
   title?: string;
@@ -20,7 +20,7 @@ const {
 } = Astro.props;
 
 // Use all localized products
-const productItems = Array.isArray(products) ? products : [];
+const productItems = products;
 
 // Build filter categories from centralized config with localized labels
 const filterCategories = (categoriesConfig.categories || []).map((c: any) => ({
