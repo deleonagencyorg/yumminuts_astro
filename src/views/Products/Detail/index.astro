@@ -43,6 +43,7 @@ const { currentLang, productId, product } = Astro.props as {
   productId: string;
   product: Product | undefined;
 };
+console.log('[product del CMS]', JSON.stringify(product, null, 2));
 
 // Datos que aún vienen del sistema local
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
@@ -112,7 +113,7 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
     id: (first.id || c.key) as string,
     title: (c.labels?.[currentLang] || c.labels?.es || '') as string,
     image: (first.image || '') as string,
-    bgColor: (c.background || '#95CFF2') as string,
+    bgColor: (first.background_color || c.background || '#95CFF2') as string, 
     slug: (first.slug || first.id || '') as string,
   };
 }).filter((cp: CatProduct) => cp.image);

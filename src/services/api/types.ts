@@ -50,10 +50,10 @@ export interface Product {
   category?: string;
   image?: string | { url: string };
   description?: string;
-  background_color?: string;
-  header_color?: string;
-  text_color?: string;
-  color_button?: string;
+  backgroundColor?: string;
+  headerTextColor?: string;
+  textColor?: string;
+  colorButton?: string;
   weight?: string[];
   nutrition?: {
     title?: string;

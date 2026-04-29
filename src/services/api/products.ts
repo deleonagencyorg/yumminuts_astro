@@ -4,32 +4,19 @@ import type { Product, CMSProductsResponse, CMSProductRaw } from './types';
 console.log(`[CMS] URL completa: ${import.meta.env.PUBLIC_CMS_URL}v1/products`);
 const BRAND_SLUG = import.meta.env.PUBLIC_CMS_BRAND_SLUG ?? 'yummi-nuts';
 
-function slugify(text: string): string {
-  return text
-    .toString()
-    .replace(/[""'']/g, '')
-    .toLocaleLowerCase()
-    .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/[\s_]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
 function mapProduct(item: CMSProductRaw): Product {
-  console.log(`[mapProduct] id=${item.id} slug=${item.slug} name=${item.name}`);
+  console.log(`[raw completo] ${item.name}:`, JSON.stringify(item, null, 2));
   return {
     id: item.id,
-    slug: item.slug || slugify(item.name),
+    slug: item.slug || item.id,
     name: item.name,
     category: item.category,
     image: item.image,
     description: item.description,
-    background_color: item.background_color,
-    header_color: item.header_color,
-    text_color: item.text_color,
-    color_button: item.color_button,
+    background_color: item.backgroundColor,
+    header_color: item.headerTextColor,
+    text_color: item.textColor,
+    color_button: item.colorButton,
     weight: item.weight,
     nutrition: item.nutrition,
   };
