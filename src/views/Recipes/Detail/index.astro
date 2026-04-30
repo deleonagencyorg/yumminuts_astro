@@ -9,6 +9,7 @@ import LazyImage from '../../../components/common/LazyImage.astro';
 import { div } from 'framer-motion/m';
 import IngredientsCarousel from '../../../components/recipes/IngredientsCarousel.astro';
 import ShareModal from '../../../components/common/ShareModal.astro';
+import VideoModal from '../../../components/common/VideoModal.astro';
 
 interface RecipeItem {
   id: string;
@@ -21,6 +22,7 @@ interface RecipeItem {
   image?: string;
   tags?: string[];
   product_image?: string;
+  video?: string;
 }
 
 const { currentLang, recipeId } = Astro.props;
@@ -95,7 +97,10 @@ const instructionsList = Array.isArray(recipe.instructions)
     <!-- Columna Izquierda: Imagen -->
     {recipe.image && (
       <div class="w-full">
-        <div class="relative rounded-2xl overflow-hidden w-full aspect-[4/3]">
+        <div 
+          class={`relative rounded-2xl overflow-hidden w-full aspect-[4/3] ${recipe.video ? 'cursor-pointer group' : ''}`}
+          onclick={recipe.video ? "window.openVideoModal()" : undefined}
+        >
           <LazyImage
             src={recipe.image}
             alt={recipe.title}
@@ -103,6 +108,22 @@ const instructionsList = Array.isArray(recipe.instructions)
             onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
             transition:name={`recipe-image-${recipe.id}`}
           />
+          
+          {/* Icono de play para videos */}
+          {recipe.video && (
+            <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+              <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-black/50 flex items-center justify-center group-hover:bg-black/60 group-hover:scale-105 transition-all">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  class="h-10 w-10 md:h-12 md:w-12 text-white/90 ml-1" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor"
+                >
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )}
@@ -209,3 +230,11 @@ const instructionsList = Array.isArray(recipe.instructions)
   acceptTextEs="Aceptar"
   acceptTextEn="Accept"
 />
+
+<!-- Video Modal instance (solo si tiene video) -->
+{recipe.video && (
+  <VideoModal 
+    videoUrl={recipe.video} 
+    recipeTitle={recipe.title}
+  />
+)}

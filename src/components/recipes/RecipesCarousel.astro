@@ -17,6 +17,7 @@ interface Recipe {
   difficulty?: string;
   servings?: number;
   rating?: number;
+  video?: string;
 }
 
 // Optional items can be passed from parent (e.g., related recipes)
@@ -139,6 +140,7 @@ const hasMultipleRecipes = recipeItems.length > 1;
                     servings={recipe.servings || 0}
                     rating={recipe.rating || 0}
                     isMainCard={false}
+                    video={recipe.video}
                   />
                 </div>
               ))}
@@ -180,6 +182,7 @@ const hasMultipleRecipes = recipeItems.length > 1;
                 servings={recipe.servings || 0}
                 rating={recipe.rating || 0}
                 isMainCard={false}
+                video={recipe.video}
               />
             </div>
           ))}

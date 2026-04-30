@@ -10,6 +10,7 @@ interface RecipeItem {
   difficulty?: string;
   servings?: number;
   rating?: number;
+  video?: string;
 }
 
 export interface Props {
@@ -40,6 +41,7 @@ const hasMultipleItems = items.length > 1;
                 id={recipe.id}
                 textColor="text-white"
                 iconColor="text-white"
+                video={recipe.video}
               />
             </div>
           ))}
@@ -70,6 +72,7 @@ const hasMultipleItems = items.length > 1;
                 id={recipe.id}
                 textColor="text-white"
                 iconColor="text-white"
+                video={recipe.video}
               />
             </div>
           ))}

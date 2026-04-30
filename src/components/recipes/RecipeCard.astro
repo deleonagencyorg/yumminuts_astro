@@ -10,6 +10,7 @@ interface Props {
   id: string;
   textColor?: string;
   iconColor?: string;
+  video?: string;
 }
 
 const { 
@@ -18,8 +19,12 @@ const {
   time = "---", 
   id,
   textColor = 'text-black',
-  iconColor = 'text-blue-900'
+  iconColor = 'text-blue-900',
+  video
 } = Astro.props;
+
+// Verificar si tiene video
+const hasVideo = video && video.trim().length > 0;
 
 const currentLocale = getLocale();
 const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
@@ -46,6 +51,22 @@ const hasValidImage = image && !image.includes('placeholder.jpg');
         <RecipePlaceholder
           class="w-full h-full rounded-xl"
         />
+      )}
+      
+      {/* Icono de play para videos */}
+      {hasVideo && (
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/40 flex items-center justify-center">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              class="h-8 w-8 md:h-10 md:w-10 text-white/90 ml-1" 
+              viewBox="0 0 24 24" 
+              fill="currentColor"
+            >
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>
       )}
     </div>
 

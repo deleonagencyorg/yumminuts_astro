@@ -11,6 +11,7 @@ interface Recipe {
   image?: string;
   preparation_time: number;
   type?: string;
+  video?: string;
 }
 
 const currentLang = getLocale();
@@ -108,6 +109,7 @@ function normalizeType(r: Recipe): string {
               id={recipe.id}
               textColor="text-white"
               iconColor="text-white"
+              video={(recipe as any).video}
             />
           </div>
         ))}
