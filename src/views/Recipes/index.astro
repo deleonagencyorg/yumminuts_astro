@@ -170,10 +170,6 @@ function normalizeType(r: Recipe): string {
         revealedCount = 0;
         hideAll();
         revealNextPage();
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
         setTimeout(() => {
           if (sentinel) { 
             const rect = sentinel.getBoundingClientRect();
@@ -183,11 +179,7 @@ function normalizeType(r: Recipe): string {
             observer.disconnect();
             observer.observe(sentinel);
           }
-<<<<<<< HEAD
-        }, 100); // Delay to ensure DOM updates
-=======
         }, 100);
->>>>>>> develop
       }
 
       function setActive(btn) {

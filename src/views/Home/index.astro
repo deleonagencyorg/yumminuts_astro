@@ -85,23 +85,6 @@ const slides = Array.isArray(commonAssets)
   : [];
 
 const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
-
-// Load recipes via Vite glob (same strategy as Recipes page)
-interface Recipe { id: string; title: string; image?: string; preparation_time: number; type?: string }
-const recipeModules = import.meta.glob<{ default: Recipe }>("../../locales/*/recipes/*.json");
-const allRecipes: Recipe[] = [];
-for (const path in recipeModules) {
-  const parts = path.split('/');
-  const lang = parts[parts.length - 3];
-  if (lang === currentLang) {
-    const mod = await recipeModules[path]();
-    allRecipes.push(mod.default);
-  }
-}
-// Fallback: if there are no per-file recipes, use translations list if available
-// Limitar a solo 10 recetas para la página de inicio
-const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) : (recipesAssets.items || []).slice(0, 10);
-
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">

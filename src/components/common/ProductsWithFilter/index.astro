@@ -19,9 +19,6 @@ const {
   showAllProducts = false
 } = Astro.props;
 
-// Use all localized products
-const productItems = products;
-
 // Build filter categories from centralized config with localized labels
 const filterCategories = (categoriesConfig.categories || []).map((c: any) => ({
   key: c.key,
@@ -58,7 +55,7 @@ function getProductCategory(product: any): string {
 }
 
 // Display products (limit to 6 if not showing all)
-const displayProducts = showAllProducts ? productItems : productItems.slice(0, 6);
+const displayProducts = showAllProducts ? products : products.slice(0, 6);
 
 function slugify(input: string): string {
   return (input || '')
@@ -128,7 +125,7 @@ function productHref(product: any): string {
     </div>
 
     <!-- Show All Button (if not showing all products) -->
-    {!showAllProducts && productItems.length > 6 && (
+    {!showAllProducts && products.length > 6 && (
       <div class="text-center mt-12">
         <a 
           href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}`}

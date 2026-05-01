@@ -109,11 +109,11 @@ const hasMultipleRecipes = recipeItems.length > 1;
               {group.map((recipe: any) => (
                 <div class="recipe-slide w-full" data-category={getCategoryKey(recipe)}>
                   <RecipeCardCarousel
-                    image={recipe.image}
-                    hoverImage={recipe.hover_image || recipe.image}
+                    image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? ''}
                     title={recipe.title}
                     time={`${recipe.preparation_time}MIN`}
                     id={recipe.id}
+                    slug={recipe.slug ?? recipe.id}
                     difficulty={recipe.difficulty || '---'}
                     servings={recipe.servings || 0}
                     rating={recipe.rating || 0}
@@ -150,11 +150,11 @@ const hasMultipleRecipes = recipeItems.length > 1;
           {recipeItems.map((recipe, index) => (
             <div class="recipe-slide w-1/4 px-2 flex-shrink-0 group-hover-container" data-index={index} data-category={getCategoryKey(recipe)}>
               <RecipeCardCarousel
-                image={recipe.image}
-                hoverImage={recipe.hover_image || recipe.image}
+                image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? ''}
                 title={recipe.title}
                 time={`${recipe.preparation_time}MIN`}
                 id={recipe.id}
+                slug={recipe.slug ?? recipe.id}
                 difficulty={recipe.difficulty || '---'}
                 servings={recipe.servings || 0}
                 rating={recipe.rating || 0}

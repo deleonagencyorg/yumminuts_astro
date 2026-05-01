@@ -4,12 +4,10 @@ import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
-import { all } from 'axios';
-import console from 'console';
+import { config } from '../../../i18n/config';
 
 export async function getStaticPaths() {
-  const locales: Locale[] = ['es', 'en'];
-  console.log('hoa');
+  const locales = config.supportedLocales as Locale[];
 
   const allRecipesByLang = await Promise.all(
     locales.map(lang => getAllRecipes(lang))
@@ -23,10 +21,6 @@ export async function getStaticPaths() {
       }
     }))
   );
-  console.log('Rutas generadas:', paths.map(p => `/${p.params.lang}/${p.params.recipeId}`));
-
-  console.log(`Generadas ${paths.length} rutas estáticas de recetas (${locales.join(', ')})`);
-  console.log(allRecipesByLang);
   return paths;
 }
 
@@ -35,11 +29,7 @@ const { lang, recipeId } = Astro.params;
 
 setLocale(lang as Locale);
 
-if (!recipe) {
-  console.warn(`Receta no encontrada: ${recipeId}`);
-}
 ---
-<h1>Hola</h1>
 <MainLayout title={recipe?.title || 'Receta'}>
   <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} 
   />
