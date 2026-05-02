@@ -4,8 +4,9 @@ import RecipeCard from './RecipeCard.astro';
 
 interface RecipeItem {
   id: string;
+  slug?: string;
   title: string;
-  image?: string;
+  image?: string | { url: string }; 
   preparation_time: number;
   difficulty?: string;
   servings?: number;
@@ -34,10 +35,11 @@ const hasMultipleItems = items.length > 1;
           {items.map((recipe) => (
             <div class="w-[360px] flex-shrink-0">
               <RecipeCard
-                image={recipe.image || '/images/recipes/placeholder.jpg'}
+                image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? '/images/recipes/placeholder.jpg'}
                 title={recipe.title}
                 time={`${recipe.preparation_time}MIN`}
                 id={recipe.id}
+                slug={recipe.slug ?? recipe.id}
                 textColor="text-white"
                 iconColor="text-white"
               />
@@ -64,10 +66,11 @@ const hasMultipleItems = items.length > 1;
           {items.map((recipe) => (
             <div class="w-[85%] flex-shrink-0">
               <RecipeCard
-                image={recipe.image || '/images/recipes/placeholder.jpg'}
+                image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? '/images/recipes/placeholder.jpg'}
                 title={recipe.title}
                 time={`${recipe.preparation_time}MIN`}
                 id={recipe.id}
+                slug={recipe.slug ?? recipe.id}
                 textColor="text-white"
                 iconColor="text-white"
               />

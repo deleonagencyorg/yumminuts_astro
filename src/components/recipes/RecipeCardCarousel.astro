@@ -10,6 +10,7 @@ interface Props {
   title: string;
   time?: string;
   id: string;
+  slug?: string;
   textColor?: string;
   iconColor?: string;
   hoverImage?: string;
@@ -24,6 +25,7 @@ const {
   title, 
   time = "---", 
   id,
+  slug,
   textColor = 'text-blue-900',
   iconColor = 'text-blue-900',
   hoverImage = image,
@@ -34,7 +36,7 @@ const {
 } = Astro.props;
 
 const currentLocale = getLocale();
-const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
+const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${slug ?? id}`;
 const viewRecipeText = currentLocale === 'es' ? 'Ver Receta' : 'View Recipe';
 
 // Verificar si la imagen es válida (no es placeholder ni está vacía)

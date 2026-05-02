@@ -6,6 +6,7 @@ import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
+import { getAllProducts } from '../../services/api/products';
 
 // Style Imports
 import './styles.css';
@@ -29,7 +30,7 @@ const recipesAssets = t('', { namespace: 'recipes', locale: currentLang }) || {}
 const galleryAssets = t('', { namespace: 'gallery', locale: currentLang }) || {};
 const aboutAssets = t('', { namespace: 'aboutus', locale: currentLang }) || {};
 const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
-const products = t('items', { namespace: 'products', locale: currentLang }) || [];
+const products = await getAllProducts(currentLang);
 
 // Build first product per category using centralized categories config
 type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
@@ -60,9 +61,10 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
   const first = list[0] || {};
   // Always show the category label (ES/EN) below the image, not the product name
   const title = (c.labels?.[currentLang] || c.labels?.es || c.labels?.en || '') as string;
-  const image = (first.image || '') as string;
+  const rawImage = first.image;
+  const image = typeof rawImage === 'string' ? rawImage : rawImage?.url ?? '';
   // Use category config color to paint SVG, independent of product
-  const bgColor = (c.background || '#95CFF2') as string;
+  const bgColor = (first.background_color || c.background || '#95CFF2') as string;
   const id = (first.id || c.key) as string;
   const slug = (first.slug || first.id || '') as string;
   return { id, title, image, bgColor, slug };
@@ -83,23 +85,6 @@ const slides = Array.isArray(commonAssets)
   : [];
 
 const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
-
-// Load recipes via Vite glob (same strategy as Recipes page)
-interface Recipe { id: string; title: string; image?: string; preparation_time: number; type?: string }
-const recipeModules = import.meta.glob<{ default: Recipe }>("../../locales/*/recipes/*.json");
-const allRecipes: Recipe[] = [];
-for (const path in recipeModules) {
-  const parts = path.split('/');
-  const lang = parts[parts.length - 3];
-  if (lang === currentLang) {
-    const mod = await recipeModules[path]();
-    allRecipes.push(mod.default);
-  }
-}
-// Fallback: if there are no per-file recipes, use translations list if available
-// Limitar a solo 10 recetas para la página de inicio
-const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) : (recipesAssets.items || []).slice(0, 10);
-
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">

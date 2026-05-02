@@ -1,33 +1,25 @@
 ---
 // src/pages/[lang]/recipes/[recipeId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
+import { getAllRecipes } from '../../../services/api/recipes';
+import { config } from '../../../i18n/config';
 
 export async function getStaticPaths() {
-  const paths: any[] = [];
-  // Cargar recetas EN
-  const enModules = import.meta.glob('../../../locales/en/recipes/*.json', { eager: true });
-  const enFiles = Object.values(enModules) as any[];
-  for (const mod of enFiles) {
-    const recipe = (mod as any).default;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: 'en', recipeId: recipe.id },
-      props: { recipe, currentLang: 'en' }
-    });
-  }
-  // Cargar recetas ES
-  const esModules = import.meta.glob('../../../locales/es/recipes/*.json', { eager: true });
-  const esFiles = Object.values(esModules) as any[];
-  for (const mod of esFiles) {
-    const recipe = (mod as any).default;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: 'es', recipeId: recipe.id },
-      props: { recipe, currentLang: 'es' }
-    });
-  }
+  const locales = config.supportedLocales as Locale[];
+
+  const allRecipesByLang = await Promise.all(
+    locales.map(lang => getAllRecipes(lang))
+  );
+
+  const paths = locales.flatMap((locale, index) => 
+    allRecipesByLang[index].map((recipe) => ({
+      params: { lang: locale, recipeId: recipe.slug },
+      props: { recipe, currentLang: locale }
+    }))
+  );
+
   return paths;
 }
 
@@ -37,7 +29,6 @@ const { lang, recipeId } = Astro.params;
 // Establecer el idioma para las traducciones
 setLocale(lang as Locale);
 ---
-
-<MainLayout title={recipe.title}>
-  <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
+<MainLayout title={recipe?.title || 'Recipe'}>
+  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} />
 </MainLayout>

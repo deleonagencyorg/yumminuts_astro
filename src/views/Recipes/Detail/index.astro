@@ -6,200 +6,134 @@ import RecipeCard from '../../../components/recipes/RecipeCard.astro';
 import RelatedRecipesCarousel from '../../../components/recipes/RelatedRecipesCarousel.astro';
 import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
 import LazyImage from '../../../components/common/LazyImage.astro';
-import { div } from 'framer-motion/m';
 import IngredientsCarousel from '../../../components/recipes/IngredientsCarousel.astro';
 import ShareModal from '../../../components/common/ShareModal.astro';
+import { getAllRecipes } from '../../../services/api/recipes';
+import type { Recipe } from '../../../services/api/types';
 
-interface RecipeItem {
-  id: string;
-  title: string;
-  description: string;
-  ingredients: string[];
-  instructions: string[];
-  preparation_time: number;
-  servings: number;
-  image?: string;
-  tags?: string[];
-  product_image?: string;
-}
-
-const { currentLang, recipeId } = Astro.props;
-
-// Import all recipe files with static glob and filter by language
-const recipeModules = import.meta.glob<{ default: RecipeItem }>("../../../locales/*/recipes/*.json");
-const allRecipes: RecipeItem[] = [];
-for (const path in recipeModules) {
-  // Path format: ../../../locales/es/recipes/file.json
-  const pathParts = path.split('/');
-  const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
-  if (lang === currentLang) {
-    const mod = await recipeModules[path]();
-    allRecipes.push(mod.default);
-  }
-}
-
-// Find current recipe
-const recipe = allRecipes.find((item: RecipeItem) => item.id === recipeId);
-
-// Get related recipes (filter current and limit to 3)
-const relatedRecipes = allRecipes
-  .filter((item: RecipeItem) => item.id !== recipeId)
-  .slice(0, 3);
-
-if (!recipe) {
-  throw new Error(`Recipe with id ${recipeId} not found`);
-}
-
-// Load shared recipe assets (titles, labels etc)
-const recipesAssets = {
-  recipes: currentLang === 'es' ? 'Ingredientes' : 'Ingredients',
-  preparation: currentLang === 'es' ? 'Preparación' : 'Preparation',
-  related_recipes: currentLang === 'es' ? 'Recetas relacionadas' : 'Related recipes'
+const { currentLang, recipeId, recipe } = Astro.props as {
+  currentLang: 'es' | 'en';
+  recipeId: string;
+  recipe: Recipe | undefined;
 };
 
-function formatTime(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  
-  if (currentLang === 'es') {
-    return hours > 0 
-      ? `${hours}h ${mins}min` 
-      : `${mins}min`;
-  } else {
-    return hours > 0 
-      ? `${hours}h ${mins}m` 
-      : `${mins}m`;
-  }
+if (!recipe) {
+  throw new Error(`Recipe with slug ${recipeId} not found`);
 }
 
-// Ensure instructions is an array for consistent handling
-const instructionsList = Array.isArray(recipe.instructions) 
-  ? recipe.instructions 
-  : [recipe.instructions];
+// usar recipe.id
+const allRecipes = await getAllRecipes(currentLang);
+const relatedRecipes = allRecipes
+  .filter((item) => item.id !== recipe.id)
+  .slice(0, 3);
+
+const t = {
+  ingredients: currentLang === 'es' ? 'Ingredientes' : 'Ingredients',
+  preparation: currentLang === 'es' ? 'Preparación' : 'Preparation',
+  relatedRecipes: currentLang === 'es' ? 'Recetas relacionadas' : 'Related recipes',
+  viewMore: currentLang === 'es' ? 'Ver otras recetas similares' : 'View More Recipes',
+};
+
+const ingredients = recipe.ingredients ?? [];
+const instructions = recipe.instructions ?? [];
+
+function formatTime(minutes: number | undefined): string {
+  if (!minutes) return currentLang === 'es' ? 'No especificado' : 'Not specified';
+
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (currentLang === 'es') {
+    return hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
+  }
+  return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+}
 ---
 <div class="bg-white">
   <div class="w-full max-w-6xl mx-auto px-4 pt-4">
-    <Breadcrumb 
-    bgColor="bg-transparent" textColor="text-black" hoverColor="hover:text-black" />
+    <Breadcrumb bgColor="bg-transparent" textColor="text-black" hoverColor="hover:text-black" />
   </div>
-<section id="hero" class="pt-8 md:pt-12 pb-6" transition:animate="slide">
-  <div class="w-full max-w-6xl mx-auto px-4 py-4">
-    <h1 class="font-heading md:text-4xl text-xl font-bold text-black text-left uppercase italic mb-4">{recipe.title}</h1>
-  </div>
-  
-</section>
 
-<!-- Imagen e Instrucciones: dos columnas (stack en mobile) -->
-<section id="recipe-content" class="pb-8">
-  <div class="w-full max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-    <!-- Columna Izquierda: Imagen -->
-    {recipe.image && (
-      <div class="w-full">
-        <div class="relative rounded-2xl overflow-hidden w-full aspect-[4/3]">
-          <LazyImage
-            src={recipe.image}
-            alt={recipe.title}
-            class="w-full h-full object-cover"
-            onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
-            transition:name={`recipe-image-${recipe.id}`}
-          />
+  <!-- Hero / Título -->
+  <section id="hero" class="pt-8 md:pt-12 pb-6" transition:animate="slide">
+    <div class="w-full max-w-6xl mx-auto px-4 py-4">
+      <h1 class="font-heading md:text-4xl text-xl font-bold text-black text-left uppercase italic mb-4">
+        {recipe.title}
+      </h1>
+    </div>
+  </section>
+
+  <!-- Contenido principal: Imagen + Ingredientes -->
+  <section id="recipe-content" class="pb-8">
+    <div class="w-full max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      
+      <!-- Columna izquierda - Imagen -->
+      {recipe.image && (
+        <div class="w-full">
+          <div class="relative rounded-2xl overflow-hidden w-full aspect-[4/3]">
+            <LazyImage
+              src={typeof recipe.image === 'string' ? recipe.image : recipe.image.url}
+              alt={recipe.title}
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null;this.src='/images/recipes/placeholder.jpg';"
+              transition:name={`recipe-image-${recipe.id}`}
+            />
+          </div>
         </div>
+      )}
+
+      <!-- Columna derecha - Ingredientes -->
+      <div class="w-full">
+        <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left mb-4 uppercase italic">
+          {t.ingredients}
+        </h2>
+        <ul class="list-disc list-inside space-y-2 text-black text-lg">
+          {ingredients.map((ing) => (
+            <li>{ing}</li>
+          ))}
+        </ul>
       </div>
-    )}
 
-    <!-- Columna Derecha: Ingredientes -->
-    <div class="w-full">
-      <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left mb-4 uppercase italic">
-        {recipesAssets.recipes}
+
+
+    </div>
+  </section>
+  <!-- Preparación -->
+  <section id="preparation" class="mb-12">
+    <div class="w-full max-w-6xl mx-auto px-4">
+      <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left mb-6 uppercase italic">
+        {t.preparation}
       </h2>
-      <section class="mb-4 text-black">
-        <ul class="list-disc list-inside space-y-2 text-black">
-          {recipe.ingredients.map((ing: string) => (
-            <li class="text-lg">{ing}</li>
+
+      <div class="bg-gray-50 rounded-xl p-6 md:p-8">
+        <ul class="list-disc list-outside space-y-3 text-black text-lg">
+          {instructions.map((instruction, index) => (
+            <li key={index}>{instruction}</li>
           ))}
         </ul>
-      </section>
+      </div>
     </div>
+  </section>
 
+  <!-- Recetas relacionadas -->
+  <section id="suggestions_related" class="pt-8 pb-16">
+    <div class="w-full max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-black mb-8 text-start font-heading">
+        {t.viewMore}
+      </h2>
 
-
-  </div>
-</section>
-<!-- Preparación -->
-<div id="ingredients" class=" flex flex-col justify-center items-center    mb-4 py-4 ">
-  <div class="w-full max-w-6xl px-4">
-    <h2 class="font-heading font-bold md:text-4xl text-2xl text-black text-left  uppercase italic ">
-      {recipesAssets.preparation}
-    </h2>
-    
-    <div class="w-full md:w-full flex flex-col gap-4 md:p-8 p-4 rounded-lg">
-      <section class="mb-4 text-black">
-        <ul class="list-disc list-outside space-y-2 text-black">
-          {recipe.instructions.map((instruction: string) => (
-            <li class="text-lg">{instruction}</li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  </div>
-</div>
-
-<!-- Sección de instrucciones separada eliminada; contenido movido a recipe-content -->
-<div id="suggestions_related" class="mt-[-2rem] flex flex-col justify-center items-center pt-12 pb-16 " transition:animate="fade">
-  <div class="w-full max-w-6xl px-4 py-4">
-    <h2 class="text-3xl md:text-4xl font-bold text-black mb-8 text-start font-heading">
-      {currentLang === 'es' ? 'Ver otras recetas similares' : 'View More Recipes'}
-    </h2>
-
-    <!-- Carousel reutilizable con la lista de recetas sugeridas (usa RecipeCard) -->
-    <div class="w-full">
       {relatedRecipes.length > 0 && (
         <RelatedRecipesCarousel items={relatedRecipes} />
       )}
     </div>
-    
-  </div>
+  </section>
 </div>
 
-
-<!-- Close background wrapper -->
-</div>
-
-<script>
-  // Enhanced script for recipe detail page
-  document.addEventListener('DOMContentLoaded', () => {
-    // Manejo de imágenes que fallan al cargar
-    document.querySelectorAll('.recipe-detail-container img').forEach(img => {
-      if (!img.hasAttribute('onerror')) {
-        img.addEventListener('error', function(this: HTMLImageElement) {
-          this.onerror = null;
-          this.src = '/images/recipes/placeholder.jpg';
-        });
-      }
-    });
-
-    // Smooth scroll for any internal links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (this: HTMLAnchorElement, e: Event) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href') || '');
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-  });
-</script>
-
-<!-- Share Modal instance -->
+<!-- Share Modal -->
 <ShareModal
   id="shareModal-recipe"
   url={Astro.url.href}
   title={recipe.title}
-  description={recipe.description}
+  description={recipe.description || ''}
   hashtags={recipe.tags || []}
   showLabels={false}
   iconSize={40}
@@ -209,3 +143,17 @@ const instructionsList = Array.isArray(recipe.instructions)
   acceptTextEs="Aceptar"
   acceptTextEn="Accept"
 />
+
+<script>
+  // Solo JavaScript necesario
+  document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scroll para enlaces internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector((anchor as HTMLAnchorElement).getAttribute('href') || '');
+        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  });
+</script>
