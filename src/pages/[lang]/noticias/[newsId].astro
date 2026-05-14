@@ -1,20 +1,18 @@
 ---
 // src/pages/[lang]/noticias/[newsId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
+import SEO from '../../../components/SEO.astro';
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
+import { config } from '../../../i18n/config';
+import { t } from '../../../i18n/i18n'; // reemplace with actual translation function if needed
 
 export function getStaticPaths() {
-  // Obtener todos los idiomas y entradas de blog disponibles
-  const locales = ['es'];
+  const locales = config.supportedLocales as Locale[];
   const paths = [];
 
   for (const locale of locales) {
-    // Obtener entradas de blog para este idioma
     const blogPosts = t('items', { namespace: 'news', locale: locale as Locale }) || [];
-    console.log(`Encontradas ${blogPosts.length} entradas de blog para idioma ${locale}`);
-    
-    // Para cada entrada de blog, crear una ruta
     for (const blogPost of blogPosts) {
       paths.push({
         params: { lang: locale, newsId: blogPost.id },
@@ -23,19 +21,28 @@ export function getStaticPaths() {
     }
   }
 
-  console.log(`Generadas ${paths.length} rutas de blog en español`);
   return paths;
 }
 
 const { blogPost, currentLang } = Astro.props;
 const { lang, newsId } = Astro.params;
 
-// Establecer el idioma para las traducciones
-setLocale(currentLang);
-
-console.log(`Renderizando blog: ${newsId} en idioma: ${lang}`);
+setLocale(lang as Locale);
 ---
 
-<MainLayout title={blogPost.title}>
+<MainLayout title={blogPost?.title || 'Noticia'}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={blogPost?.metaTitle || blogPost?.title}
+      description={blogPost?.metaDescription || blogPost?.excerpt || blogPost?.description}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/noticias/${newsId}`}
+      imageUrl={typeof blogPost?.ogImage === 'string'
+        ? blogPost.ogImage
+        : blogPost?.ogImage?.url
+          ?? (typeof blogPost?.image === 'string' ? blogPost.image : blogPost?.image?.url)
+          ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
+    />
+  </Fragment>
   <BlogDetail blogPost={blogPost} currentLang={currentLang} />
 </MainLayout>

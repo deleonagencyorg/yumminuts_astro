@@ -86,3 +86,29 @@ export interface CMSProductsResponse {
     total: number;
   };
 }
+
+export interface SEO {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: { url: string } | string | null;
+  canonical?: string;
+}
+
+export interface CMSPageRaw {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string;
+  content?: string;
+  featuredImage?: { url: string };
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: { url: string } | null;
+  seo?: SEO;
+}

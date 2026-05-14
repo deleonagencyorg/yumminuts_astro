@@ -1,5 +1,5 @@
 ---
-// src/pages/[lang]/productos/[productId].astro
+// src/pages/[lang]/products/[productId].astro
 import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import SEO from '../../../components/SEO.astro';
@@ -9,7 +9,6 @@ import { config } from '../../../i18n/config';
 
 export async function getStaticPaths() {
   const locales = config.supportedLocales as Locale[];
-  // Obtener todos los idiomas y productos disponibles
   const allProductsByLang = await Promise.all(
     locales.map(lang => getAllProducts(lang))
   );
@@ -23,23 +22,22 @@ export async function getStaticPaths() {
   return paths;
 }
 
-
 const { product, currentLang } = Astro.props;
 const { lang, productId } = Astro.params;
 
-// Establecer el idioma para las traducciones
 setLocale(lang as Locale);
-
 ---
 
-<MainLayout title={product?.name || 'Producto'}>
+<MainLayout title={product?.name || 'Product'}>
   <Fragment slot="head">
-    <SEO 
+    <SEO
       currentLang={currentLang}
       title={product?.name}
       description={product?.description || product?.name}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${product?.id}`}
-      imageUrl={(product?.image || (product?.sizes && product?.sizes[0]?.image) || 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp')}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/products/${productId}`}
+      imageUrl={typeof product?.image === 'string'
+        ? product.image
+        : product?.image?.url ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
     />
   </Fragment>
   <ProductDetail currentLang={currentLang} productId={productId} product={product} />

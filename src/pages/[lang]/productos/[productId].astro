@@ -34,12 +34,15 @@ setLocale(lang as Locale);
 
 <MainLayout title={product?.name || 'Producto'}>
   <Fragment slot="head">
-    <SEO 
+    <Fragment slot="head">
+     <SEO
       currentLang={currentLang}
       title={product?.name}
       description={product?.description || product?.name}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${product?.id}`}
-      imageUrl={(product.image || (product.sizes && product.sizes[0]?.image) || 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp')}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${productId}`}
+      imageUrl={typeof product?.image === 'string'
+        ? product.image
+        : product?.image?.url ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
     />
   </Fragment>
   <ProductDetail currentLang={currentLang} productId={productId} product={product} />

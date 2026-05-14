@@ -47,8 +47,8 @@ export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
       languageCode: locale,
     });
 
-    console.log(`[CMS] Respuesta completa:`, JSON.stringify(response, null, 2));
-    console.log(`[CMS] Recetas encontradas: ${response?.data?.length ?? 'undefined'}`);
+    //console.log(`[CMS] Respuesta completa:`, JSON.stringify(response, null, 2));
+    //console.log(`[CMS] Recetas encontradas: ${response?.data?.length ?? 'undefined'}`);
     
     return response.data.map(mapRecipe);
   } catch (error) {
