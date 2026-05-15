@@ -1,0 +1,160 @@
+---
+// src/components/common/InstagramReelsCarousel/InstagramReelsCarousel.astro
+import InstagramEmbed from '../InstagramEmbed.astro';
+
+export interface Props{
+    posts: Array<{
+        url: string;
+        alt?: string;
+    }>;
+    className?: string;
+}
+const { posts, className = "" } = Astro.props;
+---
+<div class={'reels-carousel ${className}'}>
+    <!-- Mobile carousel -->
+     <div class="md:hidden relative w-full overflow-hidden">
+        <button
+            id="reels-prev"
+            type="button"
+            arial-label="Anterior"
+            class="reels-arrow reels-arrow--prev"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </button>
+
+        <div id="reels-track" class="reels-track flex transition-transform duration-500 ease-out">
+      {posts.map((post) => (
+        <div class="reels-slide flex-shrink-0 w-full">
+          <div class="insta-wrap insta-wrap--mobile">
+            <InstagramEmbed 
+              postUrl={post.url} 
+              alt={post.alt}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <button 
+      id="reels-next" 
+      type="button" 
+      aria-label="Siguiente"
+      class="reels-arrow reels-arrow--next"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </div>
+
+  <style>
+  .reels-track {
+    display: flex;
+    width: 100%;
+  }
+  
+  .reels-slide {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .reels-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.92);
+    color: #111827;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reels-arrow:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .reels-arrow--prev { left: 12px; }
+  .reels-arrow--next { right: 12px; }
+
+  /* Instagram wrapper styles */
+  .insta-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .insta-wrap--mobile {
+    width: 100%;
+    height: 780px;
+    min-height: 780px;
+  }
+
+  .insta-wrap--desktop {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+  }
+
+  @media (max-width: 380px) {
+    .insta-wrap--mobile {
+      height: 680px;
+      min-height: 680px;
+    }
+  }
+
+  @media (min-width: 480px) and (max-width: 767px) {
+    .insta-wrap--mobile {
+      height: 870px;
+      min-height: 870px;
+    }
+  }
+</style>
+
+<script>
+  function initReelsCarousel() {
+    const track = document.getElementById('reels-track');
+    const prev = document.getElementById('reels-prev');
+    const next = document.getElementById('reels-next');
+
+    if (!track || !prev || !next) return;
+
+    const slides = Array.from(track.children);
+    let current = 0;
+
+    function goTo(index: number) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+    }
+
+    prev.addEventListener('click', () => goTo(current - 1));
+    next.addEventListener('click', () => goTo(current + 1));
+
+    // Soporte táctil (swipe)
+    let startX = 0;
+    track.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        goTo(diff > 0 ? current + 1 : current - 1);
+      }
+    }, { passive: true });
+  }
+
+  // Inicializar en diferentes momentos de Astro
+  document.addEventListener('DOMContentLoaded', initReelsCarousel);
+  document.addEventListener('astro:page-load', initReelsCarousel);
+  document.addEventListener('astro:after-swap', initReelsCarousel);
+</script>
