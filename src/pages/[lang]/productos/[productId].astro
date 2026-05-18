@@ -36,12 +36,15 @@ const pageImage = typeof product?.ogImage === 'string'
 ---
 <MainLayout title={pageTitle}>
   <Fragment slot="head">
-    <SEO 
+    <Fragment slot="head">
+     <SEO
       currentLang={currentLang}
-      title={product?.ogTitle || pageTitle}
-      description={product?.ogDescription || pageDescription}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${product?.slug ?? product?.id}`}
-      imageUrl={pageImage}
+      title={product?.name}
+      description={product?.description || product?.name}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${productId}`}
+      imageUrl={typeof product?.image === 'string'
+        ? product.image
+        : product?.image?.url ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
     />
   </Fragment>
   <ProductDetail currentLang={currentLang} productId={productId} product={product} />

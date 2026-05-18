@@ -6,6 +6,7 @@ import SEO from '../../../components/SEO.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 import { config } from '../../../i18n/config';
+import SEO from '../../../components/SEO.astro';
 
 export async function getStaticPaths() {
   const locales = config.supportedLocales as Locale[];
@@ -39,16 +40,18 @@ const pageImage = typeof recipe?.ogImage === 'string'
     ?? recipe?.image 
     ?? 'https://snack.yummiespromociones.com/snacksyummies/default-recipe.jpg';
 ---
-
-<MainLayout title={pageTitle}>
+<MainLayout title={recipe?.title || 'Receta'}>
   <Fragment slot="head">
-    <SEO 
+    <SEO
       currentLang={currentLang}
-      title={recipe?.ogTitle || pageTitle}
-      description={recipe?.ogDescription || pageDescription}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/recetas/${recipe?.slug ?? recipeId}`}
-      imageUrl={pageImage}
+      title={recipe?.title}
+      description={recipe?.description || recipe?.title}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/recetas/${recipeId}`}
+      imageUrl={typeof recipe?.image === 'string'
+        ? recipe.image
+        : recipe?.image?.url ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-receta.webp'}
     />
   </Fragment>
-  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} />
+  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} 
+  />
 </MainLayout>

@@ -3,18 +3,15 @@
 import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
+import { config } from '../../../i18n/config';
+import SEO from '../../../components/SEO.astro';
 
 export function getStaticPaths() {
-  // Obtener todos los idiomas y noticias disponibles
-  const locales = ['en'];
+  const locales = config.supportedLocales as Locale[];
   const paths = [];
 
   for (const locale of locales) {
-    // Obtener noticias para este idioma
     const blogPosts = t('items', { namespace: 'news', locale: locale as Locale }) || [];
-    console.log(`Found ${blogPosts.length} blog posts for language ${locale}`);
-    
-    // Para cada noticia, crear una ruta
     for (const blogPost of blogPosts) {
       paths.push({
         params: { lang: locale, newsId: blogPost.id },
@@ -23,19 +20,28 @@ export function getStaticPaths() {
     }
   }
 
-  console.log(`Generated ${paths.length} blog routes in English`);
   return paths;
 }
 
 const { blogPost, currentLang } = Astro.props;
 const { lang, newsId } = Astro.params;
 
-// Establecer el idioma para las traducciones
-setLocale(currentLang);
-
-console.log(`Rendering blog: ${newsId} in language: ${lang}`);
+setLocale(lang as Locale);
 ---
 
-<MainLayout title={blogPost.title}>
+<MainLayout title={blogPost?.title || 'News'}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={blogPost?.metaTitle || blogPost?.title}
+      description={blogPost?.metaDescription || blogPost?.excerpt || blogPost?.description}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/news/${newsId}`}
+      imageUrl={typeof blogPost?.ogImage === 'string'
+        ? blogPost.ogImage
+        : blogPost?.ogImage?.url
+          ?? (typeof blogPost?.image === 'string' ? blogPost.image : blogPost?.image?.url)
+          ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
+    />
+  </Fragment>
   <BlogDetail blogPost={blogPost} currentLang={currentLang} />
 </MainLayout>

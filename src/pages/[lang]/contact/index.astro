@@ -1,20 +1,25 @@
 ---
+// src/pages/[lang]/contact/index.astro
+import MainLayout from '../../../layouts/MainLayout.astro';
+import SEO from '../../../components/SEO.astro';
 import ContactView from '../../../views/Contact/index.astro';
 import { type Locale } from '../../../i18n/i18n';
 import { getHeaderColors } from '../../../config/headerColors';
+import { config } from '../../../i18n/config';
+import { getPageBySlug } from '../../../services/api/pages';
 
 export async function getStaticPaths() {
-  const locales = ['en'];
-  return locales.map((locale) => ({
+  return config.supportedLocales.map((locale) => ({
     params: { lang: locale },
     props: { currentLang: locale as Locale }
   }));
 }
 
 const { currentLang } = Astro.props;
+const { lang } = Astro.params;
 
-// Set header color config for contact page
 const headerColorConfig = getHeaderColors('contact');
 ---
 
-<ContactView currentLang={currentLang} headerColorConfig={headerColorConfig} />
+  <ContactView currentLang={currentLang} headerColorConfig={headerColorConfig} />
+</MainLayout>
