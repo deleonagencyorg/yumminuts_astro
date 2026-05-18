@@ -1,11 +1,13 @@
 ---
 import LazyImage from '../../components/common/LazyImage.astro';
 // Component Imports
+import InstagramReelsCarousel from '../../components/common/InstagramReelsCarousel/InstagramReelsCarousel.astro';
 import Carousel from '../../components/common/Carousel/index.astro';
 import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
+import SocialMediaIcons from '../../components/common/SocialMediaIcons/index.astro';
 
 // Style Imports
 import './styles.css';
@@ -152,8 +154,21 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
     </section>
 
     <!-- Sección Descubrenos -->
-    <section id="discover" class="w-container mx-auto px-4 bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+    <section id="discover" class="w-full bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <div class="container mx-auto px-4">
+        <h2 class="font-heading text-4xl md:text-5xl text-black mb-8 text-center md:text-left">
+          {discoverAssets.title || 'Descúbrenos'}
+        </h2>
+
+        <InstagramReelsCarousel 
+          posts={[
+            { url: discoverAssets.instagramLinks?.[0]?.url || discoverAssets.instagramPosts?.[0]?.embedUrl || '' },
+            { url: discoverAssets.instagramLinks?.[1]?.url || discoverAssets.instagramPosts?.[1]?.embedUrl || '' },
+            { url: discoverAssets.instagramLinks?.[2]?.url || discoverAssets.instagramPosts?.[2]?.embedUrl || '' },
+            { url: discoverAssets.instagramLinks?.[3]?.url || discoverAssets.instagramPosts?.[3]?.embedUrl || '' },
+          ].filter(p => p.url)}
+        />
+      </div>
     </section>
 
 
