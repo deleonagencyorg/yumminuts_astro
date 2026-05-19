@@ -8,14 +8,13 @@ if (!CMS_URL || !CMS_TOKEN) {
 
 export const cmsClient = {
   async get<T>(endpoint: string, params: Record<string, string | number | boolean> = {}): Promise<T> {
-    // === CENTRALIZAMOS LA LÓGICA AQUÍ (robusta) ===
     const baseUrl = CMS_URL.endsWith('/') ? CMS_URL : `${CMS_URL}/`;
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
 
     const fullBase = `${baseUrl}${cleanEndpoint}`;
 
-    console.log('🔧 CMS URL final:', fullBase);           // ← útil para debug
-    console.log('🔧 Endpoint recibido:', endpoint);
+    console.log(' CMS URL final:', fullBase); 
+    console.log(' Endpoint recibido:', endpoint);
 
     const url = new URL(fullBase);
 
