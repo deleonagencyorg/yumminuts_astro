@@ -13,7 +13,7 @@ export const cmsClient = {
 
     const fullBase = `${baseUrl}${cleanEndpoint}`;
 
-    console.log(' CMS URL final:', fullBase); 
+    console.log('CMS URL final:', fullBase);      
     console.log(' Endpoint recibido:', endpoint);
 
     const url = new URL(fullBase);

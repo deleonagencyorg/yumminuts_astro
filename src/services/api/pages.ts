@@ -3,7 +3,7 @@ import { cmsClient } from './client';
 
 const BRAND_SLUG = import.meta.env.PUBLIC_CMS_BRAND_SLUG ?? 'yummi-nuts';
 
-export interface CMSPage { ... } // tu interfaz actual
+export interface CMSPage { ... } //interfaz actual
 
 export async function getPageBySlug(slug: string, locale: string = 'es'): Promise<CMSPage | null> {
   try {
