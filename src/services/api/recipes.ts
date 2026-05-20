@@ -31,6 +31,13 @@ function mapRecipe(item: CMSRecipeRaw): Recipe {
     people: item.people,
     difficulty: item.difficulty,
     tags: item.tags,
+    //
+    metaTitle: item.metaTitle,
+    metaDescription: item.metaDescription,
+    metaKeywords: item.metaKeywords,
+    ogTitle: item.ogTitle,
+    ogDescription: item.ogDescription,
+    ogImage: item.ogImage,
   };
 }
 

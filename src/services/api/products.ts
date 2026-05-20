@@ -19,6 +19,12 @@ function mapProduct(item: CMSProductRaw): Product {
     color_button: item.colorButton,
     weight: item.weight,
     nutrition: item.nutrition,
+    metaTitle: item.metaTitle,
+    metaDescription: item.metaDescription,
+    metaKeywords: item.metaKeywords,
+    ogTitle: item.ogTitle,
+    ogDescription: item.ogDescription,
+    ogImage: item.ogImage,
   };
 }
 

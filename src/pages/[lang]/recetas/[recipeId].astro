@@ -2,6 +2,7 @@
 // src/pages/[lang]/recetas/[recipeId].astro
 import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
+import SEO from '../../../components/SEO.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 import { config } from '../../../i18n/config';
@@ -30,6 +31,14 @@ const { lang, recipeId } = Astro.params;
 
 setLocale(lang as Locale);
 
+// seo desde cms
+const pageTitle = recipe?.metaTitle || recipe?.title || 'Receta';
+const pageDescription = recipe?.metaDescription || recipe?.description || '';
+const pageImage = typeof recipe?.ogImage === 'string' 
+  ? recipe.ogImage 
+  : recipe?.ogImage?.url 
+    ?? recipe?.image 
+    ?? 'https://snack.yummiespromociones.com/snacksyummies/default-recipe.jpg';
 ---
 <MainLayout title={recipe?.title || 'Receta'}>
   <Fragment slot="head">

@@ -1,5 +1,3 @@
-import { any } from "astro:schema";
-
 // src/services/api/types.ts
 export interface Recipe {
   id: string;
@@ -16,12 +14,13 @@ export interface Recipe {
   brand?: string[];
   description?: string;
   tags?: string[];
+  // seo
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords?: string;
   ogTitle?: string;
   ogDescription?: string;
-  ogImage?: { url: string } | string | null;
+  ogImage?: string | { url: string };
 }
 
 export interface CMSRecipeRaw {
@@ -32,12 +31,18 @@ export interface CMSRecipeRaw {
   preparation_time?: number;
   category?: string;
   description?: string;
-
   ingredients?: string[];
   instructions?: string[];
   people?: string | number;
   difficulty?: string;
   tags?: string[];
+  // seo
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string | { url: string };
 }
 
 export interface CMSRecipesResponse {
@@ -62,17 +67,19 @@ export interface Product {
   colorButton?: string;
   weight?: string[];
   nutrition?: {
-  title?: string;
-  serving?: string;
-  rows?: { label: string; value: string }[];
-  disclaimer?: string;
+    title?: string;
+    serving?: string;
+    rows?: { label: string; value: string }[];
+    disclaimer?: string;
+  };
+
+  //para seo desde CMS
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords?: string;
   ogTitle?: string;
   ogDescription?: string;
-  ogImage?: { url: string } | string | null;
-  };
+  ogImage?: string | { url: string };
 }
 
 export interface CMSProductRaw {
@@ -88,6 +95,13 @@ export interface CMSProductRaw {
   color_button?: string;
   weight?: string[];
   nutrition?: any;
+  // seo
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string | { url: string };
 }
 
 export interface CMSProductsResponse {
