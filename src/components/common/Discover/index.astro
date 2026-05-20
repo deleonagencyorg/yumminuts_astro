@@ -7,7 +7,7 @@ import enCommon from '../../../locales/en/common.json';
 
 export interface Props {
   title: string;
-  images: Array<{
+  images?: Array<{
     id: string;
     desktop: string;
     mobile: string;
@@ -18,23 +18,65 @@ export interface Props {
   }>;
 }
 
-const { title, images } = Astro.props;
+const { title } = Astro.props;
 const locale = getLocale(Astro.url.pathname) || 'es';
 
-// Get Instagram posts from locale
-const instagramPosts = locale === 'es' 
-  ? esCommon.home.socialmedia.instagramPosts
-  : enCommon.home.socialmedia.instagramPosts;
+const instagramPosts =
+  locale === 'es'
+    ? esCommon.home.socialmedia.instagramPosts
+    : enCommon.home.socialmedia.instagramPosts;
+
+// ID único por instancia para aislar el JS cuando hay varias secciones en la misma página
+const uid = `discover-${Math.random().toString(36).slice(2, 7)}`;
 ---
 
-
 <div class="box-border flex flex-col gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-start justify-start w-full max-w-[100vw] mx-auto py-4 sm:py-5 md:py-6 lg:py-8 px-3 sm:px-4 md:px-5 lg:px-6 bg-white overflow-x-hidden">
+
   <h2 class="font-heading leading-tight not-italic text-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-left w-full px-2 sm:px-0 mb-1 sm:mb-4">
     {title}
   </h2>
- <div class="grid grid-cols-1 min-[150px]:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5 sm:gap-2 md:gap-2 lg:gap-3 w-full">
+
+  <!-- carousel scroll-snap mobile -->
+  <div class="relative w-full sm:hidden">
+
+    <!--deslizable -->
+    <div
+      id={`${uid}-track`}
+      class="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 scroll-smooth px-[6vw]"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    >
+      {instagramPosts.map((post: any) => (
+        <div class="snap-center shrink-0 w-[88vw] aspect-[8/16] overflow-hidden rounded-xl">
+          <iframe
+            src={post.embedUrl}
+            class="w-full h-full border-0"
+            allowtransparency="true"
+            allowfullscreen
+            frameborder="0"
+            scrolling="no"
+            style="height: 100%; min-height: 320px;"
+          ></iframe>
+        </div>
+      ))}
+    </div>
+
+    <!-- Puntos indicadores -->
+    <div id={`${uid}-dots`} class="flex justify-center gap-2 mt-3">
+      {instagramPosts.map((_: any, i: number) => (
+        <button
+          data-index={i}
+          aria-label={`Ir al reel ${i + 1}`}
+          class={`discover-dot w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-black scale-125' : 'bg-gray-300'}`}
+        />
+      ))}
+    </div>
+
+  </div>
+
+  <!--grid desktop- tablet-->
+  <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5 sm:gap-2 md:gap-2 lg:gap-3 w-full">
     {instagramPosts.map((post: any) => (
-       <div class="w-full aspect-[8/18] min-[336px]:aspect-[8/16] sm:aspect-[7/14] overflow-hidden pb-0 rounded-lg rounded-xl sm:rounded-2xl  relative">
+      <div class="w-full aspect-[7/14] overflow-hidden rounded-xl sm:rounded-2xl">
         <iframe
           src={post.embedUrl}
           class="w-full h-full border-0"
@@ -47,7 +89,53 @@ const instagramPosts = locale === 'es'
       </div>
     ))}
   </div>
+
 </div>
 
+<style>
+  /* Ocultar scrollbar en WebKit */
+  [id$="-track"]::-webkit-scrollbar {
+    display: none;
+  }
+</style>
 
+<script define:vars={{ uid, total: instagramPosts.length }}>
+  function initDiscoverCarousel(uid, total) {
+    const track = document.getElementById(`${uid}-track`);
+    const dotsContainer = document.getElementById(`${uid}-dots`);
+    if (!track || !dotsContainer) return;
 
+    const dots = Array.from(dotsContainer.querySelectorAll('.discover-dot'));
+
+    // Actualizar dot activo según posición de scroll
+    let scrollTimer;
+    track.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const itemWidth = track.scrollWidth / total;
+        const current = Math.round(track.scrollLeft / itemWidth);
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('bg-black', i === current);
+          dot.classList.toggle('scale-125', i === current);
+          dot.classList.toggle('bg-gray-300', i !== current);
+        });
+      }, 50);
+    }, { passive: true });
+
+    // Navegar al hacer clic en un punto
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = Number(dot.dataset.index);
+        const itemWidth = track.scrollWidth / total;
+        track.scrollTo({ left: idx * itemWidth, behavior: 'smooth' });
+      });
+    });
+  }
+
+  // Inicializar en carga y en navegación Astro View Transitions
+  function setup() { initDiscoverCarousel(uid, total); }
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:after-swap', setup);
+  if (document.readyState !== 'loading') setup();
+  else document.addEventListener('DOMContentLoaded', setup);
+</script>
