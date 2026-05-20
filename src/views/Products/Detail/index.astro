@@ -43,7 +43,7 @@ const { currentLang, productId, product } = Astro.props as {
   productId: string;
   product: Product | undefined;
 };
-console.log('[product del CMS]', JSON.stringify(product, null, 2));
+console.log(']', JSON.stringify(product, null, 2));
 
 // Datos que aún vienen del sistema local
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];

@@ -17,7 +17,7 @@ function slugify(text: string): string {
 }
 
 function mapRecipe(item: CMSRecipeRaw): Recipe {
-  console.log(`[mapRecipe] id=${item.id} slug=${item.slug} title=${item.title}`);
+  //console.log(`[mapRecipe] id=${item.id} slug=${item.slug} title=${item.title}`);
   return {
     id: item.id,
     slug: item.slug || slugify(item.title),

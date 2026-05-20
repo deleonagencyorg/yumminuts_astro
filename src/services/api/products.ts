@@ -5,7 +5,7 @@ console.log(`[CMS] URL completa: ${import.meta.env.PUBLIC_CMS_URL}v1/products`);
 const BRAND_SLUG = import.meta.env.PUBLIC_CMS_BRAND_SLUG ?? 'yummi-nuts';
 
 function mapProduct(item: CMSProductRaw): Product {
-  console.log(`[raw completo] ${item.name}:`, JSON.stringify(item, null, 2));
+  //console.log(`[raw completo] ${item.name}:`, JSON.stringify(item, null, 2));
   return {
     id: item.id,
     slug: item.slug || item.id,
@@ -29,7 +29,7 @@ function mapProduct(item: CMSProductRaw): Product {
 }
 
 export async function getAllProducts(locale: string = 'es'): Promise<Product[]> {
-  console.log(`Obteniendo productos para idioma: ${locale}`);
+  //console.log(`Obteniendo productos para idioma: ${locale}`);
   try {
     const response = await cmsClient.get<CMSProductsResponse>('v1/products', {
       page: 1,
@@ -38,7 +38,7 @@ export async function getAllProducts(locale: string = 'es'): Promise<Product[]> 
       languageCode: locale,
     });
 
-    console.log(`Productos encontrados: ${response?.data?.length ?? 'undefined'}`);
+   // console.log(`Productos encontrados: ${response?.data?.length ?? 'undefined'}`);
     return response.data.map(mapProduct);
   } catch (error) {
     console.error('Error al obtener productos:', error);
