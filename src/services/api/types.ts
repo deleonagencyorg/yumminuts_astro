@@ -16,6 +16,12 @@ export interface Recipe {
   brand?: string[];
   description?: string;
   tags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: { url: string } | string | null;
 }
 
 export interface CMSRecipeRaw {
@@ -56,10 +62,16 @@ export interface Product {
   colorButton?: string;
   weight?: string[];
   nutrition?: {
-    title?: string;
-    serving?: string;
-    rows?: { label: string; value: string }[];
-    disclaimer?: string;
+  title?: string;
+  serving?: string;
+  rows?: { label: string; value: string }[];
+  disclaimer?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: { url: string } | string | null;
   };
 }
 
