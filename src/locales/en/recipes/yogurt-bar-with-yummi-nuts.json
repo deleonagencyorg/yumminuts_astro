@@ -1,0 +1,31 @@
+{
+  "date": "2025-09-11",
+  "id": "yogurt-bar-with-yummi-nuts",
+  "slug": "yogurt-bar-with-yummi-nuts",
+  "title": "Yogurt Bar with Yummi Nuts",
+  "people": "6",
+  "difficulty": "Fácil",
+  "image": "https://snack.yummiespromociones.com/yumminuts/yogurt-bar-con-yummi-nuts.webp",
+  "gallery": [
+    "yogurt-bar-con-yummi-nuts.webp"
+  ],
+  "type": "image",
+  "preparation_time": 10,
+  "ingredients": [
+    "Natural and fruit yogurt",
+    "Berries, peaches and kiwis",
+    "Honey bee",
+    "Yummi Nuts Bar",
+    "Serving bowls and scoops"
+  ],
+  "instructions": [
+    "Paso 1: Place all the ingredients in individual containers with the serving spoons.",
+    "Paso 2: In a bowl, place the Yogurt of your choice as a base.",
+    "Paso 3: Add the combination of ingredients that you like the most.",
+    "Paso 4: Mix a little and enjoy."
+  ],
+  "brand": [
+    "yumminuts"
+  ],
+  "category": "breakfast"
+}

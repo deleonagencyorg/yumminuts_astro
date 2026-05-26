@@ -1,0 +1,35 @@
+{
+  "date": "2025-09-11",
+  "id": "party-mix-parfait",
+  "slug": "party-mix-parfait",
+  "title": "Party Mix Parfait",
+  "people": "2",
+  "difficulty": "Easy",
+  "image": "https://snack.yummiespromociones.com/yumminuts/party-mix-parfait.webp",
+  "gallery": [
+    "party-mix-parfait.webp"
+  ],
+  "type": "image",
+  "preparation_time": 10,
+  "ingredients": [
+    "1 cup Greek yogurt",
+    "2 tablespoons peanut butter",
+    "1 tablespoon honey",
+    "¼ cup shredded coconut",
+    "Melted chocolate",
+    "1 package Party Mix"
+  ],
+  "instructions": [
+    "Step 1: Mix the yogurt with the peanut butter and honey in a bowl.",
+    "Step 2: In a glass or cup assemble your parfait in layers as follows:",
+    "Yogurt layer",
+    "Melted chocolate layer",
+    "Fiesta Mix",
+    "Shredded coconut",
+    "Repeat the procedure until all the ingredients are used and the cup is full."
+  ],
+  "brand": [
+    "yummimix"
+  ],
+  "category": "snacks"
+}

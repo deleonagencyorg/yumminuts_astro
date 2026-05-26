@@ -1,0 +1,41 @@
+{
+  "date": "2025-09-11",
+  "id": "pollo-kung-pao-con-yummi-nuts-mani-japones",
+  "slug": "pollo-kung-pao-con-yummi-nuts-mani-japones",
+  "title": "Pollo Kung Pao con Yummi Nuts Maní Japonés",
+  "people": "4",
+  "difficulty": "Intermedio",
+  "image": "https://snack.yummiespromociones.com/yumminuts/pollo-kung-pao-con-yummi-nuts-mani-japones.webp",
+  "gallery": [
+    "pollo-kung-pao-con-yummi-nuts-mani-japones.webp"
+  ],
+  "type": "image",
+  "preparation_time": 20,
+  "ingredients": [
+    "2 libras de pechuga de pollo sin hueso cortados en trozos",
+    "¼ de taza de salsa soya",
+    "¼ de taza de fécula de maíz",
+    "3 cucharadas de aceite de ajonjolí",
+    "1 chile morrón rojo en cubos",
+    "1 chile morrón verde en cubos",
+    "1 manojo de cebollín en juliana",
+    "1 paquete de Yummi Nuts Maní Japonés",
+    "1 diente de ajo picado",
+    "1 cucharada de jengibre fresco picado",
+    "Ingredientes para la salsa:",
+    "¼ de taza de salsa soya",
+    "1/3 de taza de vinagre de arroz",
+    "2 cucharadas de azúcar moreno"
+  ],
+  "instructions": [
+    "Paso 1: Para hacer la salsa, mezcla todos los ingredientes y reserva.",
+    "Paso 2: Mezcla la salsa soya con la fécula de maíz y cubre el pollo con esta mezcla.",
+    "Paso 3: Calienta 2 cucharadas de aceite en un sartén y fríe el pollo hasta que esté dorado, de 3 a 4 minutos. Retira del sartén y reserva.",
+    "Paso 4: Coloca el resto del aceite en el mismo sartén y fríe los chiles, el cebollín, el ajo, y el marañón por 2 minutos. Agrega de vuelta el pollo y la salsa.",
+    "Paso 5: Deja que hierva por 2 minutos a fuego lento y sirve."
+  ],
+  "brand": [
+    "yumminuts"
+  ],
+  "category": "dinner"
+}
