@@ -15,7 +15,7 @@ import Categories from '../../../components/common/Categories/index.astro';
 import Discover from '../../../components/common/Discover/index.astro';
 import categoriesConfig from '../../../config/categories.json';
 import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
-
+import { getAllProducts } from '../../../services/api/products';
 
 // Interfaces locales
 interface ProductSize {
@@ -23,111 +23,84 @@ interface ProductSize {
   image: string;
 }
 
-interface Stockist {
-  id: string;
-  name: string;
-  icon: string;
-  link: string;
-}
-
 interface Product {
   id: string;
   name: string;
-  category: string;
-  image: string;
-  available?: string;
-  background_image: string;
-  background_color: string;
-  header_text_color: string;
-  color_button: string;
-  sizes: ProductSize[];
+  category?: string;
+  image?: string | { url: string };
+  background_color?: string;
+  color_button?: string;
+  sizes?: ProductSize[];
   description?: string;
-  short_description?: string;
-  presentaciones?: Array<{
-    value: string;
-    icono: string;
-  }>;
-  relatedProducts?: string[];
   weight?: string[];
+  nutrition?: any;
+  slug?: string;
 }
 
-const { currentLang, productId } = Astro.props;
+// Recibir producto directamente como prop
+const { currentLang, productId, product } = Astro.props as {
+  currentLang: Locale;
+  productId: string;
+  product: Product | undefined;
+};
+console.log('[product del CMS]', JSON.stringify(product, null, 2));
 
-// Obtener datos desde traducciones
-const productsAssets = t('home', { namespace: 'products', locale: currentLang }) || {};
+// Datos que aún vienen del sistema local
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
 const slides = commonAssets;
-const products = t('items', { namespace: 'products', locale: currentLang as Locale }) || [];
-const stockists = t('stockist', { namespace: 'products', locale: currentLang as Locale }) || [];
-const newsAssets = t('', { namespace: 'news', locale: currentLang }) || {};
 const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
-// Helper: get category key from a slug (supports es/en)
+// Si el producto no existe, lanzar error
+if (!product) {
+  throw new Error(t('errors.product_not_found', { locale: currentLang }));
+}
+
+// Helpers de categoría
 function getCategoryKeyFromSlug(slug: string): string | null {
   const cfg = (categoriesConfig as any).categories || [];
   const s = (slug || '').toLowerCase();
-  const match = cfg.find((c: any) => [c.key, c.slugs?.es, c.slugs?.en].map((v: string) => (v||'').toLowerCase()).includes(s));
+  const match = cfg.find((c: any) =>
+    [c.key, c.slugs?.es, c.slugs?.en].map((v: string) => (v || '').toLowerCase()).includes(s)
+  );
   return match?.key || null;
 }
 
-// Helper: normalize product.category into our category key
 function normalizeCategory(value: string): string {
   const v = (value || '').toLowerCase();
   if (!v) return '';
   if (v.includes('maní') || v.includes('mani') || v.includes('peanut')) return 'manies';
   if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
   if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
-  const key = getCategoryKeyFromSlug(v);
-  return key || '';
+  return getCategoryKeyFromSlug(v) || '';
 }
 
-// Resolve selected product:
-let product: Product | undefined;
-const categoryKey = getCategoryKeyFromSlug(productId);
-if (categoryKey) {
-  // pick first product of that category
-  product = (products as Product[]).find(p => normalizeCategory(p.category) === categoryKey);
-} else {
-  // match by id or slug (id is used in our JSON)
-  product = (products as Product[]).find((item: any) => item.id === productId || item.slug === productId);
-}
-
-
-// Si el producto no existe, lanzar error
-if (!product || Object.keys(product).length === 0) {
-  throw new Error(t('errors.product_not_found', { locale: currentLang }));
-}
-
-// Asegurar que todas las propiedades necesarias existan
-const safeProduct: Product = {
+// Producto seguro con defaults
+const safeProduct = {
   id: product.id || '',
   name: product.name || '',
   category: product.category || '',
-  image: product.image || '',
-  background_image: product.background_image || '',
+  image: typeof product.image === 'string'
+    ? product.image
+    : product.image?.url ?? '',
   background_color: product.background_color || '',
-  header_text_color: product.header_text_color || '#000000',
-  color_button: product.color_button || '#000000',
+  color_button: product.color_button || '',
   sizes: Array.isArray(product.sizes) ? product.sizes : [],
-  available: product.available || '',
   description: product.description || '',
   weight: Array.isArray(product.weight) ? product.weight : [],
-  
+  slug: product.slug || product.id || '',
 };
 
-// Nutrition data
-const detailPage = t('detailPage', { namespace: 'products', locale: currentLang as Locale }) || {};
-const nutrition = (product as any)?.nutrition || (detailPage as any)?.nutrition || null;
+// Nutrition del CMS
+const nutrition = (product as any)?.nutrition || null;
 
-// Obtener todos los productos como un array
-const productsData = t('items', { locale: currentLang, namespace: 'products' }) || [];
-const allProductsArray = Array.isArray(productsData) ? productsData : [];
+// Todos los productos para relacionados y categorías
+const allProductsArray = await getAllProducts(currentLang);
 
-// Build categoryCards like Home: first product per category using categories config
+// Construir categoryCards
 type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
 const productsByCategory: Record<string, any[]> = {};
-for (const p of (products as any[])) {
-  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+for (const p of allProductsArray) {
+  const key = normalizeCategory((p as any).category || (p as any).name || '');
   if (!key) continue;
   if (!productsByCategory[key]) productsByCategory[key] = [];
   productsByCategory[key].push(p);
@@ -136,31 +109,29 @@ for (const p of (products as any[])) {
 const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
   const list = productsByCategory[c.key] || [];
   const first = list[0] || {};
-  const title = (c.labels?.[currentLang] || c.labels?.es || c.labels?.en || '') as string;
-  const image = (first.image || '') as string;
-  const bgColor = (c.background || '#95CFF2') as string;
-  const id = (first.id || c.key) as string;
-  const slug = (first.slug || first.id || '') as string;
-  return { id, title, image, bgColor, slug };
-}).filter((cp: CatProduct) => cp.image && cp.bgColor);
+  return {
+    id: (first.id || c.key) as string,
+    title: (c.labels?.[currentLang] || c.labels?.es || '') as string,
+    image: (first.image || '') as string,
+    bgColor: (first.background_color || c.background || '#95CFF2') as string, 
+    slug: (first.slug || first.id || '') as string,
+  };
+}).filter((cp: CatProduct) => cp.image);
 
-// Filtrar productos relacionados: de la misma categoría si hay más de 1
+// Productos relacionados
 let relatedProducts: any[] = [];
-if (allProductsArray.length > 1) {
-  const key = normalizeCategory(safeProduct.category);
-  relatedProducts = allProductsArray
-    .filter((p: any) => p.id !== safeProduct.id && normalizeCategory((p as any).category || '') === key)
-    .slice(0, 3);
+const catKey = normalizeCategory(safeProduct.category);
+relatedProducts = allProductsArray
+  .filter((p: any) => p.id !== safeProduct.id && normalizeCategory(p.category || '') === catKey)
+  .slice(0, 3);
 
-  // Si no hay productos de la misma categoría, mostrar cualquier otro
-  if (relatedProducts.length === 0) {
-    relatedProducts = allProductsArray
-      .filter((p: any) => p.id !== safeProduct.id)
-      .slice(0, 3);
-  }
+if (relatedProducts.length === 0) {
+  relatedProducts = allProductsArray
+    .filter((p: any) => p.id !== safeProduct.id)
+    .slice(0, 3);
 }
 
-// Preparar beneficios del producto
+// Beneficios
 const productBenefits = [
   {
     icon: "https://snack.yummiespromociones.com/yumminuts/gluten-free.svg",

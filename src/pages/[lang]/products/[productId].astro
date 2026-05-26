@@ -1,31 +1,28 @@
 ---
 // src/pages/[lang]/productos/[productId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import SEO from '../../../components/SEO.astro';
 import ProductDetail from '../../../views/Products/Detail/index.astro';
+import { getAllProducts } from '../../../services/api/products';
+import { config } from '../../../i18n/config';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const locales = config.supportedLocales as Locale[];
   // Obtener todos los idiomas y productos disponibles
-  const locales = ['en'];
-  const paths = [];
+  const allProductsByLang = await Promise.all(
+    locales.map(lang => getAllProducts(lang))
+  );
 
-  for (const locale of locales) {
-    // Obtener productos para este idioma
-    const products = t('items', { namespace: 'products', locale: locale as Locale }) || [];
-    
-    // Para cada producto, crear una ruta
-    for (const product of products) {
-      paths.push({
-        params: { lang: locale, productId: product.id },
-        props: { product, currentLang: locale as Locale }
-      });
-    }
-  }
-
-  console.log(`Generadas ${paths.length} rutas de productos en español`);
+  const paths = locales.flatMap((locale, index) =>
+    allProductsByLang[index].map((product) => ({
+      params: { lang: locale, productId: product.slug ?? product.id },
+      props: { product, currentLang: locale }
+    }))
+  );
   return paths;
 }
+
 
 const { product, currentLang } = Astro.props;
 const { lang, productId } = Astro.params;
@@ -35,15 +32,15 @@ setLocale(lang as Locale);
 
 ---
 
-<MainLayout title={product.name}>
+<MainLayout title={product?.name || 'Producto'}>
   <Fragment slot="head">
     <SEO 
       currentLang={currentLang}
-      title={product.name}
-      description={product.description || product.name}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/products/${product.id}`}
-      imageUrl={(product.image || (product.sizes && product.sizes[0]?.image) || 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp')}
+      title={product?.name}
+      description={product?.description || product?.name}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${product?.id}`}
+      imageUrl={(product?.image || (product?.sizes && product?.sizes[0]?.image) || 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp')}
     />
   </Fragment>
-  <ProductDetail currentLang={currentLang} productId={productId} />
+  <ProductDetail currentLang={currentLang} productId={productId} product={product} />
 </MainLayout>
