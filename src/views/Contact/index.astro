@@ -2,7 +2,6 @@
 // src/views/Contact/index.astro
 import { t, getLocale } from '../../i18n/i18n';
 import type { Locale } from '../../i18n/i18n';
-import MainLayout from '../../layouts/MainLayout.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
 import FormContact from '../../components/contact/FormContact.astro';
@@ -42,7 +41,6 @@ const headerColors = {
   textColor: '#FFFFFF'
 };
 ---
-
   <div class=" w-[100%] mx-auto ">
         <Breadcrumb bgColor="bg-white" textColor="text-black" hoverColor="hover:text-black" />
     
@@ -348,4 +346,3 @@ const headerColors = {
       setTimeout(safeInit, 0);
     </script>
   </div>
-</MainLayout>

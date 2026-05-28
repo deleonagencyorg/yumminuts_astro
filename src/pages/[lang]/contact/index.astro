@@ -16,10 +16,24 @@ export async function getStaticPaths() {
 }
 
 const { currentLang } = Astro.props;
-const { lang } = Astro.params;
 
 const headerColorConfig = getHeaderColors('contact');
+const page = await getPageBySlug('contact', currentLang);
+
+const pageTitle = page?.metaTitle || page?.title || 'Contact - Yummi Nuts';
+const pageDescription = page?.metaDescription || page?.excerpt || '';
+const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---
 
+<MainLayout title={pageTitle}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={page?.ogTitle || pageTitle}
+      description={page?.ogDescription || pageDescription}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/contact`}
+      imageUrl={pageImage}
+    />
+  </Fragment>
   <ContactView currentLang={currentLang} headerColorConfig={headerColorConfig} />
 </MainLayout>

@@ -43,7 +43,7 @@ const { currentLang, productId, product } = Astro.props as {
   productId: string;
   product: Product | undefined;
 };
-console.log(']', JSON.stringify(product, null, 2));
+//console.log('[product del cms]', JSON.stringify(product, null, 2));
 
 // Datos que aún vienen del sistema local
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
@@ -256,7 +256,7 @@ const productBenefits = [
     </div>
 
   </section>
-{/* Removed nutsCategories section; categories are not sourced here anymore */}
+  {/* Removed nutsCategories section; categories are not sourced here anymore */}
    <!-- Sección de Productos por Categoría -->
   {categoryCards.length > 0 && (
     <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
