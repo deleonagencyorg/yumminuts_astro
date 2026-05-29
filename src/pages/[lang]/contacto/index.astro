@@ -22,7 +22,7 @@ const { lang } = Astro.params;
 const headerColorConfig = getHeaderColors('contact');
 const page = await getPageBySlug('contacto', currentLang);
 
-const pageTitle = page?.metaTitle || page?.title || (currentLang === 'es' ? 'Contacto - Yummi Nuts';
+const pageTitle = page?.metaTitle || page?.title || (currentLang === 'es' ? 'Contacto - Yummi Nuts': 'Contact - Yummi Nuts');
 const pageDescription = page?.metaDescription || page?.excerpt || '';
 const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---
