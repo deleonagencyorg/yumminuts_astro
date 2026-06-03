@@ -3,6 +3,9 @@
 import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
+import { getAllRecipes } from '../../../services/api/recipes';
+import { config } from '../../../i18n/config';
+import SEO from '../../../components/SEO.astro';
 
 export async function getStaticPaths() {
   const paths: any[] = [];
@@ -37,7 +40,17 @@ const { lang, recipeId } = Astro.params;
 // Establecer el idioma para las traducciones
 setLocale(lang as Locale);
 ---
-
-<MainLayout title={recipe.title}>
-  <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
+<MainLayout title={recipe?.title || 'Recipe'}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={recipe?.title}
+      description={recipe?.description || recipe?.title}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/recipes/${recipeId}`}
+      imageUrl={typeof recipe?.image === 'string'
+        ? recipe.image
+        : recipe?.image?.url ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-receta.webp'}
+    />
+  </Fragment>
+  <RecipeDetail currentLang={currentLang} recipeId={recipeId} recipe={recipe} />
 </MainLayout>
