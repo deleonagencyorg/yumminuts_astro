@@ -51,9 +51,6 @@ interface Product {
   weight?: string[];
 }
 
-<<<<<<< HEAD
-const { currentLang, productId } = Astro.props;
-=======
 // Recibir producto directamente como prop
 const { currentLang, productId, product } = Astro.props as {
   currentLang: Locale;
@@ -61,7 +58,6 @@ const { currentLang, productId, product } = Astro.props as {
   product: Product | undefined;
 };
 //console.log('[product del cms]', JSON.stringify(product, null, 2));
->>>>>>> cmsrp
 
 // Obtener datos desde traducciones
 const productsAssets = t('home', { namespace: 'products', locale: currentLang }) || {};
