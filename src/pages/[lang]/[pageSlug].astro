@@ -68,6 +68,10 @@ if (urlParts.length === 3) {
     
     try {
       // Cargar datos de recetas directamente
+      const allRecipesByLang = await Promise.all(
+        ['es', 'en'].map(lang => getAllRecipes(lang))
+      );
+      console.log("Recetas cargadas por idioma:", allRecipesByLang);
       const allRecipes = t('items', { namespace: 'recipes', locale: langCode as Locale }) || [];
       console.log(`Total de recetas cargadas: ${allRecipes.length}`);
       console.log('IDs de recetas disponibles:', allRecipes.map((r: any) => r.id));

@@ -1,6 +1,6 @@
 ---
 // src/pages/[lang]/recetas/[recipeId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import SEO from '../../../components/SEO.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
@@ -9,28 +9,26 @@ import { config } from '../../../i18n/config';
 import SEO from '../../../components/SEO.astro';
 
 export async function getStaticPaths() {
-  const paths: any[] = [];
-  const locale = 'es';
-  // Cargar recetas desde archivos JSON con glob estático
-  const modules = import.meta.glob('../../../locales/es/recipes/*.json', { eager: true });
-  const files = Object.values(modules) as any[];
-  console.log(`Encontradas ${files.length} recetas para idioma ${locale}`);
-  for (const mod of files) {
-    const recipe = (mod as any).default;
-    if (!recipe?.id) continue;
-    paths.push({
-      params: { lang: locale, recipeId: recipe.id },
-      props: { recipe, currentLang: locale }
-    });
-  }
-  console.log(`Generadas ${paths.length} rutas de recetas en español`);
+  const locales = config.supportedLocales as Locale[];
+
+  const allRecipesByLang = await Promise.all(
+    locales.map(lang => getAllRecipes(lang))
+  );
+
+  const paths = locales.flatMap((locale, index) => 
+    allRecipesByLang[index].map((recipe) => ({
+      params: { lang: locale, recipeId: recipe.slug 
+      },
+      props: { recipe, currentLang: locale 
+      }
+    }))
+  );
   return paths;
 }
 
 const { recipe, currentLang } = Astro.props;
 const { lang, recipeId } = Astro.params;
 
-// Establecer el idioma para las traducciones
 setLocale(lang as Locale);
 
 // seo desde cms
