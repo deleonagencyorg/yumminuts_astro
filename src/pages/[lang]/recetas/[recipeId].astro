@@ -6,7 +6,6 @@ import SEO from '../../../components/SEO.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../../services/api/recipes';
 import { config } from '../../../i18n/config';
-import SEO from '../../../components/SEO.astro';
 
 export async function getStaticPaths() {
   const locales = config.supportedLocales as Locale[];
