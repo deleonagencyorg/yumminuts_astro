@@ -4,6 +4,9 @@ import { routesConfig, findRouteBySlug } from '../../config/routes';
 import { setLocale, t, type Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
 import RecipeDetail from '../../views/Recipes/Detail/index.astro';
+import { getAllRecipes } from '../../services/api/recipes';
+import SEO from '../../components/SEO.astro';
+import { getPageBySlug } from '../../services/api/pages';
 
 // Define the expected structure of the dynamically imported modules
 interface PageModule {
@@ -52,26 +55,30 @@ if (urlParts.length === 3) {
   langCode = urlParts[0];
   const section = urlParts[1];
   const detailId = urlParts[2];
-  
+
   console.log(`Verificando ruta: /${langCode}/${section}/${detailId}`);
   
   // Verificar si es una ruta de recetas
-  const isRecipesRoute = 
-    (langCode === 'es' && section === 'recetas') || 
+  const isRecipesRoute =
+    (langCode === 'es' && section === 'recetas') ||
     (langCode === 'en' && section === 'recipes');
-  
+
   if (isRecipesRoute) {
     console.log(`Detectada ruta de receta: ${detailId}`);
     
     try {
       // Cargar datos de recetas directamente
+      const allRecipesByLang = await Promise.all(
+        ['es', 'en'].map(lang => getAllRecipes(lang))
+      );
+      console.log("Recetas cargadas por idioma:", allRecipesByLang);
       const allRecipes = t('items', { namespace: 'recipes', locale: langCode as Locale }) || [];
       console.log(`Total de recetas cargadas: ${allRecipes.length}`);
       console.log('IDs de recetas disponibles:', allRecipes.map((r: any) => r.id));
       
       const recipe = allRecipes.find((r: any) => r.id === detailId);
       console.log('Receta encontrada:', recipe ? recipe.id : 'NO');
-      
+
       if (recipe) {
         console.log('Renderizando detalle de receta:', recipe.title);
         // Preparar datos para renderizado en la sección de plantilla
@@ -92,6 +99,9 @@ if (urlParts.length === 3) {
 // Si no es una receta, seguir con el flujo normal de páginas
 let pageTitle = '';
 let pageDescription = '';
+let pageImage = '';
+let ogTitle = '';
+let ogDescription = '';
 let ContentComponent;
 
 if (!isRecipeDetail) {
@@ -138,6 +148,21 @@ if (!isRecipeDetail) {
 
   pageTitle = currentRoute.metaTitleKey ? t(currentRoute.metaTitleKey) : 'Page';
   pageDescription = currentRoute.metaDescriptionKey ? t(currentRoute.metaDescriptionKey) : '';
+
+  // Mapeo de routeId a slug del CMS
+  const cmsPageSlugs: Record<string, string> = {
+    health: lang === 'es' ? 'salud' : 'health',
+    contact: lang === 'es' ? 'contacto' : 'contact',
+  };
+
+  const cmsSlug = cmsPageSlugs[currentRoute.id];
+  const cmsPage = cmsSlug ? await getPageBySlug(cmsSlug, lang) : null;
+
+  pageTitle = cmsPage?.metaTitle || pageTitle;
+  pageDescription = cmsPage?.metaDescription || pageDescription;
+  pageImage = cmsPage?.ogImage?.seoUrl ?? cmsPage?.ogImage?.originalUrl ?? '';
+  ogTitle = cmsPage?.ogTitle || pageTitle;
+  ogDescription = cmsPage?.ogDescription || pageDescription;
 }
 ---
 
@@ -149,6 +174,15 @@ if (!isRecipeDetail) {
 
 {!isRecipeDetail && (
   <MainLayout title={pageTitle} description={pageDescription}>
+    <Fragment slot="head">
+      <SEO
+        currentLang={lang}
+        title={ogTitle}
+        description={ogDescription}
+        canonicalUrl={`https://snacksyummies.com/${lang}/${pageSlug}`}
+        imageUrl={pageImage}
+      />
+    </Fragment>
     <ContentComponent />
   </MainLayout>
 )}

@@ -1,11 +1,15 @@
 ---
+// src/pages/[lang]/contact/index.astro
+import MainLayout from '../../../layouts/MainLayout.astro';
+import SEO from '../../../components/SEO.astro';
 import ContactView from '../../../views/Contact/index.astro';
 import { type Locale } from '../../../i18n/i18n';
 import { getHeaderColors } from '../../../config/headerColors';
+import { config } from '../../../i18n/config';
+import { getPageBySlug } from '../../../services/api/pages';
 
 export async function getStaticPaths() {
-  const locales = ['en'];
-  return locales.map((locale) => ({
+  return config.supportedLocales.map((locale) => ({
     params: { lang: locale },
     props: { currentLang: locale as Locale }
   }));
@@ -13,8 +17,23 @@ export async function getStaticPaths() {
 
 const { currentLang } = Astro.props;
 
-// Set header color config for contact page
 const headerColorConfig = getHeaderColors('contact');
+const page = await getPageBySlug('contact', currentLang);
+
+const pageTitle = page?.metaTitle || page?.title || 'Contact - Yummi Nuts';
+const pageDescription = page?.metaDescription || page?.excerpt || '';
+const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---
 
-<ContactView currentLang={currentLang} headerColorConfig={headerColorConfig} />
+<MainLayout title={pageTitle}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={page?.ogTitle || pageTitle}
+      description={page?.ogDescription || pageDescription}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/contact`}
+      imageUrl={pageImage}
+    />
+  </Fragment>
+  <ContactView currentLang={currentLang} headerColorConfig={headerColorConfig} />
+</MainLayout>
