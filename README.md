@@ -246,3 +246,6 @@ Todos los comandos se ejecutan desde la raíz del proyecto, en una terminal:
 - [Documentación de Tailwind CSS](https://tailwindcss.com/docs)
 - [Rellax.js](https://dixonandmoe.com/rellax/)
 - [ScrollReveal](https://scrollrevealjs.org/)
+
+## QA en deploy
+- cambios para verficar caché vercel y corregir carga de datos.
