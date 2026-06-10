@@ -42,10 +42,12 @@ function mapRecipe(item: CMSRecipeRaw): Recipe {
 }
 
 export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
-  console.log(`[CMS] URL: ${import.meta.env.PUBLIC_CMS_URL}`);
-  console.log(`[CMS] Brand: ${import.meta.env.PUBLIC_CMS_BRAND_SLUG}`);
-  console.log(`[CMS] Locale: ${locale}`);
-  
+  console.log('INICIO GETALLRECIPES');
+  console.log(`URL: ${import.meta.env.PUBLIC_CMS_URL}`);
+  console.log(`BRAND SLUG: ${BRAND_SLUG}`);
+  console.log(`LOCALE: ${locale}`);
+  console.log(`PUBLIC_CMS_SITE_ID: ${import.meta.env.PUBLIC_CMS_SITE_ID}`);
+
   try {
     const response = await cmsClient.get<CMSRecipesResponse>('v1/recipes', {
       page: 1,
@@ -53,13 +55,14 @@ export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
       brandSlug: BRAND_SLUG,
       languageCode: locale,
     });
-
-    //console.log(`[CMS] Respuesta completa:`, JSON.stringify(response, null, 2));
-    //console.log(`[CMS] Recetas encontradas: ${response?.data?.length ?? 'undefined'}`);
-    
+    const recipes = response.data.map(mapRecipe);
+    console.log(`RECETAS CARGADAS - TOTAL: ${recipes.length} - IDIOMA: ${locale.toUpperCase()}`);
+    console.log(`EXITO - RECETAS RECIBIDAS: ${response?.data?.length ?? 0}`);
     return response.data.map(mapRecipe);
-  } catch (error) {
-    console.error('[CMS] Error completo:', error);
+  } catch (error: any) {
+    console.error('ERROR AL OBTENER RECETAS');
+    console.error(`MENSAJE: ${error?.message || 'SIN MENSAJE'}`);
+    console.error('ERROR COMPLETO:', error);
     return [];
   }
 }
@@ -70,8 +73,9 @@ export async function getRecipeBySlug(slug: string, locale: string = 'es'): Prom
       languageCode: locale,
     });
     return mapRecipe(response.data);
-  } catch (error) {
-    console.error(`Error al obtener receta ${slug}:`, error);
+  } catch (error: any) {
+    console.error(`ERROR AL OBTENER RECETA ${slug}`);
+    console.error(`MENSAJE: ${error?.message || 'SIN MENSAJE'}`);
     return null;
   }
 }
