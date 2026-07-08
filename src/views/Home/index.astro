@@ -69,17 +69,40 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
-const slides = Array.isArray(commonAssets) 
+
+function normalizeSlideImage(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function isValidBannerSlide(asset: unknown): asset is {
+  desktop?: string;
+  mobile?: string;
+  alt?: string;
+  title?: string;
+  description?: string;
+  url?: string;
+  link?: string;
+} {
+  if (!asset || typeof asset !== 'object') return false;
+
+  const slide = asset as Record<string, unknown>;
+  const desktop = normalizeSlideImage(slide.desktop);
+  const mobile = normalizeSlideImage(slide.mobile);
+
+  return desktop !== '' || mobile !== '';
+}
+
+const slides = Array.isArray(commonAssets)
   ? commonAssets
-    .filter(asset => asset && typeof asset === 'object' && asset.desktop && asset.mobile)
-    .map(asset => ({
-      desktop: asset.desktop,
-      mobile: asset.mobile,
-      alt: asset.alt || "Yumminuts",
-      title: asset.title || '',
-      subtitle: asset.description || '',
-      link: asset.url || asset.link || ''
-    }))
+      .filter(isValidBannerSlide)
+      .map((asset) => ({
+        desktop: normalizeSlideImage(asset.desktop),
+        mobile: normalizeSlideImage(asset.mobile),
+        alt: asset.alt || 'Yumminuts',
+        title: asset.title || '',
+        subtitle: asset.description || '',
+        link: asset.url || asset.link || '',
+      }))
   : [];
 
 const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
