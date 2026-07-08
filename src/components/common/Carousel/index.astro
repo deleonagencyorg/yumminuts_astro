@@ -13,12 +13,22 @@ export interface Props {
     link?: string;
   }>;
   loading?: boolean;
+  /** `default`: slider vertical en móvil (home). `horizontal`: mantiene 16:9 en móvil (salud). */
+  variant?: 'default' | 'horizontal';
 }
 
 // Coerce incoming slides to a safe array to avoid `.map` on non-arrays
-const { slides: rawSlides, loading = false } = Astro.props as { slides?: any; loading?: boolean };
+const { slides: rawSlides, loading = false, variant = 'default' } = Astro.props as {
+  slides?: any;
+  loading?: boolean;
+  variant?: 'default' | 'horizontal';
+};
 const slides = Array.isArray(rawSlides) ? rawSlides : [];
 const hasMultipleSlides = slides.length > 1;
+const isHorizontal = variant === 'horizontal';
+const carouselClass = isHorizontal
+  ? 'swiper-container main-carousel main-carousel--horizontal'
+  : 'swiper-container main-carousel';
 
 // Log de depuración
 
@@ -40,17 +50,26 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
 
 <!-- Cargar scripts del carrusel solo en el cliente -->
 <script is:inline define:vars={{ carouselSelector: '.swiper-container.main-carousel', hasMultipleSlides }}>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initMainCarousel() {
     setTimeout(() => {
       try {
-        if (!hasMultipleSlides) {
+        if (!hasMultipleSlides || typeof Swiper === 'undefined') {
           return;
         }
+
+        const container = document.querySelector(carouselSelector);
+        if (!container) return;
+
+        if (container.swiper) {
+          container.swiper.destroy(true, true);
+        }
+
         const swiper = new Swiper(carouselSelector, {
           loop: true,
           autoplay: {
             delay: 5000,
             disableOnInteraction: false,
+            pauseOnMouseEnter: false,
           },
           navigation: {
             nextEl: '.swiper-button-next',
@@ -60,34 +79,29 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
             el: '.swiper-pagination',
             clickable: true,
           },
-          // Mejorar la respuesta táctil en móviles
           touchRatio: 1.5,
           touchAngle: 45,
           touchMoveStopPropagation: true,
           touchStartPreventDefault: false,
-          touchStartForcePreventDefault: false,
-          threshold: 5, // Umbral más bajo para detectar deslizamientos
-          on: {
-            init: function() {
-              console.log('Swiper inicializado correctamente');
-            }
-          }
+          threshold: 5,
+          simulateTouch: true,
+          allowTouchMove: true,
         });
-        
-        // Eliminar los event listeners adicionales para evitar conflictos
-        // y dejar que Swiper maneje directamente los eventos táctiles
-        
-        window.addEventListener('load', () => swiper.update());
-        
-        // Asegurar que el swiper se actualice cuando cambie la orientación del dispositivo
+
+        window.addEventListener('load', () => swiper.update(), { once: true });
+
         window.addEventListener('orientationchange', () => {
           setTimeout(() => swiper.update(), 200);
         });
       } catch (error) {
         console.error('Error al inicializar Swiper:', error);
       }
-    }, 500);
-  });
+    }, 300);
+  }
+
+  document.addEventListener('DOMContentLoaded', initMainCarousel);
+  document.addEventListener('astro:page-load', initMainCarousel);
+  document.addEventListener('astro:after-swap', initMainCarousel);
 </script>
 
 {loading ? (
@@ -95,18 +109,18 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
 ) : slides.length === 0 ? (
   <Skeleton items={1} />
 ) : (
-  <div class="relative overflow-hidden w-full mx-auto" transition:animate="fade">
+  <div class={`relative overflow-hidden w-full mx-auto${isHorizontal ? ' carousel-horizontal' : ''}`} transition:animate="fade">
     {preloadFirstImage && (
       <>
         <!-- Precargar la primera imagen para dispositivos móviles -->
-        <link rel="preload" href={firstSlide.mobile} as="image" media="(max-width: 767px)">
+        <link rel="preload" href={isHorizontal ? firstSlide.desktop : firstSlide.mobile} as="image" media="(max-width: 767px)">
         <!-- Precargar la primera imagen para escritorio -->
         <link rel="preload" href={firstSlide.desktop} as="image" media="(min-width: 768px)">
       </>
     )}
     
     <!-- Swiper container -->
-    <div class="swiper-container main-carousel">
+    <div class={carouselClass}>
       <div class="swiper-wrapper">
         {slides.map((slide, index) => (
           <CarouselSlide 
@@ -119,6 +133,7 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
               link: slide.link || ''
             }}
             priority={index === 0}
+            mobileLayout={isHorizontal ? 'horizontal' : 'default'}
           />
         ))}
       </div>

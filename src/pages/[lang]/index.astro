@@ -43,6 +43,12 @@ const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? 'https:
     />
     <meta name="keywords" content={page?.metaKeywords || ''}>
     <meta name="author" content="Yummi Nuts">
+    <link
+      rel="preload"
+      href="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4"
+      as="video"
+      type="video/mp4"
+    />
 
     <!-- Structured Data - se mantiene igual porque no viene del CMS -->
     <script type="application/ld+json" set:html={JSON.stringify({
