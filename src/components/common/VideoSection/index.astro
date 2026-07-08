@@ -57,8 +57,8 @@ function convertToEmbedUrl(url: string): string {
               />
               <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
               <div class="absolute inset-0 flex items-center justify-center">
-                <div class="bg-black/60 rounded-full p-4 group-hover:scale-110 transition-transform">
-                  <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                <div class="video-play-button video-play-button-main bg-black/60 rounded-full group-hover:scale-110 transition-transform">
+                  <svg class="video-play-icon text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
                 </div>
               </div>
               {videos[0].title && (
@@ -86,8 +86,8 @@ function convertToEmbedUrl(url: string): string {
                 />
                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
                 <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="bg-black/60 rounded-full p-2 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                  <div class="video-play-button bg-black/60 rounded-full group-hover:scale-110 transition-transform">
+                    <svg class="video-play-icon text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
                   </div>
                 </div>
                 {video.title && (
@@ -118,8 +118,8 @@ function convertToEmbedUrl(url: string): string {
                 />
                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300"></div>
                 <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="bg-black/60 rounded-full p-2 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
+                  <div class="video-play-button bg-black/60 rounded-full group-hover:scale-110 transition-transform">
+                    <svg class="video-play-icon text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z"/></svg>
                   </div>
                 </div>
                 {video.title && (
@@ -309,6 +309,20 @@ function convertToEmbedUrl(url: string): string {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .video-play-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding-left: 0.15rem;
+  }
+
+  .video-play-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
   
   /* Modal animation and styling */
   #videoModal {
@@ -377,6 +391,18 @@ function convertToEmbedUrl(url: string): string {
     .video-thumbnail h3 {
       font-size: 0.875rem;
       -webkit-line-clamp: 1;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .video-play-button-main {
+      width: 4.5rem;
+      height: 4.5rem;
+    }
+
+    .video-play-button-main .video-play-icon {
+      width: 2.25rem;
+      height: 2.25rem;
     }
   }
 </style>

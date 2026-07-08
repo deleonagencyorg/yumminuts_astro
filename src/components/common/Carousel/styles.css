@@ -25,10 +25,22 @@ body {
     height: 85vh; /* Ocupa el 85% de la altura de la pantalla */
     width: 100%;
   }
-  .swiper-slide img {
+
+  .swiper-container.main-carousel--horizontal {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-carousel--horizontal .swiper-slide img {
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+
+  .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide img {
     background-size: contain !important;
   }
-  
 }
 
 /* Media query para tablets */
@@ -39,6 +51,19 @@ body {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+  }
+
+  .swiper-container.main-carousel--horizontal {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    left: 0;
+    transform: none;
+  }
+
+  .main-carousel--horizontal .swiper-slide img {
+    object-fit: contain !important;
+    object-position: center !important;
   }
   
   .swiper-slide {
@@ -77,6 +102,20 @@ body {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+  }
+
+  .swiper-container.main-carousel--horizontal {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-width: 100vw;
+    left: 0;
+    transform: none;
+  }
+
+  .main-carousel--horizontal .swiper-slide img {
+    object-fit: contain !important;
+    object-position: center !important;
   }
   
   .swiper-slide {
