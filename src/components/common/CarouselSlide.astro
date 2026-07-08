@@ -12,9 +12,16 @@ export interface Props {
     description?: string;
   };
   priority?: boolean;
+  mobileLayout?: 'default' | 'horizontal';
 }
 
-const { slide, priority = false } = Astro.props;
+const { slide, priority = false, mobileLayout = 'default' } = Astro.props;
+const useHorizontalMobile = mobileLayout === 'horizontal';
+const mobileImageSrc = useHorizontalMobile ? slide.desktop : slide.mobile;
+const mobileImageClass = useHorizontalMobile
+  ? 'w-full h-full object-contain object-center md:hidden'
+  : 'w-full h-full object-cover object-center md:hidden';
+const mobileObjectFit = useHorizontalMobile ? 'contain' : 'cover';
 ---
 
 <div class="swiper-slide relative h-full w-full">
@@ -22,11 +29,11 @@ const { slide, priority = false } = Astro.props;
     <a href={slide.link} class="block w-full h-full">
       <div class="w-full h-full overflow-hidden">
         <LazyImage 
-          src={slide.mobile} 
+          src={mobileImageSrc} 
           alt={slide.alt}
-          class="w-full h-full object-cover object-center md:hidden"
+          class={mobileImageClass}
           priority={priority}
-          style="width: 100%; height: 100%; object-fit: cover;"
+          style={`width: 100%; height: 100%; object-fit: ${mobileObjectFit};`}
         />
         <LazyImage 
           src={slide.desktop} 
@@ -45,11 +52,11 @@ const { slide, priority = false } = Astro.props;
     <>
       <div class="w-full h-full overflow-hidden">
         <LazyImage 
-          src={slide.mobile} 
+          src={mobileImageSrc} 
           alt={slide.alt}
-          class="w-full h-full object-cover object-center md:hidden"
+          class={mobileImageClass}
           priority={priority}
-          style="width: 100%; height: 100%; object-fit: cover;"
+          style={`width: 100%; height: 100%; object-fit: ${mobileObjectFit};`}
         />
         <LazyImage 
           src={slide.desktop} 

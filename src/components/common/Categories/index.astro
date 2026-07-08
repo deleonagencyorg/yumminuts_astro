@@ -52,7 +52,7 @@ function productHref(p: Product): string {
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
     <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
+      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full min-w-0 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
         {displayProducts.map((product) => {
           const isBars = (product.title || '').toLowerCase().includes('barra') || (product.title || '').toLowerCase().includes('bar');
           return (
@@ -100,76 +100,168 @@ function productHref(p: Product): string {
 </div>
 
 <script>
+  // @ts-nocheck
+  const MOBILE_AUTOPLAY_MS = 4000;
+
   const initCategoriesNext = () => {
-  const roots = document.querySelectorAll('[data-categories-instance]');
-  if (!roots.length) return;
+    const roots = document.querySelectorAll('[data-categories-instance]');
+    if (!roots.length) return;
 
-  roots.forEach((root) => {
-    const row = root.querySelector('.js-categories-row');
-    const nextBtn = root.querySelector('.js-categories-next');
+    roots.forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
 
-    if (!(row instanceof HTMLElement) || !(nextBtn instanceof HTMLButtonElement)) return;
+      const row = root.querySelector('.js-categories-row');
+      const nextBtn = root.querySelector('.js-categories-next');
 
-    if (nextBtn.dataset.bound === 'true') return;
-    nextBtn.dataset.bound = 'true';
+      if (!(row instanceof HTMLElement) || !(nextBtn instanceof HTMLButtonElement)) return;
+      if (root.dataset.categoriesInit === 'true') return;
+      root.dataset.categoriesInit = 'true';
 
-    const isDesktop = () => window.innerWidth >= 1024;
+      const cards = () => Array.from(row.querySelectorAll('.categories-card'));
+      const isDesktop = () => window.innerWidth >= 1024;
+      let currentIndex = 0;
+      let autoplayTimer = null;
 
-    const hasHorizontalOverflow = () => {
-      return row.scrollWidth > row.clientWidth + 20;
-    };
+      const getScrollLeftForIndex = (index) => {
+        const items = cards();
+        const card = items[index];
+        if (!card) return 0;
 
-    const cycleReorder = () => {
-      const first = row.firstElementChild;
-      if (first) {
-        row.appendChild(first);
-        void row.offsetWidth;
-      }
-    };
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const rowCenter = row.clientWidth / 2;
+        const target = cardCenter - rowCenter;
+        const maxLeft = Math.max(0, row.scrollWidth - row.clientWidth);
+        return Math.max(0, Math.min(target, maxLeft));
+      };
 
-    const scrollNext = () => {
-      const card = row.querySelector('a');
-      const gap = 16;
-      const step = card ? card.offsetWidth + gap : row.clientWidth * 0.85;
+      const syncCurrentIndex = () => {
+        const items = cards();
+        if (!items.length) return;
 
-      const maxLeft = row.scrollWidth - row.clientWidth;
-      let nextLeft = row.scrollLeft + step;
+        const rowCenter = row.scrollLeft + row.clientWidth / 2;
+        let closest = 0;
+        let minDistance = Infinity;
 
-      if (nextLeft >= maxLeft - 10) {
-        nextLeft = 0;
-      }
+        items.forEach((card, index) => {
+          const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+          const distance = Math.abs(cardCenter - rowCenter);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = index;
+          }
+        });
 
-      row.scrollTo({ left: nextLeft, behavior: 'smooth' });
-    };
+        currentIndex = closest;
+      };
 
-    // Click del botón
-    nextBtn.addEventListener('click', () => {
-      if (isDesktop()) {
-        cycleReorder();        //reordena en desktop
-      } else {
-        // Móvil y tablet
-        if (hasHorizontalOverflow()) {
-          scrollNext();
-        } else {
-          cycleReorder();
+      const advanceMobile = () => {
+        const items = cards();
+        if (items.length <= 1) return;
+
+        currentIndex = (currentIndex + 1) % items.length;
+        row.scrollTo({
+          left: getScrollLeftForIndex(currentIndex),
+          behavior: 'smooth',
+        });
+      };
+
+      const cycleReorder = () => {
+        const first = row.firstElementChild;
+        if (first) {
+          row.appendChild(first);
+          void row.offsetWidth;
         }
-      }
-    });
+      };
 
-    // Siempre mantener el botón activo
-    const keepButtonEnabled = () => {
+      const advance = () => {
+        if (isDesktop()) {
+          cycleReorder();
+          return;
+        }
+        advanceMobile();
+      };
+
+      const stopAutoplay = () => {
+        if (autoplayTimer) {
+          clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+        if (isDesktop() || cards().length <= 1) return;
+
+        autoplayTimer = setInterval(advance, MOBILE_AUTOPLAY_MS);
+      };
+
+      nextBtn.addEventListener('click', () => {
+        advance();
+        startAutoplay();
+      });
+
+      let touchStartX = 0;
+      row.addEventListener('touchstart', (event) => {
+        touchStartX = event.touches[0].clientX;
+        stopAutoplay();
+      }, { passive: true });
+
+      row.addEventListener('touchend', (event) => {
+        const diff = touchStartX - event.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) {
+            advanceMobile();
+          } else {
+            const items = cards();
+            if (items.length > 1) {
+              currentIndex = (currentIndex - 1 + items.length) % items.length;
+              row.scrollTo({
+                left: getScrollLeftForIndex(currentIndex),
+                behavior: 'smooth',
+              });
+            }
+          }
+        }
+        startAutoplay();
+      }, { passive: true });
+
+      row.addEventListener('scroll', () => {
+        if (!isDesktop()) syncCurrentIndex();
+      }, { passive: true });
+
+      const visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startAutoplay();
+          } else {
+            stopAutoplay();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      visibilityObserver.observe(root);
+
+      window.addEventListener('resize', () => {
+        if (isDesktop()) {
+          stopAutoplay();
+        } else {
+          syncCurrentIndex();
+          startAutoplay();
+        }
+      });
+
       nextBtn.style.opacity = '1';
       nextBtn.style.pointerEvents = 'auto';
       nextBtn.style.cursor = 'pointer';
-    };
 
-    // Aplicar siempre
-    keepButtonEnabled();
-
-    // Al cambiar el tamaño de la ventana
-    window.addEventListener('resize', keepButtonEnabled);
-  });
-};
+      if (!isDesktop()) {
+        requestAnimationFrame(() => {
+          syncCurrentIndex();
+          startAutoplay();
+        });
+      }
+    });
+  };
 
   const initAll = () => initCategoriesNext();
 
@@ -192,6 +284,8 @@ function productHref(p: Product): string {
     }
 
     [data-categories-instance] .categories-row {
+      min-width: 0;
+      -webkit-overflow-scrolling: touch;
       padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);
       padding-right: clamp(16px, calc((100vw - 280px) / 2), 64px);
       scroll-padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);

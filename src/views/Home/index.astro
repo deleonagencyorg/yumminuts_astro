@@ -85,6 +85,7 @@ const slides = Array.isArray(commonAssets)
   : [];
 
 const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
+const homeVideoUrl = 'https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4';
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
@@ -111,9 +112,20 @@ const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: curr
     )}
 
     <!-- Sección de video -->
-    <section id="video" class="w-full  bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <video height="100%" width="100%" muted playsinline autoplay preload="auto" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
-        <source src="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4" type="video/mp4">
+    <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
+      <video
+        class="home-promo-video block w-full h-auto"
+        height="100%"
+        width="100%"
+        muted
+        loop
+        playsinline
+        preload="auto"
+        controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+        disablepictureinpicture
+        data-home-video
+      >
+        <source src={homeVideoUrl} type="video/mp4">
       </video>
     </section>
 
@@ -150,8 +162,87 @@ const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: curr
       #video video::-webkit-media-controls { display: none !important; }
       #video video::-webkit-media-controls-enclosure { display: none !important; }
       #video video::-moz-media-controls { display: none !important; }
+
+      #video .home-promo-video {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        background: transparent;
+      }
     </style>
     <script>
+      function initHomeVideo() {
+        const section = document.querySelector('[data-home-video-section]');
+        const videoEl = section?.querySelector('[data-home-video]');
+
+        if (!(section instanceof HTMLElement) || !(videoEl instanceof HTMLVideoElement)) return;
+
+        videoEl.muted = true;
+        videoEl.defaultMuted = true;
+        videoEl.playsInline = true;
+        videoEl.setAttribute('muted', '');
+        videoEl.setAttribute('playsinline', '');
+        videoEl.setAttribute('webkit-playsinline', '');
+        videoEl.preload = 'auto';
+
+        const tryPlay = () => {
+          const playPromise = videoEl.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+          }
+        };
+
+        const preloadVideo = () => {
+          if (videoEl.readyState === 0) {
+            videoEl.load();
+          }
+        };
+
+        preloadVideo();
+
+        if (section.dataset.videoObserverBound === '1') {
+          const rect = section.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15;
+          if (isVisible) tryPlay();
+          return;
+        }
+
+        section.dataset.videoObserverBound = '1';
+
+        const playWhenReady = () => {
+          if (videoEl.readyState >= 2) {
+            tryPlay();
+            return;
+          }
+
+          videoEl.addEventListener('canplay', tryPlay, { once: true });
+          videoEl.addEventListener('loadeddata', tryPlay, { once: true });
+        };
+
+        const videoObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              preloadVideo();
+              playWhenReady();
+            } else {
+              videoEl.pause();
+            }
+          });
+        }, {
+          threshold: 0.2,
+          rootMargin: '0px 0px -5% 0px',
+        });
+
+        videoObserver.observe(section);
+
+        const rect = section.getBoundingClientRect();
+        const isInitiallyVisible = rect.top < window.innerHeight * 0.85 && rect.bottom > 0;
+        if (isInitiallyVisible) {
+          playWhenReady();
+        }
+      }
+
       function initHomeRevealAndVideo() {
         const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
@@ -189,33 +280,7 @@ const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: curr
           observer.observe(el);
         });
 
-        // Force autoplay (mobile-friendly): ensure muted and call play()
-        const videoEl = document.querySelector('#video video');
-        if (videoEl instanceof HTMLVideoElement) {
-          videoEl.muted = true;
-          videoEl.setAttribute('playsinline', '');
-          videoEl.setAttribute('autoplay', '');
-
-          if (videoEl.dataset.autoplayBound !== '1') {
-            videoEl.dataset.autoplayBound = '1';
-            const tryPlay = () => {
-              const p = videoEl.play();
-              if (p && typeof p.catch === 'function') {
-                p.catch(() => { /* ignore autoplay policy rejections */ });
-              }
-            };
-            if (videoEl.readyState >= 2) {
-              tryPlay();
-            } else {
-              videoEl.addEventListener('loadeddata', tryPlay, { once: true });
-              videoEl.addEventListener('canplay', tryPlay, { once: true });
-            }
-          } else {
-            // Re-try play after swaps
-            const p = videoEl.play();
-            if (p && typeof p.catch === 'function') p.catch(() => {});
-          }
-        }
+        initHomeVideo();
       }
 
       document.addEventListener('astro:page-load', initHomeRevealAndVideo);
