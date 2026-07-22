@@ -5,122 +5,256 @@ import './styles.css';
 
 export interface Props {
   slides: Array<{
-    desktop: string;
-    mobile: string;
+    desktop?: string;
+    mobile?: string;
     alt: string;
     title: string;
     subtitle: string;
     link?: string;
   }>;
   loading?: boolean;
+  /** `default`: slider vertical en móvil (home). `horizontal`: mantiene 16:9 en móvil (salud). */
+  variant?: 'default' | 'horizontal';
 }
 
-// Coerce incoming slides to a safe array to avoid `.map` on non-arrays
-const { slides: rawSlides, loading = false } = Astro.props as { slides?: any; loading?: boolean };
-const slides = Array.isArray(rawSlides) ? rawSlides : [];
+const { slides: rawSlides, loading = false, variant = 'default' } = Astro.props as {
+  slides?: any;
+  loading?: boolean;
+  variant?: 'default' | 'horizontal';
+};
 
-// Log de depuración
+function normalizeSlideImage(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
 
+function isValidCarouselSlide(slide: unknown): slide is {
+  desktop?: string;
+  mobile?: string;
+  alt?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  link?: string;
+  url?: string;
+} {
+  if (!slide || typeof slide !== 'object') return false;
 
-// Identificar la primera imagen para cargarla con prioridad
-const firstSlide = slides[0] || {};
+  const item = slide as Record<string, unknown>;
+  const desktop = normalizeSlideImage(item.desktop);
+  const mobile = normalizeSlideImage(item.mobile);
 
-// Log del primer slide
+  return desktop !== '' || mobile !== '';
+}
 
+const slides = (Array.isArray(rawSlides) ? rawSlides : [])
+  .filter(isValidCarouselSlide)
+  .map((slide) => ({
+    desktop: normalizeSlideImage(slide.desktop),
+    mobile: normalizeSlideImage(slide.mobile),
+    alt: slide.alt || 'Snacks Yummies',
+    title: slide.title || '',
+    subtitle: slide.subtitle || slide.description || '',
+    link: slide.link || slide.url || '',
+  }));
 
-// Opcional: Precargar la primera imagen para mejorar el LCP
-const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
+const isHorizontal = variant === 'horizontal';
+const instanceId = `carousel-${Math.random().toString(36).slice(2)}`;
 
+// Home: móvil solo slides con `mobile`. Desktop: slides con `desktop`.
+// Salud (horizontal): en móvil también entran slides solo con desktop.
+const mobileSlides = isHorizontal
+  ? slides.filter((slide) => slide.mobile !== '' || slide.desktop !== '')
+  : slides.filter((slide) => slide.mobile !== '');
+
+const desktopSlides = slides.filter((slide) => slide.desktop !== '');
+
+const mobileCarouselClass = isHorizontal
+  ? 'swiper-container main-carousel main-carousel--horizontal js-main-carousel'
+  : 'swiper-container main-carousel js-main-carousel';
+
+const desktopCarouselClass = isHorizontal
+  ? 'swiper-container main-carousel main-carousel--horizontal js-main-carousel'
+  : 'swiper-container main-carousel js-main-carousel';
+
+const firstMobileSlide = mobileSlides[0];
+const firstDesktopSlide = desktopSlides[0];
 ---
 
 <!-- Importar Swiper desde CDN para garantizar disponibilidad -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
-<!-- Cargar scripts del carrusel solo en el cliente -->
-<script is:inline define:vars={{ carouselSelector: '.swiper-container.main-carousel' }}>
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
+<script is:inline>
+  function initMainCarousel() {
+    const tryInit = (attempt = 0) => {
       try {
-        const swiper = new Swiper(carouselSelector, {
-          loop: true,
-          autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-          },
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-          },
-          // Mejorar la respuesta táctil en móviles
-          touchRatio: 1.5,
-          touchAngle: 45,
-          touchMoveStopPropagation: true,
-          touchStartPreventDefault: false,
-          touchStartForcePreventDefault: false,
-          threshold: 5, // Umbral más bajo para detectar deslizamientos
-          on: {
-            init: function() {
-              console.log('Swiper inicializado correctamente');
-            }
+        if (typeof Swiper === 'undefined') {
+          if (attempt < 10) {
+            setTimeout(() => tryInit(attempt + 1), 200);
           }
-        });
-        
-        // Eliminar los event listeners adicionales para evitar conflictos
-        // y dejar que Swiper maneje directamente los eventos táctiles
-        
-        window.addEventListener('load', () => swiper.update());
-        
-        // Asegurar que el swiper se actualice cuando cambie la orientación del dispositivo
-        window.addEventListener('orientationchange', () => {
-          setTimeout(() => swiper.update(), 200);
+          return;
+        }
+
+        document.querySelectorAll('[data-carousel-root]').forEach((root) => {
+          const containers = root.querySelectorAll('.js-main-carousel');
+
+          containers.forEach((container) => {
+            if (!(container instanceof HTMLElement)) return;
+
+            const slideCount = container.querySelectorAll('.swiper-slide').length;
+            const nextEl = container.querySelector('.swiper-button-next');
+            const prevEl = container.querySelector('.swiper-button-prev');
+            const paginationEl = container.querySelector('.swiper-pagination');
+
+            if (slideCount <= 1) {
+              if (nextEl instanceof HTMLElement) nextEl.style.display = 'none';
+              if (prevEl instanceof HTMLElement) prevEl.style.display = 'none';
+              if (paginationEl instanceof HTMLElement) paginationEl.style.display = 'none';
+              return;
+            }
+
+            if (container.swiper) {
+              container.swiper.destroy(true, true);
+            }
+
+            const swiper = new Swiper(container, {
+              slidesPerView: 1,
+              spaceBetween: 0,
+              loop: slideCount > 1,
+              observer: true,
+              observeParents: true,
+              autoplay: slideCount > 1 ? {
+                delay: 5000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+              } : false,
+              navigation: {
+                nextEl,
+                prevEl,
+              },
+              pagination: {
+                el: paginationEl,
+                clickable: true,
+              },
+              touchRatio: 1,
+              threshold: 8,
+              simulateTouch: true,
+              allowTouchMove: true,
+              on: {
+                init(swiperInstance) {
+                  swiperInstance.update();
+                  if (swiperInstance.autoplay) {
+                    swiperInstance.autoplay.start();
+                  }
+                },
+              },
+            });
+
+            const refresh = () => {
+              swiper.update();
+              if (swiper.autoplay && !swiper.autoplay.running) {
+                swiper.autoplay.start();
+              }
+            };
+
+            window.addEventListener('load', refresh, { once: true });
+            window.addEventListener('orientationchange', () => {
+              setTimeout(refresh, 250);
+            });
+
+            const visibilityObserver = new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  refresh();
+                  if (swiper.autoplay) swiper.autoplay.start();
+                }
+              });
+            }, { threshold: 0.2 });
+
+            visibilityObserver.observe(container);
+          });
         });
       } catch (error) {
         console.error('Error al inicializar Swiper:', error);
       }
-    }, 500);
-  });
+    };
+
+    setTimeout(() => tryInit(), 150);
+  }
+
+  document.addEventListener('DOMContentLoaded', initMainCarousel);
+  document.addEventListener('astro:page-load', initMainCarousel);
+  document.addEventListener('astro:after-swap', initMainCarousel);
 </script>
 
 {loading ? (
   <Skeleton items={3} />
+) : slides.length === 0 ? (
+  <Skeleton items={1} />
 ) : (
-  <div class="relative overflow-hidden w-full mx-auto" transition:animate="fade">
-    {preloadFirstImage && (
-      <>
-        <!-- Precargar la primera imagen para dispositivos móviles -->
-        <link rel="preload" href={firstSlide.mobile} as="image" media="(max-width: 767px)">
-        <!-- Precargar la primera imagen para escritorio -->
-        <link rel="preload" href={firstSlide.desktop} as="image" media="(min-width: 768px)">
-      </>
+  <div
+    class={`relative overflow-hidden w-full mx-auto${isHorizontal ? ' carousel-horizontal' : ''}`}
+    data-carousel-root={instanceId}
+    transition:animate="fade"
+  >
+    {firstMobileSlide?.mobile && (
+      <link rel="preload" href={firstMobileSlide.mobile} as="image" media="(max-width: 767px)" />
     )}
-    
-    <!-- Swiper container -->
-    <div class="swiper-container main-carousel">
-      <div class="swiper-wrapper">
-        {slides.map((slide, index) => (
-          <CarouselSlide 
-            slide={{
-              desktop: slide.desktop,
-              mobile: slide.mobile,
-              alt: slide.alt || 'Snacks Yummies',
-              title: slide.title || '',
-              subtitle: slide.subtitle || '',
-              link: slide.link || ''
-            }}
-            priority={index === 0}
-          />
-        ))}
+    {isHorizontal && firstMobileSlide?.desktop && !firstMobileSlide?.mobile && (
+      <link rel="preload" href={firstMobileSlide.desktop} as="image" media="(max-width: 767px)" />
+    )}
+    {firstDesktopSlide?.desktop && (
+      <link rel="preload" href={firstDesktopSlide.desktop} as="image" media="(min-width: 768px)" />
+    )}
+
+    {mobileSlides.length > 0 && (
+      <div class="md:hidden">
+        <div class={mobileCarouselClass}>
+          <div class="swiper-wrapper">
+            {mobileSlides.map((slide, index) => (
+              <CarouselSlide
+                slide={slide}
+                priority={index === 0}
+                viewport="mobile"
+                mobileLayout={isHorizontal ? 'horizontal' : 'default'}
+              />
+            ))}
+          </div>
+
+          {mobileSlides.length > 1 && (
+            <>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-pagination"></div>
+            </>
+          )}
+        </div>
       </div>
-      
-      <!-- Controles de navegación -->
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-pagination"></div>
-    </div>
+    )}
+
+    {desktopSlides.length > 0 && (
+      <div class={mobileSlides.length > 0 ? 'hidden md:block' : ''}>
+        <div class={desktopCarouselClass}>
+          <div class="swiper-wrapper">
+            {desktopSlides.map((slide, index) => (
+              <CarouselSlide
+                slide={slide}
+                priority={index === 0}
+                viewport="desktop"
+                mobileLayout={isHorizontal ? 'horizontal' : 'default'}
+              />
+            ))}
+          </div>
+
+          {desktopSlides.length > 1 && (
+            <>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-pagination"></div>
+            </>
+          )}
+        </div>
+      </div>
+    )}
   </div>
 )}

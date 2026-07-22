@@ -69,20 +69,44 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
-const slides = Array.isArray(commonAssets) 
+
+function normalizeSlideImage(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function isValidBannerSlide(asset: unknown): asset is {
+  desktop?: string;
+  mobile?: string;
+  alt?: string;
+  title?: string;
+  description?: string;
+  url?: string;
+  link?: string;
+} {
+  if (!asset || typeof asset !== 'object') return false;
+
+  const slide = asset as Record<string, unknown>;
+  const desktop = normalizeSlideImage(slide.desktop);
+  const mobile = normalizeSlideImage(slide.mobile);
+
+  return desktop !== '' || mobile !== '';
+}
+
+const slides = Array.isArray(commonAssets)
   ? commonAssets
-    .filter(asset => asset && typeof asset === 'object' && asset.desktop && asset.mobile)
-    .map(asset => ({
-      desktop: asset.desktop,
-      mobile: asset.mobile,
-      alt: asset.alt || "Yumminuts",
-      title: asset.title || '',
-      subtitle: asset.description || '',
-      link: asset.url || asset.link || ''
-    }))
+      .filter(isValidBannerSlide)
+      .map((asset) => ({
+        desktop: normalizeSlideImage(asset.desktop),
+        mobile: normalizeSlideImage(asset.mobile),
+        alt: asset.alt || 'Yumminuts',
+        title: asset.title || '',
+        subtitle: asset.description || '',
+        link: asset.url || asset.link || '',
+      }))
   : [];
 
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
+const homeVideoUrl = 'https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4';
 
 // Load recipes via Vite glob (same strategy as Recipes page)
 interface Recipe { id: string; title: string; image?: string; preparation_time: number; type?: string }
@@ -126,9 +150,20 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
     )}
 
     <!-- Sección de video -->
-    <section id="video" class="w-full  bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <video height="100%" width="100%" muted playsinline autoplay preload="auto" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" disablepictureinpicture>
-        <source src="https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4" type="video/mp4">
+    <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
+      <video
+        class="home-promo-video block w-full h-auto"
+        height="100%"
+        width="100%"
+        muted
+        loop
+        playsinline
+        preload="auto"
+        controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+        disablepictureinpicture
+        data-home-video
+      >
+        <source src={homeVideoUrl} type="video/mp4">
       </video>
     </section>
 
@@ -146,13 +181,13 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
         <RecipesCarousel 
           title={recipesAssets.home?.title || 'Recetas'}
           textButton={recipesAssets.home?.view_more || 'Ver Todas'}
-          limit={10}
+          limit={25}
         />
       </div>
     </section>
 
     <!-- Sección Descubrenos -->
-    <section id="discover" class="w-container mx-auto px-4 bg-white py-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
       <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
     </section>
 
@@ -165,8 +200,87 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
       #video video::-webkit-media-controls { display: none !important; }
       #video video::-webkit-media-controls-enclosure { display: none !important; }
       #video video::-moz-media-controls { display: none !important; }
+
+      #video .home-promo-video {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        background: transparent;
+      }
     </style>
     <script>
+      function initHomeVideo() {
+        const section = document.querySelector('[data-home-video-section]');
+        const videoEl = section?.querySelector('[data-home-video]');
+
+        if (!(section instanceof HTMLElement) || !(videoEl instanceof HTMLVideoElement)) return;
+        if (section.dataset.videoInit === '1') return;
+        section.dataset.videoInit = '1';
+
+        videoEl.muted = true;
+        videoEl.defaultMuted = true;
+        videoEl.playsInline = true;
+        videoEl.setAttribute('muted', '');
+        videoEl.setAttribute('playsinline', '');
+        videoEl.setAttribute('webkit-playsinline', '');
+        videoEl.preload = 'auto';
+
+        let isVisible = false;
+        let isReady = videoEl.readyState >= 3;
+
+        const tryPlay = () => {
+          if (!isVisible || videoEl.paused === false) return;
+          const playPromise = videoEl.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+          }
+        };
+
+        const markReadyAndPlay = () => {
+          isReady = true;
+          tryPlay();
+        };
+
+        videoEl.addEventListener('canplaythrough', markReadyAndPlay, { once: true });
+        videoEl.addEventListener('canplay', markReadyAndPlay, { once: true });
+        videoEl.addEventListener('loadeddata', markReadyAndPlay, { once: true });
+
+        // Precargar el video apenas carga la página
+        videoEl.load();
+
+        const videoObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+
+            if (isVisible) {
+              if (videoEl.readyState < 2) {
+                videoEl.load();
+              }
+              if (isReady || videoEl.readyState >= 2) {
+                tryPlay();
+              }
+            } else {
+              videoEl.pause();
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: '0px',
+        });
+
+        videoObserver.observe(section);
+
+        const rect = section.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isInViewport) {
+          isVisible = true;
+          if (isReady || videoEl.readyState >= 2) {
+            tryPlay();
+          }
+        }
+      }
+
       function initHomeRevealAndVideo() {
         const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
@@ -204,33 +318,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
           observer.observe(el);
         });
 
-        // Force autoplay (mobile-friendly): ensure muted and call play()
-        const videoEl = document.querySelector('#video video');
-        if (videoEl instanceof HTMLVideoElement) {
-          videoEl.muted = true;
-          videoEl.setAttribute('playsinline', '');
-          videoEl.setAttribute('autoplay', '');
-
-          if (videoEl.dataset.autoplayBound !== '1') {
-            videoEl.dataset.autoplayBound = '1';
-            const tryPlay = () => {
-              const p = videoEl.play();
-              if (p && typeof p.catch === 'function') {
-                p.catch(() => { /* ignore autoplay policy rejections */ });
-              }
-            };
-            if (videoEl.readyState >= 2) {
-              tryPlay();
-            } else {
-              videoEl.addEventListener('loadeddata', tryPlay, { once: true });
-              videoEl.addEventListener('canplay', tryPlay, { once: true });
-            }
-          } else {
-            // Re-try play after swaps
-            const p = videoEl.play();
-            if (p && typeof p.catch === 'function') p.catch(() => {});
-          }
-        }
+        initHomeVideo();
       }
 
       document.addEventListener('astro:page-load', initHomeRevealAndVideo);

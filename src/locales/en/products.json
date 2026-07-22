@@ -36,7 +36,7 @@
   "items": [
     {
       "id": "yummi-nut-mani-con-sal",
-      "name": "Yummi Nut Maní con Sal",
+      "name": "Yummi Nuts Salted Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
       "background_color": "#0073C1",
@@ -45,17 +45,42 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#0073C1",
-      "description": "¡Snack crujiente y delicioso en cada bocado! Dale un gusto a tu día con nuestro Maní con Sal: porciones perfectas de maní tostado con un toque de sal, ideal para llevar o disfrutar en casa. 100% natural, sin lácteos, sin gluten y lleno de sabor. ¡Tu nuevo favorito para picar!",
+      "description": "!Crunchy and delicious snack in every bite! Treat yourself to our Salted Peanuts: perfect portions of roasted peanuts with a touch of salt, ideal for on the go or enjoying at home. 100% natural, dairy-free, gluten-free, and packed with flavor. Your new favorite snack!",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.67",
+        "rows": [
+          { "label": "Energy", "value": "800 kJ (190 kcal)" },
+          { "label": "Energy from fat", "value": "600 kJ (140 kcal)" },
+          { "label": "Total Fat", "value": "15g (19% DV)" },
+          { "label": "Saturated Fat", "value": "3.5g (18% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "150mg (7% DV)" },
+          { "label": "Total Carbohydrates", "value": "5g (2% DV)" },
+          { "label": "Dietary Fiber", "value": "3g (11% DV)" },
+          { "label": "Total Sugars", "value": "less than 1g" },
+          { "label": "Protein", "value": "8g" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "2% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
-      {
+    {
       "id": "yummi-nut-mani-japones-con-sabor-a-chile-toreado",
-      "name": "Yummi Nut Maní Japones con Sabor a Chile Toreado",
+      "name": "Japanese style Peanuts with Toreado Chile Flavor",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
       "background_color": "#008444",
@@ -64,17 +89,42 @@
       "header_background": "#008444",
       "header_text_color": "primary",
       "color_button": "#008444",
-      "description": "Maní estilo japonés con cobertura crujiente.",
+      "description": "Japanese style peanuts with a crispy coating.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.66",
+        "rows": [
+          { "label": "Calories", "value": "650 kJ (150 kcal)" },
+          { "label": "Calories from fat", "value": "300 kJ (70 kcal)" },
+          { "label": "Total Fat", "value": "8g (12% DV)" },
+          { "label": "Saturated Fat", "value": "1.5g (8% DV)" },
+          { "label": "Trans Fat", "value": "0g (0% DV)" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "220mg (9% DV)" },
+          { "label": "Total Carbohydrates", "value": "14g (5% DV)" },
+          { "label": "Dietary Fiber", "value": "1g (4% DV)" },
+          { "label": "Total Sugars", "value": "4g (0% DV)" },
+          { "label": "Protein", "value": "6g (0% DV)" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "6% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-mani-con-limon",
-      "name": "Yummi Nut Maní con Limón",
+      "name": "Yummi Nut Peanuts with Lemon",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp",
       "background_color": "#B4BF8E",
@@ -83,17 +133,42 @@
       "header_background": "#B4BF8E",
       "header_text_color": "primary",
       "color_button": "#B4BF8E",
-      "description": "Maní con un toque cítrico de limón.",
+      "description": "Peanuts with a hint of lemon citrus.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.67",
+        "rows": [
+          { "label": "Energy", "value": "800 kJ (190 kcal)" },
+          { "label": "Energy from fat", "value": "600 kJ (140 kcal)" },
+          { "label": "Total Fat", "value": "15g (19% DV)" },
+          { "label": "Saturated Fat", "value": "3.5g (18% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "200mg (9% DV)" },
+          { "label": "Total Carbohydrates", "value": "5g (2% DV)" },
+          { "label": "Dietary Fiber", "value": "2g (9% DV)" },
+          { "label": "Total Sugars", "value": "less than 1g" },
+          { "label": "Protein", "value": "8g" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "2% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-mani-japones",
-      "name": "Yummi Nut Maní Japonés",
+      "name": "Japanese style Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp",
       "background_color":"#796B6D",
@@ -102,17 +177,42 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#796B6D",
-      "description": "Maní estilo japonés con cobertura crujiente.",
+      "description": "Japanese style peanuts with a crispy coating.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.66",
+        "rows": [
+          { "label": "Calories", "value": "650 kJ (150 kcal)" },
+          { "label": "Calories from fat", "value": "300 kJ (70 kcal)" },
+          { "label": "Total Fat", "value": "8g (12% DV)" },
+          { "label": "Saturated Fat", "value": "1.5g (8% DV)" },
+          { "label": "Trans Fat", "value": "0g (0% DV)" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "220mg (9% DV)" },
+          { "label": "Total Carbohydrates", "value": "14g (5% DV)" },
+          { "label": "Dietary Fiber", "value": "1g (4% DV)" },
+          { "label": "Total Sugars", "value": "4g (0% DV)" },
+          { "label": "Protein", "value": "6g (0% DV)" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "6% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-maranon-con-sal",
-      "name": "Yummi Nut Marañón con Sal",
+      "name": "Salted Cashews",
       "category": "Marañones",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
       "background_color":"#9AE3BE",
@@ -121,17 +221,42 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#9AE3BE",
-      "description": "Marañones tostados con sal, llenos de energía.",
+      "description": "Roasted cashews with salt, packed with energy.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.83",
+        "rows": [
+          { "label": "Energy", "value": "700 kJ (170 kcal)" },
+          { "label": "Energy from fat", "value": "450 kJ (110 kcal)" },
+          { "label": "Total Fat", "value": "12g (18% DV)" },
+          { "label": "Saturated Fat", "value": "2g (10% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "115mg (5% DV)" },
+          { "label": "Total Carbohydrates", "value": "10g (4% DV)" },
+          { "label": "Dietary Fiber", "value": "2g (6% DV)" },
+          { "label": "Total Sugars", "value": "2g" },
+          { "label": "Protein", "value": "6g" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "12% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-mix-almendras",
-      "name": "Yummi Nut Mix Almendras",
+      "name": "Almond Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
       "background_color": "#DC9EE5",
@@ -140,17 +265,42 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#DC9EE5",
-      "description": "Mezcla de frutos secos con almendras.",
+      "description": "Mixed nuts with almonds.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.73",
+        "rows": [
+          { "label": "Energy", "value": "700 kJ (170 kcal)" },
+          { "label": "Energy from fat", "value": "450 kJ (110 kcal)" },
+          { "label": "Total Fat", "value": "12g (15% DV)" },
+          { "label": "Saturated Fat", "value": "2g (10% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "80mg (3% DV)" },
+          { "label": "Total Carbohydrates", "value": "8g (3% DV)" },
+          { "label": "Dietary Fiber", "value": "2g (7% DV)" },
+          { "label": "Total Sugars", "value": "4g" },
+          { "label": "Protein", "value": "7g" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "6% DV" },
+          { "label": "Potassium", "value": "5% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-omega-mix",
-      "name": "Yummi Nut Omega Mix",
+      "name": "Omega Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp",
       "background_color": "#DC9EE5",
@@ -159,17 +309,39 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#DC9EE5",
-      "description": "Mix de semillas y frutos con Omegas.",
+      "description": "Mix of seeds and nuts with Omegas.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp" }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 30g. Servings per container: 0.73",
+        "rows": [
+          { "label": "Energy", "value": "750 kJ (180 kcal)" },
+          { "label": "Energy from fat", "value": "550 kJ (130 kcal)" },
+          { "label": "Total Fat", "value": "14g (18% DV)" },
+          { "label": "Saturated Fat", "value": "3g (15% DV)" },
+          { "label": "Trans Fat", "value": "0g (0% DV)" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "50mg (2% DV)" },
+          { "label": "Total Carbohydrates", "value": "6g (2% DV)" },
+          { "label": "Dietary Fiber", "value": "2g (7% DV)" },
+          { "label": "Total Sugars", "value": "less than 1g" },
+          { "label": "Protein", "value": "8g" },
+          { "label": "Vitamin D", "value": "0% DV" },
+          { "label": "Calcium", "value": "2% DV" },
+          { "label": "Iron", "value": "4% DV" },
+          { "label": "Potassium", "value": "4% DV" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-barra-fresa",
-      "name": "Barra Fresa",
+      "name": "Strawberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa2.webp",
       "background_color": "#E67DA0",
@@ -178,17 +350,35 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#E67DA0",
-      "description": "Barra de frutos con sabor a fresa, ideal para llevar y disfrutar en cualquier momento.",
+      "description": "Strawberry flavored fruit bar, ideal to take with you and enjoy anytime.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-fresa2.webp" }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 32g. Servings per container: 1",
+        "rows": [
+          { "label": "Energy", "value": "450 kJ (110 kcal)" },
+          { "label": "Energy from fat", "value": "125 kJ (30 kcal)" },
+          { "label": "Total Fat", "value": "3.5g (5% DV)" },
+          { "label": "Saturated Fat", "value": "0.5g (3% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "5mg (1% DV)" },
+          { "label": "Total Carbohydrates", "value": "18g (6% DV)" },
+          { "label": "Dietary Fiber", "value": "5g (20% DV)" },
+          { "label": "Total Sugars", "value": "4g" },
+          { "label": "Protein", "value": "3g" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-barra-arandano",
-      "name": "Barra Arándano",
+      "name": "Blueberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-arandano.webp",
       "background_color": "#8C85C6",
@@ -201,13 +391,34 @@
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
-        { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-arandano.webp" }
+        {
+          "value": "150",
+          "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-arandano.webp"
+        }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 32g. Servings per container: 1",
+        "rows": [
+          { "label": "Energy", "value": "500 kJ (120 kcal)" },
+          { "label": "Energy from fat", "value": "200 kJ (50 kcal)" },
+          { "label": "Total Fat", "value": "6g (9% DV)" },
+          { "label": "Saturated Fat", "value": "1g (5% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "5mg (1% DV)" },
+          { "label": "Total Carbohydrates", "value": "11g (4% DV)" },
+          { "label": "Dietary Fiber", "value": "7g (28% DV)" },
+          { "label": "Total Sugars", "value": "6g" },
+          { "label": "Protein", "value": "5g" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     },
     {
       "id": "yummi-nut-barra-coco",
-      "name": "Barra Coco",
+      "name": "Coconut Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-coco.webp",
       "background_color": "#D6B196",
@@ -216,13 +427,31 @@
       "header_background": "white",
       "header_text_color": "primary",
       "color_button": "#D6B196",
-      "description": "Barra con sabor a coco, suave y llena de sabor natural.",
+      "description": "Coconut flavored bar, soft and full of natural flavor.",
       "available": "https://snack.yummiespromociones.com/taqueritos/banderas.webp",
       "background_image": "https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp",
       "sizes": [
         { "value": "150", "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-barra-coco.webp" }
       ],
-      "weight": ["30g", "60g", "120g"]
+      "weight": ["30g", "60g", "120g"],
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "serving": "Serving Size: 32g. Servings per container: 1",
+        "rows": [
+          { "label": "Energy", "value": "500 kJ (120 kcal)" },
+          { "label": "Energy from fat", "value": "175 kJ (40 kcal)" },
+          { "label": "Total Fat", "value": "4.5g (7% DV)" },
+          { "label": "Saturated Fat", "value": "1g (5% DV)" },
+          { "label": "Trans Fat", "value": "0g" },
+          { "label": "Cholesterol", "value": "0mg (0% DV)" },
+          { "label": "Sodium", "value": "5mg (1% DV)" },
+          { "label": "Total Carbohydrates", "value": "15g (5% DV)" },
+          { "label": "Dietary Fiber", "value": "5g (20% DV)" },
+          { "label": "Total Sugars", "value": "3g" },
+          { "label": "Protein", "value": "3g" }
+        ],
+        "disclaimer": "Percent Daily Values are based on a 8,378 kJ (2,000 cal) diet. Your daily values may be higher or lower depending on your caloric needs. ACCORDING TO FDA."
+      }
     }
   ]
 }

@@ -1,0 +1,38 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import NotFoundView from '../views/NotFound/index.astro';
+import { setLocale } from '../i18n/i18n';
+
+// Static site: default to 'es' at build time; client-side script will swap to 'en' if needed
+setLocale('es');
+---
+
+<MainLayout title="Página no encontrada | Page not found" description="La página que buscas no existe.">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+  </Fragment>
+
+  <!-- ES version (shown by default) -->
+  <div id="nf-lang-es">
+    <NotFoundView lang="es" />
+  </div>
+
+  <!-- EN version (hidden by default, shown when URL starts with /en/) -->
+  <div id="nf-lang-en" style="display:none">
+    <NotFoundView lang="en" />
+  </div>
+</MainLayout>
+
+<script is:inline>
+  (function () {
+    var path = window.location.pathname;
+    var firstSeg = path.split('/').filter(Boolean)[0];
+    if (firstSeg === 'en') {
+      var elEs = document.getElementById('nf-lang-es');
+      var elEn = document.getElementById('nf-lang-en');
+      if (elEs) elEs.style.display = 'none';
+      if (elEn) elEn.style.display = '';
+      document.documentElement.lang = 'en';
+    }
+  })();
+</script>

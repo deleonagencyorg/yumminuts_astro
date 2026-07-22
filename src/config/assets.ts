@@ -32,7 +32,7 @@ export interface SocialLink {
 // Logos
 export const logos = {
   principal: {
-    url: `${S3_BASE_ASSETS_URL}/logo-blue-yumminuts.webp`,
+    url: `${S3_BASE_ASSETS_URL}/YNUTS_LOGO2_COLOR.png`,
     alt: 'Yummies Nuts'
   }
 };

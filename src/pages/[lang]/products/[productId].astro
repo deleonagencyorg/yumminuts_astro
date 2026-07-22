@@ -18,7 +18,7 @@ export function getStaticPaths() {
     for (const product of products) {
       paths.push({
         params: { lang: locale, productId: product.id },
-        props: { product, currentLang: locale }
+        props: { product, currentLang: locale as Locale }
       });
     }
   }
@@ -33,12 +33,9 @@ const { lang, productId } = Astro.params;
 // Establecer el idioma para las traducciones
 setLocale(lang as Locale);
 
-const headerColors = {
-  backgroundColor: product.header_background
-};
 ---
 
-<MainLayout title={product.name} headerColors={headerColors}>
+<MainLayout title={product.name}>
   <Fragment slot="head">
     <SEO 
       currentLang={currentLang}

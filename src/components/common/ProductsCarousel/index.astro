@@ -48,60 +48,68 @@ const currentTexts = texts[currentLang as keyof typeof texts];
 
 // Asegurarse de que products es un array
 const productsItems = Array.isArray(products) ? products : [];
+const hasMultipleProducts = productsItems.length > 1;
 
 import LazyImage from '../LazyImage.astro';
 ---
 
-<div class={`products-carousel ${className}`} data-autoplay={autoplay} data-speed={speed}>
-  
-  <div class="swiper-container">
-    <div class="swiper-wrapper">
-      {productsItems.map((product) => (
-        <div class="swiper-slide">
-          <div class="product-card rounded-[50px] border border-indigo-300 bg-[#0f5fcd]">
-            <div class="product-image-container">
-             
-              
-              <LazyImage 
-                src={product.imageMobile || product.image} 
-                alt={product.name}
-                class="product-image z-20 md:mt-[0px] -mt-[35px]"
-                width={300}
-                height={400}
-              />
-            </div>
-            
-            <div class="absolute bottom-0 left-0 right-0 p-6 text-left text-white">
-              <h4 class="text-left text-4xl">
-                Yummi Nuts
-              </h4>
-              <h3 class="text-2xl md:text-4xl font-bold uppercase mb-4 tracking-wide" style={`color: ${product.text_color || '#10b981'}`}>
-                {product.name.split(' ').slice(1).join(' ')}
-              </h3>
-              
-              <a 
-                href={`/${currentLang}/${currentLang === 'es' ? 'productos' : 'products'}/${product.id}`}
-                style={`background-color: #004AB2`}  
-                class="flex w-full max-w-[310px] h-[58px] text-2xl px-[10px] py-5 justify-center items-center gap-[10px] shrink-0 rounded-[100px] border border-blue bg-blue text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg uppercase"
-              >
-                {currentTexts.viewMore}
-              </a>
-             
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-    
-    <!-- Navegación -->
-    <div class="swiper-button-next !text-white !bg-blue-500/80 !w-12 !h-12 !rounded-full hover:!bg-blue-600/90 transition-all duration-300 !border-2 !border-white/30 backdrop-blur-sm">
-      
-    </div>
-    <div class="swiper-button-prev !text-white !bg-blue-500/80 !w-12 !h-12 !rounded-full hover:!bg-blue-600/90 transition-all duration-300 !border-2 !border-white/30 backdrop-blur-sm">
-      
+{productsItems.length === 0 ? (
+  <div class={`products-carousel ${className}`}>
+    <div class="w-full text-center text-gray-500 py-8">
+      {currentLang === 'es' ? 'No hay productos disponibles.' : 'No products available.'}
     </div>
   </div>
-</div>
+) : (
+  <div class={`products-carousel ${className}`} data-autoplay={autoplay} data-speed={speed}>
+    
+    <div class="swiper-container" data-has-multiple={hasMultipleProducts ? 'true' : 'false'}>
+      <div class="swiper-wrapper">
+        {productsItems.map((product) => (
+          <div class="swiper-slide">
+            <div class="product-card rounded-[50px] border border-indigo-300 bg-[#0f5fcd]">
+              <div class="product-image-container">
+               
+                
+                <LazyImage 
+                  src={product.imageMobile || product.image} 
+                  alt={product.name}
+                  class="product-image z-20 md:mt-[0px] -mt-[35px]"
+                  width={300}
+                  height={400}
+                />
+              </div>
+              
+              <div class="absolute bottom-0 left-0 right-0 p-6 text-left text-white">
+                <h4 class="text-left text-4xl">
+                  Yummi Nuts
+                </h4>
+                <h3 class="text-2xl md:text-4xl font-bold uppercase mb-4 tracking-wide" style={`color: ${product.text_color || '#10b981'}`}>
+                  {product.name.split(' ').slice(1).join(' ')}
+                </h3>
+                
+                <a 
+                  href={`/${currentLang}/${currentLang === 'es' ? 'productos' : 'products'}/${product.id}`}
+                  style={`background-color: #004AB2`}  
+                  class="flex w-full max-w-[310px] h-[58px] text-2xl px-[10px] py-5 justify-center items-center gap-[10px] shrink-0 rounded-[100px] border border-blue bg-blue text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg uppercase"
+                >
+                  {currentTexts.viewMore}
+                </a>
+               
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {hasMultipleProducts && (
+        <>
+          <div class="swiper-button-next !text-white !bg-blue-500/80 !w-12 !h-12 !rounded-full hover:!bg-blue-600/90 transition-all duration-300 !border-2 !border-white/30 backdrop-blur-sm"></div>
+          <div class="swiper-button-prev !text-white !bg-blue-500/80 !w-12 !h-12 !rounded-full hover:!bg-blue-600/90 transition-all duration-300 !border-2 !border-white/30 backdrop-blur-sm"></div>
+        </>
+      )}
+    </div>
+  </div>
+)}
 
 <style>
   .products-carousel {
@@ -318,6 +326,16 @@ import LazyImage from '../LazyImage.astro';
       const swiperContainer = this.container.querySelector('.swiper-container') as HTMLElement;
       
       if (!swiperContainer) return;
+
+      const slideCount = swiperContainer.querySelectorAll('.swiper-slide').length;
+      const hasMultiple = slideCount > 1 && swiperContainer.dataset.hasMultiple !== 'false';
+      if (!hasMultiple) {
+        const nextEl = swiperContainer.querySelector('.swiper-button-next') as HTMLElement | null;
+        const prevEl = swiperContainer.querySelector('.swiper-button-prev') as HTMLElement | null;
+        if (nextEl) nextEl.style.display = 'none';
+        if (prevEl) prevEl.style.display = 'none';
+        return;
+      }
 
       this.swiper = new Swiper(swiperContainer, {
         modules: [Navigation, Autoplay],

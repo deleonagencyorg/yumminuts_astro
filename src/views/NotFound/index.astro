@@ -1,0 +1,231 @@
+---
+import { t, type Locale } from '../../i18n/i18n';
+import Categories from '../../components/common/Categories/index.astro';
+import categoriesConfig from '../../config/categories.json';
+
+export interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const texts = t('not_found', { namespace: 'common', locale: lang }) as Record<string, string>;
+
+const homeUrl = `/${lang}`;
+const productsUrl = lang === 'es' ? `/${lang}/productos` : `/${lang}/products`;
+
+// Exact same logic as home page to build category cards
+const products = (t('items', { namespace: 'products', locale: lang }) || []) as any[];
+
+function normalizeCategory(value: string): string {
+  const v = (value || '').toLowerCase();
+  if (!v) return '';
+  if (v.includes('maní') || v.includes('mani') || v.includes('peanut')) return 'manies';
+  if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
+  if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
+  if (v.includes('barra') || v.includes('bar') || v.includes('bars')) return 'barras';
+  const cfg = (categoriesConfig as any).categories || [];
+  const match = cfg.find((c: any) => [c.labels?.es, c.labels?.en, c.key].map((s: string) => (s||'').toLowerCase()).includes(v));
+  return match?.key || '';
+}
+
+const productsByCategory: Record<string, any[]> = {};
+for (const p of products) {
+  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+  if (!key) continue;
+  if (!productsByCategory[key]) productsByCategory[key] = [];
+  productsByCategory[key].push(p);
+}
+
+type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
+const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
+  const list = productsByCategory[c.key] || [];
+  const first = list[0] || {};
+  const title = (c.labels?.[lang] || c.labels?.es || c.labels?.en || '') as string;
+  const image = (first.image || '') as string;
+  const bgColor = (c.background || '#95CFF2') as string;
+  const id = (first.id || c.key) as string;
+  const slug = (first.slug || first.id || '') as string;
+  return { id, title, image, bgColor, slug };
+}).filter((cp: CatProduct) => cp.image && cp.bgColor);
+
+const categoriesTitle = lang === 'es' ? 'Categorías' : 'Categories';
+---
+
+<section id="nf-section" class="w-full min-h-screen flex flex-col items-center bg-white">
+
+  <!-- Hero 404 -->
+  <div class="nf-hero w-full flex flex-col items-center justify-center py-24 px-4 bg-white">
+    <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
+
+      <!-- 404 number with product image in the middle -->
+      <div class="nf-code">
+        <span class="nf-digit">4</span>
+        <span class="nf-nut">
+          <img
+            src="https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp"
+            alt="Yummi Nuts"
+            class="nf-nut-img"
+            loading="eager"
+            width="140"
+            height="140"
+          />
+        </span>
+        <span class="nf-digit">4</span>
+      </div>
+
+      <h1 class="nf-title">{texts.title}</h1>
+      <p class="nf-desc">{texts.description}</p>
+
+      <div class="nf-actions">
+        <a href={homeUrl} class="nf-btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nf-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          {texts.go_home}
+        </a>
+        <a href={productsUrl} class="nf-btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nf-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          {texts.explore_products}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  {categoryCards.length > 0 && (
+    <div class="w-full bg-white pb-20 px-4 md:px-8">
+      <div class="container mx-auto">
+        <Categories products={categoryCards} title={categoriesTitle} />
+      </div>
+    </div>
+  )}
+
+</section>
+
+<style>
+  /* Hero */
+  .nf-hero {
+    min-height: 60vh;
+  }
+
+  /* 404 digits + nut */
+  .nf-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .nf-digit {
+    font-size: clamp(5rem, 14vw, 9rem);
+    font-weight: 900;
+    line-height: 1;
+    color: #0073C1;
+    font-family: var(--font-title);
+  }
+  .nf-nut {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nf-nut-img {
+    width: clamp(80px, 11vw, 130px);
+    height: clamp(80px, 11vw, 130px);
+    object-fit: contain;
+    animation: nfSpin 6s ease-in-out infinite;
+    filter: drop-shadow(0 6px 16px rgba(0,115,193,0.25));
+  }
+  @keyframes nfSpin {
+    0%, 100% { transform: rotate(-8deg) scale(1); }
+    50%       { transform: rotate(8deg) scale(1.06); }
+  }
+
+  /* Title & description */
+  .nf-title {
+    font-family: var(--font-title);
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    color: #1e293b;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+  .nf-desc {
+    font-family: var(--font-text);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: #475569;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+    line-height: 1.65;
+  }
+
+  /* CTA buttons */
+  .nf-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .nf-btn-primary,
+  .nf-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 100px;
+    font-family: var(--font-title);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .nf-btn-primary {
+    background-color: #0073C1;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,115,193,0.3);
+  }
+  .nf-btn-primary:hover {
+    background-color: #005fa3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,115,193,0.4);
+  }
+  .nf-btn-secondary {
+    background-color: white;
+    color: #0073C1;
+    border: 2px solid #0073C1;
+  }
+  .nf-btn-secondary:hover {
+    background-color: #f0f9ff;
+    transform: translateY(-2px);
+  }
+  .nf-btn-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+</style>
+
+<script is:inline>
+  (function () {
+    function revealNFCards() {
+      var section = document.getElementById('nf-section');
+      if (!section) return;
+      section.querySelectorAll('[data-reveal-child]').forEach(function (el) {
+        el.classList.remove('opacity-0', 'translate-y-6');
+        el.classList.add('opacity-100', 'translate-y-0', 'is-visible');
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', revealNFCards);
+    } else {
+      revealNFCards();
+    }
+    document.addEventListener('astro:page-load', revealNFCards);
+    document.addEventListener('astro:after-swap', revealNFCards);
+    // Also run after a short delay to catch the lang-swap show
+    setTimeout(revealNFCards, 50);
+  })();
+</script>

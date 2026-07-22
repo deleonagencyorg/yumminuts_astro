@@ -66,12 +66,20 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/yumminuts/Banner%20home.png",
+        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/banner_yummi.webp",
         "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
-        "link": "https://www.yumminuts.com"
+        "link": "#"
+      },
+      {
+        "id": "slide2",
+        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-WEB-YUMMI-NUTS.webp",
+        "alt": "Yumminuts",
+        "title": "",
+        "description": "",
+        "link": "#"
       }
     ],
     "healthInfo": [
@@ -101,45 +109,7 @@
       }
     ],
     "discoverSection": {
-      "title": "Descúbrenos",
-      "images": [
-        {
-          "id": "slide1",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-1.png",
-          "alt": "imagen1",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide2",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-2.png",
-          "alt": "imagen2",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide3",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-3.png",
-          "alt": "imagen3",
-          "title": "",
-          "description": "",
-          "link": "#"
-        },
-        {
-          "id": "slide4",
-          "desktop": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
-          "mobile": "https://snack.yummiespromociones.com/yumminuts/descubre-4.png",
-          "alt": "imagen4",
-          "title": "",
-          "description": "",
-          "link": "#"
-        }
-      ]
+      "title": "Descúbrenos"
     },
     "healthPage": {
       "title": "Activa tu mente y cuerpo con Yummi Nuts",
@@ -241,11 +211,6 @@
       "href": "/es/salud"
     },
     {
-      "id": "news",
-      "text": "Noticias",
-      "href": "/es/blog"
-    },
-    {
       "id": "contact",
       "text": "Contacto",
       "href": "/es/contacto"
@@ -260,45 +225,7 @@
     ]
   },
   "discover": {
-    "title": "Descúbrenos",
-    "images": [
-      {
-        "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen1",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide2",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen2",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide3",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen3",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      },
-      {
-        "id": "slide4",
-        "desktop": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "mobile": "https://snack.yummiespromociones.com/taqueritos/Ensalada_CesarT.webp",
-        "alt": "imagen4",
-        "title": "",
-        "description": "",
-        "link": "https://www.zambos.com"
-      }
-    ]
+    "title": "Descúbrenos"
   },
   "home": {
     "meta": {
@@ -310,22 +237,42 @@
       "buttonText":"Suscribirse"
     },
     "socialmedia":{
-      "title":"Síguenos",
+      "title":"Descúbrenos",
       "tagtitle":"en redes",
       "description":"Síguenos en nuestras redes sociales - Snacks Yummies",
       "newsletter":"Entérate de las noticias y promociones",
-      "instagramLinks":[
-       {
-          "url":"https://www.instagram.com/reel/DRVAh_2gdOx/?igsh=MWFqcm95bWRuMmt2dg=="
+      "instagramPosts": [
+        {
+          "id": "post1",
+          "postUrl": "https://www.instagram.com/reel/DZGa_XHgtNi/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DZGa_XHgtNi/embed",
+          "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-1.jpg",
+          "fallbackImage": "/images/instagram-fallback-1.jpg",
+          "alt": "Yummi Nuts Instagram Post 1"
         },
         {
-          "url":"https://www.instagram.com/reel/DRNscpmCTgl/?igsh=ZHg4bzd5YTRoNXlu"
+          "id": "post2",
+          "postUrl": "https://www.instagram.com/reel/DX9hSVeAPPf/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DX9hSVeAPPf/embed",
+          "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-2.jpg",
+          "fallbackImage": "/images/instagram-fallback-2.jpg",
+          "alt": "Yummi Nuts Instagram Post 2"
         },
         {
-          "url":"https://www.instagram.com/reel/DQfRliVkRCM/?igsh=MTF0amw0cDc5djd3Mg=="
+          "id": "post3",
+          "postUrl": "https://www.instagram.com/reel/DXzOBOhD4j6/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DXzOBOhD4j6/embed",
+          "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-3.jpg",
+          "fallbackImage": "/images/instagram-fallback-3.jpg",
+          "alt": "Yummi Nuts Instagram Post 3"
         },
         {
-          "url":"https://www.instagram.com/reel/DQcs9f6iXdF/?igsh=ZjYwMHlnNm9ndDNj"
+          "id": "post4",
+          "postUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/embed",
+          "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-4.jpg",
+          "fallbackImage": "/images/instagram-fallback-4.jpg",
+          "alt": "Yummi Nuts Instagram Post 4"
         }
       ]
     }
@@ -360,12 +307,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
+      "title":"💛 ¡Snacks que te hacen bien y saben mejor! Bienvenido a Yummi Nuts. 🌿🥜",
       "link":""
     },
     {
       "id":"2",
-      "title":"¡Bienvenidos a Yummi Nuts! Disfruta tus snacks favoritos con sabor natural y auténtico.",
+      "title":"🌻 Descubre snacks naturales que nutren y deleitan. 🥜✨",
       "link":""
     }
   ],
@@ -377,5 +324,13 @@
   },
   "subscribe": {
     "success": "¡Gracias por suscribirte!"
+  },
+  "not_found": {
+    "code": "404",
+    "title": "Oops! Pagina no encontrada",
+    "description": "Parece que la pagina que buscas no existe o fue movida. Pero no te preocupes, tenemos muchas cosas deliciosas para ti!",
+    "go_home": "Ir al inicio",
+    "explore_products": "Explorar productos",
+    "products_title": "Mientras tanto, descubre nuestros productos"
   }
 }

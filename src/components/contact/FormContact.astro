@@ -725,10 +725,14 @@ const options = dynamicOptions[locale];
           ${options.clientAreaOfInterest.map(option => `<option value="${option}">${option}</option>`).join('')}
         </select>
       </div>
-      <div>
+
+
+      <!--div>
         <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.message}</label>
         <textarea name="message" rows="4" class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"></textarea>
-      </div>
+      </div -->
+
+      
       <div>
         <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">${labels.file}</label>
         <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full font-rockeby font-bold text-primary text-base px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all" />

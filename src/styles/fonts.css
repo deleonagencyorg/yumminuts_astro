@@ -17,8 +17,8 @@
 }
 
 @font-face {
-  font-family: 'a-love-of-thunder';
-  src: url('../assets/fonts/a-love-of-thunder.ttf') format('truetype');
+  font-family: 'bespoke-serif';
+  src: url('../assets/fonts/BespokeSerif-Regular.otf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -27,7 +27,7 @@
 
 /* Variables CSS para compatibilidad con código existente */
 :root {
-  --font-title: 'a-love-of-thunder', serif;
+  --font-title: 'bespoke-bold', serif;
   --font-heading: 'bespoke-bold', serif;
   --font-text: 'bespoke-serif', serif;
   --font-sans: 'bespoke-serif', serif;

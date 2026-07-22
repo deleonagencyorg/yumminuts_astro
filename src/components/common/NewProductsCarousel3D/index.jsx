@@ -22,6 +22,7 @@ export default function NewProductsCarousel3D({
   arrows = true,
   onSlideChange = () => {}
 }) {
+  const hasMultipleProducts = Array.isArray(products) && products.length > 1;
   if (!products || products.length === 0) {
     return <div className="no-products">No products available</div>;
   }
@@ -59,8 +60,8 @@ export default function NewProductsCarousel3D({
         centeredSlides={true}
         slidesPerView="auto"
         coverflowEffect={{ rotate: 30, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
-        autoplay={autoplay ? { delay: interval, disableOnInteraction: false } : false}
-        navigation={arrows}
+        autoplay={autoplay && hasMultipleProducts ? { delay: interval, disableOnInteraction: false } : false}
+        navigation={arrows && hasMultipleProducts}
         onSlideChange={handleSlideChange}
         className="np3d-swiper"
       >

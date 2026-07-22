@@ -34,9 +34,12 @@ const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.k
     <ProductsWithFilter  showAllProducts={true} />
   </div>
 
-  <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+  <div>
+    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
     <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
   </section>
+  </div>
+  
 </main>
 
 <script>
