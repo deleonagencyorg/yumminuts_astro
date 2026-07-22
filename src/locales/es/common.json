@@ -66,8 +66,8 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/banner_yummi.webp",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
+        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi_nuts_960x435.webp",
+        "mobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-YUMMI-NUTS.webp",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
@@ -307,12 +307,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"💛 ¡Snacks que te hacen bien y saben mejor! Bienvenido a Yummi Nuts. 🌿🥜",
+      "title":"🌍 Centroamérica sabe a Yummies.​  ",
       "link":""
     },
     {
       "id":"2",
-      "title":"🌻 Descubre snacks naturales que nutren y deleitan. 🥜✨",
+      "title":"🤤 El antojo real no puede esperar.​",
       "link":""
     }
   ],
