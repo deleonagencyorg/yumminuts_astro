@@ -12,49 +12,36 @@ export interface Props {
     description?: string;
   };
   priority?: boolean;
-  viewport?: 'mobile' | 'desktop';
   mobileLayout?: 'default' | 'horizontal';
 }
 
-const {
-  slide,
-  priority = false,
-  viewport = 'desktop',
-  mobileLayout = 'default',
-} = Astro.props;
-
-const desktopSrc = (slide.desktop || '').trim();
-const mobileSrc = (slide.mobile || '').trim();
+const { slide, priority = false, mobileLayout = 'default' } = Astro.props;
 const useHorizontalMobile = mobileLayout === 'horizontal';
-
-const imageSrc = viewport === 'mobile'
-  ? (useHorizontalMobile && desktopSrc ? desktopSrc : mobileSrc)
-  : desktopSrc;
-
-const imageClass = viewport === 'mobile'
-  ? (useHorizontalMobile
-    ? 'w-full h-full object-contain object-center'
-    : 'w-full h-full object-cover object-center')
-  : 'w-full h-full object-contain object-center';
-
-const objectFit = viewport === 'mobile'
-  ? (useHorizontalMobile ? 'contain' : 'cover')
-  : 'contain';
+const mobileImageSrc = useHorizontalMobile ? slide.desktop : slide.mobile;
+const mobileImageClass = useHorizontalMobile
+  ? 'w-full h-full object-contain object-center md:hidden'
+  : 'w-full h-full object-cover object-center md:hidden';
+const mobileObjectFit = useHorizontalMobile ? 'contain' : 'cover';
 ---
 
 <div class="swiper-slide relative h-full w-full">
   {slide.link ? (
     <a href={slide.link} class="block w-full h-full">
       <div class="w-full h-full overflow-hidden">
-        {imageSrc && (
-          <LazyImage
-            src={imageSrc}
-            alt={slide.alt}
-            class={imageClass}
-            priority={priority}
-            style={`width: 100%; height: 100%; object-fit: ${objectFit}; object-position: center;`}
-          />
-        )}
+        <LazyImage 
+          src={mobileImageSrc} 
+          alt={slide.alt}
+          class={mobileImageClass}
+          priority={priority}
+          style={`width: 100%; height: 100%; object-fit: ${mobileObjectFit};`}
+        />
+        <LazyImage 
+          src={slide.desktop} 
+          alt={slide.alt}
+          class="w-full h-full object-contain object-center hidden md:block"
+          priority={priority}
+          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
+        />
       </div>
       <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
@@ -64,15 +51,20 @@ const objectFit = viewport === 'mobile'
   ) : (
     <>
       <div class="w-full h-full overflow-hidden">
-        {imageSrc && (
-          <LazyImage
-            src={imageSrc}
-            alt={slide.alt}
-            class={imageClass}
-            priority={priority}
-            style={`width: 100%; height: 100%; object-fit: ${objectFit}; object-position: center;`}
-          />
-        )}
+        <LazyImage 
+          src={mobileImageSrc} 
+          alt={slide.alt}
+          class={mobileImageClass}
+          priority={priority}
+          style={`width: 100%; height: 100%; object-fit: ${mobileObjectFit};`}
+        />
+        <LazyImage 
+          src={slide.desktop} 
+          alt={slide.alt}
+          class="w-full h-full object-contain object-center hidden md:block"
+          priority={priority}
+          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
+        />
       </div>
       <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>

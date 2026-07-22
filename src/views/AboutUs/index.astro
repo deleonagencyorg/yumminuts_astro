@@ -1,6 +1,7 @@
 ---
+//src/views/AboutUs/index.astro
 import Layout from '../../layouts/MainLayout.astro';
-import { t } from '../../i18n/i18n';
+import { t, getLocale } from '../../i18n/i18n';
 import type { Locale } from '../../i18n/i18n';
 import type { HeaderColorConfig } from '../../config/headerColors';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
@@ -16,13 +17,16 @@ export interface Props {
   headerColorConfig: HeaderColorConfig;
 }
 
-const { currentLang, headerColorConfig } = Astro.props;
+const { currentLang: propLang, headerColorConfig } = Astro.props;
+const currentLang: Locale = propLang || getLocale() || 'es';
+
+console.log(`[ABOUT US] Idioma recibido por props: ${propLang} | Usando finalmente: ${currentLang}`);
 
 // Get translations from common.json
 const title = t('about_us.title', { namespace: 'common', locale: currentLang });
 const metaDescription = t('meta.about_us.description', { namespace: 'common', locale: currentLang });
 
-// Importar contenido específico de aboutus.json
+// Importar contenido específico de aboutus.json idioma seguro
 const aboutUsContent = await import(`../../locales/${currentLang}/aboutus.json`);
 const historyTitle = aboutUsContent.title;
 const historySubtitle = aboutUsContent.subtitle;
@@ -61,9 +65,8 @@ const fallbackImageUrl = 'https://snack.yummiespromociones.com/SnacksyummiesAsse
 
   
   <div class="container mx-auto px-4 pt-6">
-    <Breadcrumb  textColor="text-primary" hoverColor="hover:text-white" />
+    <Breadcrumb textColor="text-primary" hoverColor="hover:text-white" />
     
-   
     <div class="mb-16">
 
       

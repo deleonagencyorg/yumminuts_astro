@@ -52,7 +52,7 @@ function productHref(p: Product): string {
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
     <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full min-w-0 gap-4 px-4 md:px-0 lg:overflow-x-auto lg:overflow-visible lg:snap-x lg:snap-mandatory lg:snap-none">
+      <div class="categories-row js-categories-row content-stretch flex items-stretch md:items-center lg:justify-between relative w-full min-w-0 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 px-4 md:px-0">
         {displayProducts.map((product) => {
           const isBars = (product.title || '').toLowerCase().includes('barra') || (product.title || '').toLowerCase().includes('bar');
           return (
@@ -101,7 +101,7 @@ function productHref(p: Product): string {
 
 <script>
   // @ts-nocheck
-  const MOBILE_AUTOPLAY_MS = 3500;
+  const MOBILE_AUTOPLAY_MS = 4000;
 
   const initCategoriesNext = () => {
     const roots = document.querySelectorAll('[data-categories-instance]');
@@ -121,59 +121,48 @@ function productHref(p: Product): string {
       const isDesktop = () => window.innerWidth >= 1024;
       let currentIndex = 0;
       let autoplayTimer = null;
-      let isAdvancing = false;
 
-      const getStep = () => {
+      const getScrollLeftForIndex = (index) => {
         const items = cards();
-        if (!items.length) return 296;
-        if (items.length === 1) return items[0].offsetWidth;
+        const card = items[index];
+        if (!card) return 0;
 
-        const first = items[0];
-        const second = items[1];
-        const gap = second.offsetLeft - first.offsetLeft - first.offsetWidth;
-        return first.offsetWidth + Math.max(gap, 16);
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const rowCenter = row.clientWidth / 2;
+        const target = cardCenter - rowCenter;
+        const maxLeft = Math.max(0, row.scrollWidth - row.clientWidth);
+        return Math.max(0, Math.min(target, maxLeft));
       };
 
-      const resetMobileTransform = () => {
-        row.style.transform = '';
-        row.style.transition = '';
-      };
-
-      const moveToIndex = (index, animate = true) => {
+      const syncCurrentIndex = () => {
         const items = cards();
         if (!items.length) return;
 
-        currentIndex = ((index % items.length) + items.length) % items.length;
-        const offset = currentIndex * getStep();
+        const rowCenter = row.scrollLeft + row.clientWidth / 2;
+        let closest = 0;
+        let minDistance = Infinity;
 
-        row.style.transition = animate
-          ? 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)'
-          : 'none';
-        row.style.transform = `translate3d(-${offset}px, 0, 0)`;
+        items.forEach((card, index) => {
+          const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+          const distance = Math.abs(cardCenter - rowCenter);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = index;
+          }
+        });
+
+        currentIndex = closest;
       };
 
-      const advanceMobile = (animate = true) => {
+      const advanceMobile = () => {
         const items = cards();
-        if (items.length <= 1 || isAdvancing) return;
+        if (items.length <= 1) return;
 
-        isAdvancing = true;
-        moveToIndex(currentIndex + 1, animate);
-
-        window.setTimeout(() => {
-          isAdvancing = false;
-        }, animate ? 460 : 80);
-      };
-
-      const goToPrevMobile = (animate = true) => {
-        const items = cards();
-        if (items.length <= 1 || isAdvancing) return;
-
-        isAdvancing = true;
-        moveToIndex(currentIndex - 1, animate);
-
-        window.setTimeout(() => {
-          isAdvancing = false;
-        }, animate ? 460 : 80);
+        currentIndex = (currentIndex + 1) % items.length;
+        row.scrollTo({
+          left: getScrollLeftForIndex(currentIndex),
+          behavior: 'smooth',
+        });
       };
 
       const cycleReorder = () => {
@@ -184,12 +173,12 @@ function productHref(p: Product): string {
         }
       };
 
-      const advance = (animate = true) => {
+      const advance = () => {
         if (isDesktop()) {
           cycleReorder();
           return;
         }
-        advanceMobile(animate);
+        advanceMobile();
       };
 
       const stopAutoplay = () => {
@@ -203,85 +192,74 @@ function productHref(p: Product): string {
         stopAutoplay();
         if (isDesktop() || cards().length <= 1) return;
 
-        autoplayTimer = setInterval(() => {
-          if (!isAdvancing) {
-            advanceMobile(true);
-          }
-        }, MOBILE_AUTOPLAY_MS);
+        autoplayTimer = setInterval(advance, MOBILE_AUTOPLAY_MS);
       };
 
-      const applyLayoutMode = () => {
-        if (isDesktop()) {
-          stopAutoplay();
-          resetMobileTransform();
-          currentIndex = 0;
-          return;
-        }
-
-        moveToIndex(currentIndex, false);
+      nextBtn.addEventListener('click', () => {
+        advance();
         startAutoplay();
-      };
-
-      nextBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        advance(true);
-        if (!isDesktop()) startAutoplay();
       });
 
       let touchStartX = 0;
-      let touchMoved = false;
-
       row.addEventListener('touchstart', (event) => {
-        if (isDesktop()) return;
         touchStartX = event.touches[0].clientX;
-        touchMoved = false;
         stopAutoplay();
       }, { passive: true });
 
-      row.addEventListener('touchmove', () => {
-        touchMoved = true;
-      }, { passive: true });
-
       row.addEventListener('touchend', (event) => {
-        if (isDesktop() || !touchMoved) return;
-
         const diff = touchStartX - event.changedTouches[0].clientX;
         if (Math.abs(diff) > 40) {
           if (diff > 0) {
-            advanceMobile(true);
+            advanceMobile();
           } else {
-            goToPrevMobile(true);
+            const items = cards();
+            if (items.length > 1) {
+              currentIndex = (currentIndex - 1 + items.length) % items.length;
+              row.scrollTo({
+                left: getScrollLeftForIndex(currentIndex),
+                behavior: 'smooth',
+              });
+            }
           }
         }
         startAutoplay();
+      }, { passive: true });
+
+      row.addEventListener('scroll', () => {
+        if (!isDesktop()) syncCurrentIndex();
       }, { passive: true });
 
       const visibilityObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (!isDesktop()) startAutoplay();
+            startAutoplay();
           } else {
             stopAutoplay();
           }
         });
-      }, { threshold: 0.2 });
+      }, { threshold: 0.25 });
 
       visibilityObserver.observe(root);
 
       window.addEventListener('resize', () => {
-        applyLayoutMode();
+        if (isDesktop()) {
+          stopAutoplay();
+        } else {
+          syncCurrentIndex();
+          startAutoplay();
+        }
       });
 
       nextBtn.style.opacity = '1';
       nextBtn.style.pointerEvents = 'auto';
       nextBtn.style.cursor = 'pointer';
 
-      requestAnimationFrame(() => {
+      if (!isDesktop()) {
         requestAnimationFrame(() => {
-          applyLayoutMode();
+          syncCurrentIndex();
+          startAutoplay();
         });
-      });
+      }
     });
   };
 
@@ -306,11 +284,16 @@ function productHref(p: Product): string {
     }
 
     [data-categories-instance] .categories-row {
-      will-change: transform;
-      padding-left: max(16px, calc((100vw - 280px) / 2));
-      padding-right: max(16px, calc((100vw - 280px) / 2));
-      overflow: visible;
-      touch-action: pan-y;
+      min-width: 0;
+      -webkit-overflow-scrolling: touch;
+      padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      padding-right: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      scroll-padding-left: clamp(16px, calc((100vw - 280px) / 2), 64px);
+      scroll-padding-right: clamp(16px, calc((100vw - 280px) / 2), 64px);
+    }
+
+    [data-categories-instance] .categories-card {
+      scroll-snap-align: center;
     }
   }
 </style>

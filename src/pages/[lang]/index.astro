@@ -1,9 +1,11 @@
 ---
+// src/pages/[lang]/index.astro
 import { routesConfig, getRouteById } from '../../config/routes';
 import { setLocale, t, type Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
-// Importa el componente de contenido directamente
+import SEO from '../../components/SEO.astro';
 import HomePageContent from '../../views/Home/index.astro';
+import { getPageBySlug } from '../../services/api/pages';
 
 export async function getStaticPaths() {
   const homeRoute = getRouteById('home');
@@ -18,26 +20,28 @@ const { lang } = Astro.params as { lang: Locale };
 setLocale(lang);
 
 const homeRoute = getRouteById('home');
-if (!homeRoute) {
-  // Manejar el caso en que la ruta 'home' no esté definida, aunque getStaticPaths debería prevenir esto.
-  // Podrías redirigir a 404 o mostrar un error.
-  throw new Error("Home route configuration is missing.");
-}
+if (!homeRoute) throw new Error("Home route configuration is missing.");
 
-const pageTitle = homeRoute.metaTitleKey ? t(homeRoute.metaTitleKey) : 'Home';
-const pageDescription = homeRoute.metaDescriptionKey ? t(homeRoute.metaDescriptionKey) : '';
+// Obtener datos SEO del CMS
+const pageSlug = lang === 'es' ? 'inicio' : 'home';
+const page = await getPageBySlug(pageSlug, lang);
 
-const ContentComponent = HomePageContent; // Asignación directa para la página de inicio
-
-// SEO Keywords based on language
-const seoKeywords = lang === 'es' 
-  ? 'snacks centroamérica, taqueritos, zambos, ranchitas,  snacks honduras, snacks guatemala, marca líder snacks, snacks yummies'
-  : 'central america snacks, honduras snacks, guatemala snacks, leading snack brand, snacks yummies, taqueritos, zambos, ranchitas';
+// Usar datos del CMS con fallback a los datos locales
+const pageTitle = page?.metaTitle || (homeRoute.metaTitleKey ? t(homeRoute.metaTitleKey) : 'Home');
+const pageDescription = page?.metaDescription || (homeRoute.metaDescriptionKey ? t(homeRoute.metaDescriptionKey) : '');
+const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? 'https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp';
 ---
+
 <MainLayout title={pageTitle} description={pageDescription}>
   <Fragment slot="head">
-    <!-- SEO Meta Tags -->
-    <meta name="keywords" content={seoKeywords}>
+    <SEO
+      currentLang={lang}
+      title={page?.ogTitle || pageTitle}
+      description={page?.ogDescription || pageDescription}
+      canonicalUrl={`https://yumminuts.com/${lang}`}
+      imageUrl={pageImage}
+    />
+    <meta name="keywords" content={page?.metaKeywords || ''}>
     <meta name="author" content="Yummi Nuts">
     <link
       rel="preload"
@@ -45,53 +49,20 @@ const seoKeywords = lang === 'es'
       as="video"
       type="video/mp4"
     />
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href={`https://yumminuts.com/${lang}`}>
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content={`Yummi Nuts - ${pageTitle}`}>
-    <meta property="og:description" content={pageDescription}>
-    <meta property="og:image" content="https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp">
-    <meta property="og:url" content={`https://yumminuts.com/${lang}`}>
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Yummi Nuts">
-    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'}>
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content={`Yummi Nuts - ${pageTitle}`}>
-    <meta name="twitter:description" content={pageDescription}>
-    <meta name="twitter:image" content="https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp">
-    <meta name="twitter:site" content="@YummiNuts">
-    
-    <!-- Structured Data -->
+
+    <!-- Structured Data - se mantiene igual porque no viene del CMS -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Yummi Nuts",
-      "alternateName": "Yummi Nuts",
       "url": "https://yumminuts.com",
-      "logo": "https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp",
-      "description": lang === 'es' ? "Marca líder de snacks en Centroamérica. Taqueritos, Zambos, Ranchitas. Calidad y sabor inigualable." : "Leading snack brand in Central America. Taqueritos, Zambos, Ranchitas. Unmatched quality and flavor.",
+      "logo": pageImage,
+      "description": pageDescription,
       "foundingDate": "1990",
-      "areaServed": [
-        "Honduras",
-        "Guatemala", 
-        "El Salvador",
-        "Nicaragua",
-        "Costa Rica",
-        "República Dominicana"
-      ],
-      "brand": [
-        {
-          "@type": "Brand",
-          "name": "Yummi Nuts",
-          "url": "https://yumminuts.com"
-        }
-      ],
+      "areaServed": ["Honduras","Guatemala","El Salvador","Nicaragua","Costa Rica","República Dominicana"],
       "sameAs": [
         "https://www.facebook.com/yummi.nuts/",
-        "https://www.instagram.com/yummi.nuts/",
+        "https://www.instagram.com/yummi.nuts/"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
@@ -107,34 +78,16 @@ const seoKeywords = lang === 'es'
         "addressCountry": "Honduras"
       }
     })}></script>
-    
+
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Yummi Nuts",
       "url": "https://yumminuts.com",
-      "description": lang === 'es' ? "Sitio web oficial de Yummi Nuts, la marca líder de snacks en Centroamérica" : "Official website of Yummi Nuts, the leading snack brand in Central America",
-      "inLanguage": lang === 'es' ? "es-ES" : "en-US",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": `https://yumminuts.com/${lang}/search?q={search_term_string}`,
-        "query-input": "required name=search_term_string"
-      }
-    })}></script>
-    
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": lang === 'es' ? "Inicio" : "Home",
-          "item": `https://yumminuts.com/${lang}`
-        }
-      ]
+      "description": pageDescription,
+      "inLanguage": lang === 'es' ? "es-ES" : "en-US"
     })}></script>
   </Fragment>
-  <ContentComponent />
+  <HomePageContent />
 </MainLayout>
 
