@@ -27,6 +27,8 @@ const cityLabel = locale === 'es' ? 'Ciudad' : 'City';
 const countryPlaceholder = locale === 'es' ? 'Selecciona tu país' : 'Select your country';
 const departmentPlaceholder = locale === 'es' ? 'Primero selecciona un país' : 'First select a country';
 const contactReasonPlaceholder = locale === 'es' ? 'Selecciona el tipo de consulta' : 'Select the type of inquiry';
+const writeCountryPlaceholder = locale === 'es' ? 'ESCRIBE TU PAÍS' : 'WRITE YOUR COUNTRY';
+const writeCityPlaceholder = locale === 'es' ? 'ESCRIBE TU CIUDAD' : 'WRITE YOUR CITY';
 const messagePlaceholder = contact.form.message.placeholder;
 
 // Get API configuration from environment variables
@@ -179,6 +181,13 @@ const options = dynamicOptions[locale];
           >
             <option value="">{countryPlaceholder}</option>
           </select>
+          <input 
+            type="text" 
+            id="countryInput" 
+            placeholder={writeCountryPlaceholder}
+            disabled
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all hidden"
+          />
         </div>
       </div>
 
@@ -198,6 +207,13 @@ const options = dynamicOptions[locale];
           >
             <option value="">{departmentPlaceholder}</option>
           </select>
+          <input 
+            type="text" 
+            id="cityInput" 
+            placeholder={writeCityPlaceholder}
+            disabled
+            class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all hidden"
+          />
         </div>
         
         <!-- Name -->
@@ -484,7 +500,9 @@ const options = dynamicOptions[locale];
       function setupFormHandlers() {
     const contactReasonSelect = document.getElementById('contactReasonSelect');
     const countrySelect = document.getElementById('countrySelect');
+    const countryInput = document.getElementById('countryInput');
     const citySelect = document.getElementById('departmentSelect');
+    const cityInput = document.getElementById('cityInput');
     const dynamicFields = document.getElementById('dynamicFields');
     const form = document.getElementById('contactForm');
 
@@ -492,7 +510,9 @@ const options = dynamicOptions[locale];
     console.log('Form elements found:', {
       contactReasonSelect: !!contactReasonSelect,
       countrySelect: !!countrySelect,
+      countryInput: !!countryInput,
       citySelect: !!citySelect,
+      cityInput: !!cityInput,
       dynamicFields: !!dynamicFields,
       form: !!form
     });
@@ -504,6 +524,68 @@ const options = dynamicOptions[locale];
     if (!contactReasonSelect || !countrySelect || !citySelect || !dynamicFields || !form) {
       console.error('Required form elements not found');
       return;
+    }
+
+    function toggleExportFields(selectedReason) {
+      const isExport = selectedReason === 'Exportaciones' || selectedReason === 'Exports';
+
+      if (isExport) {
+        if (countrySelect) {
+          countrySelect.classList.add('hidden');
+          countrySelect.disabled = true;
+          countrySelect.removeAttribute('name');
+          countrySelect.required = false;
+        }
+        if (countryInput) {
+          countryInput.classList.remove('hidden');
+          countryInput.disabled = false;
+          countryInput.required = true;
+          countryInput.setAttribute('name', 'country');
+        }
+        if (citySelect) {
+          citySelect.classList.add('hidden');
+          citySelect.disabled = true;
+          citySelect.removeAttribute('name');
+          citySelect.required = false;
+        }
+        if (cityInput) {
+          cityInput.classList.remove('hidden');
+          cityInput.disabled = false;
+          cityInput.required = true;
+          cityInput.setAttribute('name', 'city');
+        }
+      } else {
+        if (countryInput) {
+          countryInput.classList.add('hidden');
+          countryInput.disabled = true;
+          countryInput.required = false;
+          countryInput.value = '';
+          countryInput.removeAttribute('name');
+        }
+        if (cityInput) {
+          cityInput.classList.add('hidden');
+          cityInput.disabled = true;
+          cityInput.required = false;
+          cityInput.value = '';
+          cityInput.removeAttribute('name');
+        }
+        if (countrySelect) {
+          countrySelect.classList.remove('hidden');
+          countrySelect.disabled = false;
+          countrySelect.setAttribute('name', 'country');
+          countrySelect.required = true;
+        }
+        if (citySelect) {
+          citySelect.classList.remove('hidden');
+          citySelect.setAttribute('name', 'city');
+          citySelect.required = true;
+          if (countrySelect && countrySelect.value && countriesData[countrySelect.value]) {
+            citySelect.disabled = false;
+          } else {
+            citySelect.disabled = true;
+          }
+        }
+      }
     }
 
     // Populate countries
@@ -523,6 +605,7 @@ const options = dynamicOptions[locale];
     contactReasonSelect.onchange = function() {
       const selectedReason = this.value;
       console.log('Contact reason changed to:', selectedReason);
+      toggleExportFields(selectedReason);
       updateDynamicFields(selectedReason);
     };
 
@@ -599,6 +682,7 @@ const options = dynamicOptions[locale];
           
           // Reset form
           this.reset();
+          toggleExportFields('');
           if (citySelect) {
             citySelect.disabled = true;
             citySelect.classList.add('disabled:bg-gray-100', 'disabled:cursor-not-allowed');
@@ -626,12 +710,14 @@ const options = dynamicOptions[locale];
     
         // Initialize dynamic fields with default contact reason if selected
         if (contactReasonSelect.value) {
+          toggleExportFields(contactReasonSelect.value);
           updateDynamicFields(contactReasonSelect.value);
         }
       }
 
       // Function to update dynamic fields based on contact reason
       function updateDynamicFields(contactReason) {
+    toggleExportFields(contactReason);
     const dynamicFields = document.getElementById('dynamicFields');
     if (!dynamicFields) {
       console.error('Dynamic fields container not found');
