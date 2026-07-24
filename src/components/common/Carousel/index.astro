@@ -11,6 +11,8 @@ export interface Props {
     title: string;
     subtitle: string;
     link?: string;
+    video?: string;
+    type?: 'image' | 'video';
   }>;
   loading?: boolean;
   /** `default`: slider vertical en móvil (home). `horizontal`: mantiene 16:9 en móvil (salud). */
@@ -36,14 +38,18 @@ function isValidCarouselSlide(slide: unknown): slide is {
   description?: string;
   link?: string;
   url?: string;
+  video?: string;
+  type?: 'image' | 'video';
 } {
   if (!slide || typeof slide !== 'object') return false;
 
   const item = slide as Record<string, unknown>;
   const desktop = normalizeSlideImage(item.desktop);
   const mobile = normalizeSlideImage(item.mobile);
+  const video = normalizeSlideImage(item.video);
 
-  return desktop !== '' || mobile !== '';
+  // Validar que tenga al menos una imagen o video
+  return desktop !== '' || mobile !== '' || video !== '';
 }
 
 const slides = (Array.isArray(rawSlides) ? rawSlides : [])
@@ -55,6 +61,9 @@ const slides = (Array.isArray(rawSlides) ? rawSlides : [])
     title: slide.title || '',
     subtitle: slide.subtitle || slide.description || '',
     link: slide.link || slide.url || '',
+    video: normalizeSlideImage(slide.video),
+    // Detectar automáticamente si es video
+    type: slide.type || (slide.video ? 'video' : 'image'),
   }));
 
 const isHorizontal = variant === 'horizontal';
@@ -146,8 +155,69 @@ const firstDesktopSlide = desktopSlides[0];
                   if (swiperInstance.autoplay) {
                     swiperInstance.autoplay.start();
                   }
+                  // Disparar eventos para videos
+                  document.dispatchEvent(new CustomEvent('slideChange'));
+                  document.dispatchEvent(new CustomEvent('swiper:slideChange'));
+                  // Forzar reproducción de videos después de init
+                  setTimeout(() => {
+                    document.dispatchEvent(new CustomEvent('slideChange'));
+                    document.dispatchEvent(new CustomEvent('swiper:slideChange'));
+                  }, 500);
+                },
+                slideChange(swiperInstance) {
+                  // Disparar eventos para videos
+                  document.dispatchEvent(new CustomEvent('slideChange'));
+                  document.dispatchEvent(new CustomEvent('swiper:slideChange'));
+                  // Pausar videos al cambiar
+                  pauseAllVideos(container);
+                  // Forzar reproducción después del cambio
+                  setTimeout(() => {
+                    document.dispatchEvent(new CustomEvent('slideChange'));
+                    document.dispatchEvent(new CustomEvent('swiper:slideChange'));
+                  }, 300);
+                },
+                slideChangeTransitionEnd(swiperInstance) {
+                  // Disparar eventos al finalizar la transición
+                  document.dispatchEvent(new CustomEvent('slideChange'));
+                  document.dispatchEvent(new CustomEvent('swiper:slideChange'));
                 },
               },
+            });
+
+            // Función para pausar todos los videos en el contenedor
+            function pauseAllVideos(container) {
+              const videos = container.querySelectorAll('video[data-carousel-video]');
+              videos.forEach((video) => {
+                if (video instanceof HTMLVideoElement && !video.paused) {
+                  video.pause();
+                }
+              });
+            }
+
+            // Función para pausar videos cuando el carousel no está visible
+            function handleVisibilityChange() {
+              const isVisible = container.offsetParent !== null;
+              if (!isVisible) {
+                pauseAllVideos(container);
+              }
+            }
+
+            // Observer para visibilidad del contenedor
+            const visibilityObserver = new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                  pauseAllVideos(container);
+                }
+              });
+            }, { threshold: 0 });
+
+            visibilityObserver.observe(container);
+
+            // Observer para cambios de visibilidad de página
+            document.addEventListener('visibilitychange', () => {
+              if (document.hidden) {
+                pauseAllVideos(container);
+              }
             });
 
             const refresh = () => {
@@ -161,17 +231,6 @@ const firstDesktopSlide = desktopSlides[0];
             window.addEventListener('orientationchange', () => {
               setTimeout(refresh, 250);
             });
-
-            const visibilityObserver = new IntersectionObserver((entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  refresh();
-                  if (swiper.autoplay) swiper.autoplay.start();
-                }
-              });
-            }, { threshold: 0.2 });
-
-            visibilityObserver.observe(container);
           });
         });
       } catch (error) {
@@ -184,7 +243,9 @@ const firstDesktopSlide = desktopSlides[0];
 
   document.addEventListener('DOMContentLoaded', initMainCarousel);
   document.addEventListener('astro:page-load', initMainCarousel);
-  document.addEventListener('astro:after-swap', initMainCarousel);
+  document.addEventListener('astro:after-swap', () => {
+    setTimeout(initMainCarousel, 200);
+  });
 </script>
 
 {loading ? (
@@ -223,9 +284,9 @@ const firstDesktopSlide = desktopSlides[0];
 
           {mobileSlides.length > 1 && (
             <>
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next !text-white !bg-black/30 !w-12 !h-12 !rounded-full hover:!bg-black/50 transition-all"></div>
+              <div class="swiper-button-prev !text-white !bg-black/30 !w-12 !h-12 !rounded-full hover:!bg-black/50 transition-all"></div>
+              <div class="swiper-pagination !bottom-4"></div>
             </>
           )}
         </div>
@@ -248,9 +309,9 @@ const firstDesktopSlide = desktopSlides[0];
 
           {desktopSlides.length > 1 && (
             <>
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next !text-white !bg-black/30 !w-12 !h-12 !rounded-full hover:!bg-black/50 transition-all"></div>
+              <div class="swiper-button-prev !text-white !bg-black/30 !w-12 !h-12 !rounded-full hover:!bg-black/50 transition-all"></div>
+              <div class="swiper-pagination !bottom-4"></div>
             </>
           )}
         </div>

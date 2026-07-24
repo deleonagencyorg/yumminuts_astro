@@ -82,14 +82,17 @@ function isValidBannerSlide(asset: unknown): asset is {
   description?: string;
   url?: string;
   link?: string;
+  video?: string;
+  type?: 'image' | 'video';
 } {
   if (!asset || typeof asset !== 'object') return false;
 
   const slide = asset as Record<string, unknown>;
   const desktop = normalizeSlideImage(slide.desktop);
   const mobile = normalizeSlideImage(slide.mobile);
+  const video = normalizeSlideImage(slide.video);
 
-  return desktop !== '' || mobile !== '';
+  return desktop !== '' || mobile !== '' || video !== '';
 }
 
 const slides = Array.isArray(commonAssets)
@@ -102,6 +105,9 @@ const slides = Array.isArray(commonAssets)
         title: asset.title || '',
         subtitle: asset.description || '',
         link: asset.url || asset.link || '',
+        video: normalizeSlideImage(asset.video),
+        // Detectar automáticamente si es video
+        type: asset.type || (asset.video ? 'video' : 'image'),
       }))
   : [];
 
@@ -123,211 +129,206 @@ for (const path in recipeModules) {
 // Fallback: if there are no per-file recipes, use translations list if available
 // Limitar a solo 10 recetas para la página de inicio
 const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) : (recipesAssets.items || []).slice(0, 10);
-
 ---
 
-  <main class="w-full flex flex-col items-center justify-center mt-0">
-    <!-- Slider Section simplificado como en Products -->
-    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <Carousel slides={slides} />
-    </div>
-    
-    <!-- Sección de Información -->
-    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <HealthInfoSection />
-    </div>
+<main class="w-full flex flex-col items-center justify-center mt-0">
+  <!-- Slider Section con soporte para video -->
+  <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+    <Carousel slides={slides} />
+  </div>
+  
+  <!-- Sección de Información -->
+  <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+    <HealthInfoSection />
+  </div>
 
-    <!-- Sección de Productos por Categoría -->
-    {categoryCards.length > 0 && (
-      <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-        <div class="container mx-autxo px-4">
-          <Categories 
-            products={categoryCards}
-            title={currentLang === 'es' ? 'Categorías' : 'Categories'}
-          />
-        </div>
-      </section>
-    )}
-
-    <!-- Sección de video -->
-    <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
-      <video
-        class="home-promo-video block w-full h-auto"
-        height="100%"
-        width="100%"
-        muted
-        loop
-        playsinline
-        preload="auto"
-        controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
-        disablepictureinpicture
-        data-home-video
-      >
-        <source src={homeVideoUrl} type="video/mp4">
-      </video>
-    </section>
-
-    <!-- Sección de Recetas -->
-    <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
-      <div class="container mx-auto px-4 bg-white">
-        {recipesAssets.home?.title && (
-          <div class="text-left mb-16 relative z-20" >
-            <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
-              {recipesAssets.home?.title}
-            </h2>
-            
-          </div>
-        )}
-        <RecipesCarousel 
-          title={recipesAssets.home?.title || 'Recetas'}
-          textButton={recipesAssets.home?.view_more || 'Ver Todas'}
-          limit={25}
+  <!-- Sección de Productos por Categoría -->
+  {categoryCards.length > 0 && (
+    <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+      <div class="container mx-autxo px-4">
+        <Categories 
+          products={categoryCards}
+          title={currentLang === 'es' ? 'Categorías' : 'Categories'}
         />
       </div>
     </section>
+  )}
 
-    <!-- Sección Descubrenos -->
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
+  <!-- Sección de video -->
+  <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
+    <video
+      class="home-promo-video block w-full h-auto"
+      height="100%"
+      width="100%"
+      muted
+      loop
+      playsinline
+      preload="auto"
+      controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+      disablepictureinpicture
+      data-home-video
+    >
+      <source src={homeVideoUrl} type="video/mp4">
+    </video>
+  </section>
 
+  <!-- Sección de Recetas -->
+  <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
+    <div class="container mx-auto px-4 bg-white">
+      {recipesAssets.home?.title && (
+        <div class="text-left mb-16 relative z-20" >
+          <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+            {recipesAssets.home?.title}
+          </h2>
+        </div>
+      )}
+      <RecipesCarousel 
+        title={recipesAssets.home?.title || 'Recetas'}
+        textButton={recipesAssets.home?.view_more || 'Ver Todas'}
+        limit={25}
+      />
+    </div>
+  </section>
 
+  <!-- Sección Descubrenos -->
+  <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+    <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+  </section>
 
+  <style>
+    /* Hide any native media controls UI if a browser tries to show them */
+    #video video::-webkit-media-controls { display: none !important; }
+    #video video::-webkit-media-controls-enclosure { display: none !important; }
+    #video video::-moz-media-controls { display: none !important; }
 
+    #video .home-promo-video {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      background: transparent;
+    }
+  </style>
+  
+  <script>
+    function initHomeVideo() {
+      const section = document.querySelector('[data-home-video-section]');
+      const videoEl = section?.querySelector('[data-home-video]');
 
-    <style>
-      /* Hide any native media controls UI if a browser tries to show them */
-      #video video::-webkit-media-controls { display: none !important; }
-      #video video::-webkit-media-controls-enclosure { display: none !important; }
-      #video video::-moz-media-controls { display: none !important; }
+      if (!(section instanceof HTMLElement) || !(videoEl instanceof HTMLVideoElement)) return;
+      if (section.dataset.videoInit === '1') return;
+      section.dataset.videoInit = '1';
 
-      #video .home-promo-video {
-        display: block;
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-        background: transparent;
-      }
-    </style>
-    <script>
-      function initHomeVideo() {
-        const section = document.querySelector('[data-home-video-section]');
-        const videoEl = section?.querySelector('[data-home-video]');
+      videoEl.muted = true;
+      videoEl.defaultMuted = true;
+      videoEl.playsInline = true;
+      videoEl.setAttribute('muted', '');
+      videoEl.setAttribute('playsinline', '');
+      videoEl.setAttribute('webkit-playsinline', '');
+      videoEl.preload = 'auto';
 
-        if (!(section instanceof HTMLElement) || !(videoEl instanceof HTMLVideoElement)) return;
-        if (section.dataset.videoInit === '1') return;
-        section.dataset.videoInit = '1';
+      let isVisible = false;
+      let isReady = videoEl.readyState >= 3;
 
-        videoEl.muted = true;
-        videoEl.defaultMuted = true;
-        videoEl.playsInline = true;
-        videoEl.setAttribute('muted', '');
-        videoEl.setAttribute('playsinline', '');
-        videoEl.setAttribute('webkit-playsinline', '');
-        videoEl.preload = 'auto';
+      const tryPlay = () => {
+        if (!isVisible || videoEl.paused === false) return;
+        const playPromise = videoEl.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {});
+        }
+      };
 
-        let isVisible = false;
-        let isReady = videoEl.readyState >= 3;
+      const markReadyAndPlay = () => {
+        isReady = true;
+        tryPlay();
+      };
 
-        const tryPlay = () => {
-          if (!isVisible || videoEl.paused === false) return;
-          const playPromise = videoEl.play();
-          if (playPromise && typeof playPromise.catch === 'function') {
-            playPromise.catch(() => {});
-          }
-        };
+      videoEl.addEventListener('canplaythrough', markReadyAndPlay, { once: true });
+      videoEl.addEventListener('canplay', markReadyAndPlay, { once: true });
+      videoEl.addEventListener('loadeddata', markReadyAndPlay, { once: true });
 
-        const markReadyAndPlay = () => {
-          isReady = true;
-          tryPlay();
-        };
+      // Precargar el video apenas carga la página
+      videoEl.load();
 
-        videoEl.addEventListener('canplaythrough', markReadyAndPlay, { once: true });
-        videoEl.addEventListener('canplay', markReadyAndPlay, { once: true });
-        videoEl.addEventListener('loadeddata', markReadyAndPlay, { once: true });
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting;
 
-        // Precargar el video apenas carga la página
-        videoEl.load();
-
-        const videoObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            isVisible = entry.isIntersecting;
-
-            if (isVisible) {
-              if (videoEl.readyState < 2) {
-                videoEl.load();
-              }
-              if (isReady || videoEl.readyState >= 2) {
-                tryPlay();
-              }
-            } else {
-              videoEl.pause();
+          if (isVisible) {
+            if (videoEl.readyState < 2) {
+              videoEl.load();
             }
-          });
-        }, {
-          threshold: 0.15,
-          rootMargin: '0px',
-        });
-
-        videoObserver.observe(section);
-
-        const rect = section.getBoundingClientRect();
-        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
-        if (isInViewport) {
-          isVisible = true;
-          if (isReady || videoEl.readyState >= 2) {
-            tryPlay();
+            if (isReady || videoEl.readyState >= 2) {
+              tryPlay();
+            }
+          } else {
+            videoEl.pause();
           }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px',
+      });
+
+      videoObserver.observe(section);
+
+      const rect = section.getBoundingClientRect();
+      const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+      if (isInViewport) {
+        isVisible = true;
+        if (isReady || videoEl.readyState >= 2) {
+          tryPlay();
         }
       }
+    }
 
-      function initHomeRevealAndVideo() {
-        const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
+    function initHomeRevealAndVideo() {
+      const revealElements = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
-        const show = (el: Element) => {
-          el.classList.remove('opacity-0', 'translate-y-6');
-          el.classList.add('opacity-100', 'translate-y-0');
-        };
+      const show = (el: Element) => {
+        el.classList.remove('opacity-0', 'translate-y-6');
+        el.classList.add('opacity-100', 'translate-y-0');
+      };
 
-        // Reveal observer (idempotent per element)
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const el = entry.target;
-              const children = el.querySelectorAll('[data-reveal-child]');
-              if (children.length) {
-                children.forEach((child, idx) => {
-                  const childEl = child as HTMLElement;
-                  if (childEl && childEl.style) {
-                    childEl.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
-                  }
-                  child.classList.remove('opacity-0', 'translate-y-6');
-                  child.classList.add('opacity-100', 'translate-y-0');
-                });
-              }
-              show(el);
-              observer.unobserve(el);
+      // Reveal observer (idempotent per element)
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const children = el.querySelectorAll('[data-reveal-child]');
+            if (children.length) {
+              children.forEach((child, idx) => {
+                const childEl = child as HTMLElement;
+                if (childEl && childEl.style) {
+                  childEl.style.transitionDelay = `${Math.min(idx * 100, 600)}ms`;
+                }
+                child.classList.remove('opacity-0', 'translate-y-6');
+                child.classList.add('opacity-100', 'translate-y-0');
+              });
             }
-          });
-        }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
-
-        revealElements.forEach((el) => {
-          const ht = el as HTMLElement;
-          if (ht.dataset.revealObserved === '1') return;
-          ht.dataset.revealObserved = '1';
-          observer.observe(el);
+            show(el);
+            observer.unobserve(el);
+          }
         });
+      }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
 
-        initHomeVideo();
-      }
+      revealElements.forEach((el) => {
+        const ht = el as HTMLElement;
+        if (ht.dataset.revealObserved === '1') return;
+        ht.dataset.revealObserved = '1';
+        observer.observe(el);
+      });
 
-      document.addEventListener('astro:page-load', initHomeRevealAndVideo);
-      document.addEventListener('astro:after-swap', initHomeRevealAndVideo);
+      initHomeVideo();
+    }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initHomeRevealAndVideo);
-      } else {
-        initHomeRevealAndVideo();
-      }
-    </script>
-  </main>
+    document.addEventListener('astro:page-load', initHomeRevealAndVideo);
+    document.addEventListener('astro:after-swap', initHomeRevealAndVideo);
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHomeRevealAndVideo);
+    } else {
+      initHomeRevealAndVideo();
+    }
+  </script>
+</main>
