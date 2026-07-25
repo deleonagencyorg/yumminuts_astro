@@ -1,26 +1,30 @@
 ---
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { type Locale } from '../../../i18n/i18n';
+import { getBlogPostsForLocale } from '../../../lib/blogPosts';
 
 export async function getStaticPaths() {
   const locales = ['en', 'es'];
-  const paths = [];
+  const paths: Array<{
+    params: { lang: string; blogId: string };
+    props: {
+      blogPost: Awaited<ReturnType<typeof getBlogPostsForLocale>>[number];
+      currentLang: Locale;
+      allBlogPosts: Awaited<ReturnType<typeof getBlogPostsForLocale>>;
+    };
+  }> = [];
+
   for (const locale of locales) {
-    const blogPosts = (await import(`../../../locales/${locale}/news.json`)).items || [];
-    for (const blogPost of blogPosts) {
+    const allBlogPosts = await getBlogPostsForLocale(locale, true);
+
+    for (const blogPost of allBlogPosts) {
       paths.push({
-        params: { 
-          lang: locale, 
-          blogId: blogPost.slug || blogPost.id 
-        },
-        props: { 
-          blogPost,
-          currentLang: locale as Locale,
-          allBlogPosts: blogPosts
-        }
+        params: { lang: locale, blogId: blogPost.slug || blogPost.id },
+        props: { blogPost, currentLang: locale as Locale, allBlogPosts },
       });
     }
   }
+
   return paths;
 }
 

@@ -5,22 +5,16 @@ import BlogCard from '../../components/blog/BlogCard.astro';
 import BlogCardSkeleton from '../../components/blog/BlogCardSkeleton.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 import { fade } from 'astro:transitions';
-import BlogCarouselHero from '../../components/blog/BlogCarouselHero.astro';
+import { getBlogPostsForLocale } from '../../lib/blogPosts';
 
-interface Props {
-  blogPosts: Array<{
-    id: string;
-    slug: string;
-    title: string;
-    summary: string;
-    image: string;
-    published_date: string;
-  }>;
+export interface Props {
   currentLang: Locale;
   isLoading?: boolean;
 }
 
-const { blogPosts, currentLang, isLoading = false } = Astro.props;
+const { currentLang, isLoading = false } = Astro.props;
+
+const blogPosts = await getBlogPostsForLocale(currentLang);
 
 function estimateReadMinutes(text: string): number {
   if (!text) return 1;
@@ -29,9 +23,17 @@ function estimateReadMinutes(text: string): number {
 }
 
 const noPostsText = currentLang === 'es' ? 'No hay entradas disponibles por el momento.' : 'No posts available at this time.';
+const morePosts = blogPosts.slice(1);
+const showLatestNews = morePosts.length > 0;
 ---
 
-<Layout title="Blog" class="bg-white" description="Latest blog posts">
+<Layout
+  title={currentLang === 'es' ? 'Noticias' : 'News'}
+  class="bg-white"
+  description={currentLang === 'es'
+    ? 'Mantente al día con las últimas noticias y artículos de Yummi Nuts.'
+    : 'Stay updated with the latest Yummi Nuts news and articles.'}
+>
   
   <!-- Hero Carousel -->
   
@@ -86,32 +88,32 @@ const noPostsText = currentLang === 'es' ? 'No hay entradas disponibles por el m
           </a>
         </div>
 
-        <!-- Carousel horizontal de noticias (resto) -->
-        <div class="relative py-6 mx-auto max-w-7xl mt-12">
-          <h2 class="text-black font-heading text-4xl md:text-5xl font-bold text-left mb-8">{currentLang === 'es' ? 'Últimas Noticias' : 'Latest News'}</h2>
-          <!-- Botones -->
-          <button type="button" aria-label="prev" id="newsPrev" class="flex absolute left-2 md:-left-3 top-1/2 -translate-y-1/2 z-10 bg-primary text-white rounded-md w-9 h-9 md:w-10 md:h-10 items-center justify-center shadow hover:opacity-90">❮</button>
-          <button type="button" aria-label="next" id="newsNext" class="flex absolute right-2 md:-right-3 top-1/2 -translate-y-1/2 z-10 bg-primary text-white rounded-md w-9 h-9 md:w-10 md:h-10 items-center justify-center shadow hover:opacity-90">❯</button>
+        {showLatestNews && (
+          <div class="relative py-6 mx-auto max-w-7xl mt-12">
+            <h2 class="text-black font-heading text-4xl md:text-5xl font-bold text-left mb-8">{currentLang === 'es' ? 'Últimas Noticias' : 'Latest News'}</h2>
+            <button type="button" aria-label="prev" id="newsPrev" class="flex absolute left-2 md:-left-3 top-1/2 -translate-y-1/2 z-10 bg-primary text-white rounded-md w-9 h-9 md:w-10 md:h-10 items-center justify-center shadow hover:opacity-90">❮</button>
+            <button type="button" aria-label="next" id="newsNext" class="flex absolute right-2 md:-right-3 top-1/2 -translate-y-1/2 z-10 bg-primary text-white rounded-md w-9 h-9 md:w-10 md:h-10 items-center justify-center shadow hover:opacity-90">❯</button>
 
-          <div id="newsTrack" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 no-scrollbar py-6">
-            {isLoading
-              ? [...Array(8)].map((_, i) => <BlogCardSkeleton key={i} />)
-              : blogPosts.slice(1).map((post, i) => (
-                  <div class="w-1/2 md:w-1/4 flex-shrink-0 snap-start">
-                    <BlogCard 
-                      id={post.id}
-                      image={post.image}
-                      title={post.title}
-                      slug={post.slug || post.id}
-                      summary={post.summary}
-                      minutes={estimateReadMinutes(post.summary)}
-                      isNew={i < 3}
-                    />
-                  </div>
-                ))
-            }
+            <div id="newsTrack" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 no-scrollbar py-6">
+              {isLoading
+                ? [...Array(8)].map((_, i) => <BlogCardSkeleton key={i} />)
+                : morePosts.map((post, i) => (
+                    <div class="w-1/2 md:w-1/4 flex-shrink-0 snap-start">
+                      <BlogCard 
+                        id={post.id}
+                        image={post.image}
+                        title={post.title}
+                        slug={post.slug || post.id}
+                        summary={post.summary}
+                        minutes={estimateReadMinutes(post.summary)}
+                        isNew={i < 3}
+                      />
+                    </div>
+                  ))
+              }
+            </div>
           </div>
-        </div>
+        )}
       </>
     )}
   </div>

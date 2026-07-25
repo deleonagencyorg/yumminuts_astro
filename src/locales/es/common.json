@@ -211,6 +211,11 @@
       "href": "/es/salud"
     },
     {
+      "id": "news",
+      "text": "Noticias",
+      "href": "/es/blog"
+    },
+    {
       "id": "contact",
       "text": "Contacto",
       "href": "/es/contacto"

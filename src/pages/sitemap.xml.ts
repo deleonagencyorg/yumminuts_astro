@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
 import config from '../i18n/config';
 import { t } from '../i18n/i18n';
+import { getBlogPostsForLocale } from '../lib/blogPosts';
 
 const staticPages = ['/', '/menu', '/nosotros', '/contacto'];
 
@@ -14,10 +14,14 @@ const menuUrls = [
 ];
 
 export const GET: APIRoute = async () => {
-  const posts = await getCollection('blog');
-  
-  // Generate language versions of static pages
-  const staticPagesWithLang = staticPages.flatMap(page => 
+  const blogPosts: string[] = [];
+  for (const lang of config.supportedLocales) {
+    const posts = await getBlogPostsForLocale(lang);
+    for (const post of posts) {
+      blogPosts.push(`/${lang}/blog/${post.slug || post.id}`);
+    }
+  }
+  const staticPagesWithLang = staticPages.flatMap(page =>
     config.supportedLocales.map(lang => `/${lang}${page}`)
   );
 
@@ -30,9 +34,7 @@ export const GET: APIRoute = async () => {
   });
 
   // Blog posts with language prefixes
-  const blogPosts = posts.map(post => 
-    `/${post.slug.split('/')[0]}/blog/${post.slug.split('/')[1]}`
-  );
+  const blogUrls = blogPosts;
 
   // Build product URLs for each supported locale
   const productUrls: string[] = [];
@@ -46,7 +48,7 @@ export const GET: APIRoute = async () => {
     }
   }
 
-  const allUrls = [...staticPagesWithLang, ...menuUrlsWithLang, ...blogPosts, ...productUrls];
+  const allUrls = [...staticPagesWithLang, ...menuUrlsWithLang, ...blogUrls, ...productUrls];
 
   return new Response(
     `<?xml version="1.0" encoding="UTF-8"?>
