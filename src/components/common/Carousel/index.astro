@@ -30,6 +30,8 @@ function normalizeSlideImage(value: unknown): string {
 function isValidCarouselSlide(slide: unknown): slide is {
   desktop?: string;
   mobile?: string;
+  video?: string;
+  type?: string;
   alt?: string;
   title?: string;
   subtitle?: string;
@@ -42,15 +44,18 @@ function isValidCarouselSlide(slide: unknown): slide is {
   const item = slide as Record<string, unknown>;
   const desktop = normalizeSlideImage(item.desktop);
   const mobile = normalizeSlideImage(item.mobile);
+  const video = normalizeSlideImage(item.video);
 
-  return desktop !== '' || mobile !== '';
+  return desktop !== '' || mobile !== '' || video !== '';
 }
 
 const slides = (Array.isArray(rawSlides) ? rawSlides : [])
   .filter(isValidCarouselSlide)
   .map((slide) => ({
-    desktop: normalizeSlideImage(slide.desktop),
-    mobile: normalizeSlideImage(slide.mobile),
+    desktop: normalizeSlideImage(slide.desktop) || normalizeSlideImage(slide.video),
+    mobile: normalizeSlideImage(slide.mobile) || normalizeSlideImage(slide.video),
+    video: normalizeSlideImage(slide.video),
+    type: typeof slide.type === 'string' ? slide.type : '',
     alt: slide.alt || 'Snacks Yummies',
     title: slide.title || '',
     subtitle: slide.subtitle || slide.description || '',
@@ -78,6 +83,14 @@ const desktopCarouselClass = isHorizontal
 
 const firstMobileSlide = mobileSlides[0];
 const firstDesktopSlide = desktopSlides[0];
+
+function isVideoUrl(value: string | undefined): boolean {
+  return typeof value === 'string' && /\.(mp4|webm|ogg)(\?.*)?$/i.test(value);
+}
+
+const heroVideoUrl =
+  [firstMobileSlide?.mobile, firstMobileSlide?.desktop, firstDesktopSlide?.desktop]
+    .find((url) => isVideoUrl(url)) || '';
 ---
 
 <!-- Importar Swiper desde CDN para garantizar disponibilidad -->
@@ -85,6 +98,95 @@ const firstDesktopSlide = desktopSlides[0];
 <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <script is:inline>
+  function isCarouselContainerVisible(container) {
+    const parent = container.parentElement;
+    if (!(parent instanceof HTMLElement)) return true;
+    if (parent.offsetParent === null) return false;
+    return getComputedStyle(parent).display !== 'none' && getComputedStyle(parent).visibility !== 'hidden';
+  }
+
+  function prepareCarouselVideo(video) {
+    if (!(video instanceof HTMLVideoElement)) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.preload = 'auto';
+
+    if (video.dataset.prepared === '1') return;
+    video.dataset.prepared = '1';
+    video.load();
+  }
+
+  function playCarouselVideo(video) {
+    if (!(video instanceof HTMLVideoElement)) return;
+
+    prepareCarouselVideo(video);
+
+    const attemptPlay = () => {
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    };
+
+    if (video.readyState >= 2) {
+      attemptPlay();
+      return;
+    }
+
+    const onReady = () => {
+      video.removeEventListener('canplaythrough', onReady);
+      video.removeEventListener('canplay', onReady);
+      video.removeEventListener('loadeddata', onReady);
+      attemptPlay();
+    };
+
+    video.addEventListener('canplaythrough', onReady, { once: true });
+    video.addEventListener('canplay', onReady, { once: true });
+    video.addEventListener('loadeddata', onReady, { once: true });
+    video.load();
+  }
+
+  function pauseCarouselVideos(root) {
+    root.querySelectorAll('[data-carousel-video]').forEach((video) => {
+      if (video instanceof HTMLVideoElement) {
+        video.pause();
+      }
+    });
+  }
+
+  function preloadPriorityCarouselVideos(root) {
+    root.querySelectorAll('[data-carousel-video-priority="true"]').forEach((video) => {
+      prepareCarouselVideo(video);
+    });
+  }
+
+  function playActiveCarouselVideo(root) {
+    if (!isCarouselContainerVisible(root)) return;
+
+    const activeVideo = root.querySelector('.swiper-slide-active [data-carousel-video]')
+      || root.querySelector('[data-carousel-video-priority="true"]')
+      || root.querySelector('[data-carousel-video]');
+
+    if (!(activeVideo instanceof HTMLVideoElement)) return;
+    playCarouselVideo(activeVideo);
+  }
+
+  function initCarouselVideoPreload() {
+    document.querySelectorAll('[data-carousel-root]').forEach((root) => {
+      root.querySelectorAll('.js-main-carousel').forEach((container) => {
+        if (!(container instanceof HTMLElement)) return;
+        if (!isCarouselContainerVisible(container)) return;
+        preloadPriorityCarouselVideos(container);
+        playActiveCarouselVideo(container);
+      });
+    });
+  }
+
   function initMainCarousel() {
     const tryInit = (attempt = 0) => {
       try {
@@ -110,6 +212,8 @@ const firstDesktopSlide = desktopSlides[0];
               if (nextEl instanceof HTMLElement) nextEl.style.display = 'none';
               if (prevEl instanceof HTMLElement) prevEl.style.display = 'none';
               if (paginationEl instanceof HTMLElement) paginationEl.style.display = 'none';
+              preloadPriorityCarouselVideos(container);
+              playActiveCarouselVideo(container);
               return;
             }
 
@@ -146,6 +250,11 @@ const firstDesktopSlide = desktopSlides[0];
                   if (swiperInstance.autoplay) {
                     swiperInstance.autoplay.start();
                   }
+                  playActiveCarouselVideo(swiperInstance.el);
+                },
+                slideChange(swiperInstance) {
+                  pauseCarouselVideos(swiperInstance.el);
+                  playActiveCarouselVideo(swiperInstance.el);
                 },
               },
             });
@@ -167,6 +276,10 @@ const firstDesktopSlide = desktopSlides[0];
                 if (entry.isIntersecting) {
                   refresh();
                   if (swiper.autoplay) swiper.autoplay.start();
+                  preloadPriorityCarouselVideos(container);
+                  playActiveCarouselVideo(container);
+                } else {
+                  pauseCarouselVideos(container);
                 }
               });
             }, { threshold: 0.2 });
@@ -182,10 +295,22 @@ const firstDesktopSlide = desktopSlides[0];
     setTimeout(() => tryInit(), 150);
   }
 
+  initCarouselVideoPreload();
+  document.addEventListener('DOMContentLoaded', initCarouselVideoPreload);
   document.addEventListener('DOMContentLoaded', initMainCarousel);
+  document.addEventListener('astro:page-load', initCarouselVideoPreload);
   document.addEventListener('astro:page-load', initMainCarousel);
+  document.addEventListener('astro:after-swap', initCarouselVideoPreload);
   document.addEventListener('astro:after-swap', initMainCarousel);
+  window.addEventListener('pageshow', initCarouselVideoPreload);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(initCarouselVideoPreload, 300);
+  });
 </script>
+
+{heroVideoUrl && (
+  <link rel="preload" href={heroVideoUrl} as="video" type="video/mp4" fetchpriority="high" />
+)}
 
 {loading ? (
   <Skeleton items={3} />
@@ -197,14 +322,20 @@ const firstDesktopSlide = desktopSlides[0];
     data-carousel-root={instanceId}
     transition:animate="fade"
   >
-    {firstMobileSlide?.mobile && (
+    {firstMobileSlide?.mobile && !/\.(mp4|webm|ogg)(\?.*)?$/i.test(firstMobileSlide.mobile) && (
       <link rel="preload" href={firstMobileSlide.mobile} as="image" media="(max-width: 767px)" />
+    )}
+    {firstMobileSlide?.mobile && /\.(mp4|webm|ogg)(\?.*)?$/i.test(firstMobileSlide.mobile) && (
+      <link rel="preload" href={firstMobileSlide.mobile} as="video" type="video/mp4" media="(max-width: 767px)" fetchpriority="high" />
     )}
     {isHorizontal && firstMobileSlide?.desktop && !firstMobileSlide?.mobile && (
       <link rel="preload" href={firstMobileSlide.desktop} as="image" media="(max-width: 767px)" />
     )}
-    {firstDesktopSlide?.desktop && (
+    {firstDesktopSlide?.desktop && !/\.(mp4|webm|ogg)(\?.*)?$/i.test(firstDesktopSlide.desktop) && (
       <link rel="preload" href={firstDesktopSlide.desktop} as="image" media="(min-width: 768px)" />
+    )}
+    {firstDesktopSlide?.desktop && /\.(mp4|webm|ogg)(\?.*)?$/i.test(firstDesktopSlide.desktop) && (
+      <link rel="preload" href={firstDesktopSlide.desktop} as="video" type="video/mp4" media="(min-width: 768px)" fetchpriority="high" />
     )}
 
     {mobileSlides.length > 0 && (

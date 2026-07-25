@@ -66,8 +66,18 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/banner_yummi_en.webp",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
+        "type": "video",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "alt": "Yummi Nuts",
+        "title": "",
+        "description": "",
+        "link": ""
+      },
+      {
+        "id": "slide2",
+        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-WEB-YUMMI-NUTS.webp",
+        "alt": "Yumminuts",
         "title": "",
         "description": "",
         "link": "#"

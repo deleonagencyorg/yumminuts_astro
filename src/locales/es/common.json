@@ -66,12 +66,13 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/banner_yummi.webp",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
-        "alt": "Home Yumminuts",
+        "type": "video",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "alt": "Yummi Nuts",
         "title": "",
         "description": "",
-        "link": "#"
+        "link": ""
       },
       {
         "id": "slide2",
