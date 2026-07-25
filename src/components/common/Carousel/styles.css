@@ -38,7 +38,8 @@ body {
     object-position: center !important;
   }
 
-  .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide img {
+  .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide img,
+  .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide video {
     background-size: contain !important;
   }
 }
@@ -132,7 +133,8 @@ body {
   height: 100%;
 }
 
-.swiper-slide img {
+.swiper-slide img,
+.swiper-slide video {
   width: 100% !important;
   height: 100% !important;
 }

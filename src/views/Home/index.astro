@@ -77,6 +77,8 @@ function normalizeSlideImage(value: unknown): string {
 function isValidBannerSlide(asset: unknown): asset is {
   desktop?: string;
   mobile?: string;
+  video?: string;
+  type?: string;
   alt?: string;
   title?: string;
   description?: string;
@@ -88,16 +90,19 @@ function isValidBannerSlide(asset: unknown): asset is {
   const slide = asset as Record<string, unknown>;
   const desktop = normalizeSlideImage(slide.desktop);
   const mobile = normalizeSlideImage(slide.mobile);
+  const video = normalizeSlideImage(slide.video);
 
-  return desktop !== '' || mobile !== '';
+  return desktop !== '' || mobile !== '' || video !== '';
 }
 
 const slides = Array.isArray(commonAssets)
   ? commonAssets
       .filter(isValidBannerSlide)
       .map((asset) => ({
-        desktop: normalizeSlideImage(asset.desktop),
-        mobile: normalizeSlideImage(asset.mobile),
+        desktop: normalizeSlideImage(asset.desktop) || normalizeSlideImage(asset.video),
+        mobile: normalizeSlideImage(asset.mobile) || normalizeSlideImage(asset.video),
+        video: normalizeSlideImage(asset.video),
+        type: typeof asset.type === 'string' ? asset.type : '',
         alt: asset.alt || 'Yumminuts',
         title: asset.title || '',
         subtitle: asset.description || '',
@@ -150,7 +155,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
     )}
 
     <!-- Sección de video -->
-    <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
+    <!-- <section id="video" class="w-full bg-pink reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" data-home-video-section>
       <video
         class="home-promo-video block w-full h-auto"
         height="100%"
@@ -165,7 +170,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
       >
         <source src={homeVideoUrl} type="video/mp4">
       </video>
-    </section>
+    </section> -->
 
     <!-- Sección de Recetas -->
     <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
