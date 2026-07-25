@@ -37,7 +37,7 @@ const showLatestNews = morePosts.length > 0;
   
   <!-- Hero Carousel -->
   
-  <div class="container mx-auto px-4 pt-6 pb-16 md:pb-24">
+  <div class={`container mx-auto px-4 pt-6 ${showLatestNews ? 'pb-16 md:pb-24' : 'pb-24 md:pb-32'}`}>
     <Breadcrumb bgColor="bg-white" textColor="text-black" hoverColor="hover:text-black" />
     
     <div class="flex items-center justify-center text-center mb-12 md:h-64 md:rounded-none rounded-2xl"  style="background-image: url('https://snack.yummiespromociones.com/yumminuts/bgrecipes.png'); background-size: cover; background-position: center; background-repeat: no-repeat;" transition:animate={fade({ duration: '0.5s' })}>
@@ -143,7 +143,8 @@ const showLatestNews = morePosts.length > 0;
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   
   .hero-container {
