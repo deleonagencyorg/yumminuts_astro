@@ -13,7 +13,7 @@
       "description": "Descubre deliciosas recetas con Yummi Nuts. Desde platos tradicionales hasta creaciones innovadoras."
     },
     "news": {
-      "title": "Noticias",
+      "title": "Blog",
       "description": "Mantente al día con las últimas noticias y eventos de Yummi Nuts."
     },
     "products": {
@@ -213,7 +213,7 @@
     },
     {
       "id": "news",
-      "text": "Noticias",
+      "text": "Blogs",
       "href": "/es/blog"
     },
     {
