@@ -55,6 +55,19 @@
   color: #1f2937;
 }
 
+/* Health hero image: smaller on mobile, same 4/3 ratio as desktop */
+.health-hero-image {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .health-hero-image {
+    width: min(72vw, 280px);
+    margin-inline: auto;
+    flex-shrink: 0;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .health-benefit-card {

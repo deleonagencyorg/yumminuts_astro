@@ -3,8 +3,10 @@ import LazyImage from './LazyImage.astro';
 
 export interface Props {
   slide: {
-    desktop: string;
-    mobile: string;
+    desktop?: string;
+    mobile?: string;
+    video?: string;
+    type?: string;
     alt: string;
     title: string;
     subtitle: string;
@@ -12,29 +14,56 @@ export interface Props {
     description?: string;
   };
   priority?: boolean;
+  viewport?: 'mobile' | 'desktop';
+  mobileLayout?: 'default' | 'horizontal';
 }
 
-const { slide, priority = false } = Astro.props;
+const {
+  slide,
+  priority = false,
+  viewport = 'desktop',
+  mobileLayout = 'default',
+} = Astro.props;
+
+const desktopSrc = (slide.desktop || '').trim();
+const mobileSrc = (slide.mobile || '').trim();
+const useHorizontalMobile = mobileLayout === 'horizontal';
+
+const imageSrc = viewport === 'mobile'
+  ? (useHorizontalMobile && desktopSrc ? desktopSrc : mobileSrc)
+  : desktopSrc;
+
+const isVideoSlide =
+  slide.type === 'video' ||
+  /\.(mp4|webm|ogg)(\?.*)?$/i.test(imageSrc) ||
+  /\.(mp4|webm|ogg)(\?.*)?$/i.test((slide.video || '').trim());
+
+const videoSrc = (slide.video || '').trim() || (isVideoSlide ? imageSrc : '');
+
+const imageClass = viewport === 'mobile'
+  ? (useHorizontalMobile
+    ? 'w-full h-full object-contain object-center'
+    : 'w-full h-full object-cover object-center')
+  : 'w-full h-full object-contain object-center';
+
+const objectFit = viewport === 'mobile'
+  ? (useHorizontalMobile ? 'contain' : 'cover')
+  : 'contain';
 ---
 
 <div class="swiper-slide relative h-full w-full">
-  {slide.link ? (
+  {slide.link && !isVideoSlide ? (
     <a href={slide.link} class="block w-full h-full">
       <div class="w-full h-full overflow-hidden">
-        <LazyImage 
-          src={slide.mobile} 
-          alt={slide.alt}
-          class="w-full h-full object-cover object-center md:hidden"
-          priority={priority}
-          style="width: 100%; height: 100%; object-fit: cover;"
-        />
-        <LazyImage 
-          src={slide.desktop} 
-          alt={slide.alt}
-          class="w-full h-full object-contain object-center hidden md:block"
-          priority={priority}
-          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
-        />
+        {imageSrc && (
+          <LazyImage
+            src={imageSrc}
+            alt={slide.alt}
+            class={imageClass}
+            priority={priority}
+            style={`width: 100%; height: 100%; object-fit: ${objectFit}; object-position: center;`}
+          />
+        )}
       </div>
       <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
@@ -44,25 +73,36 @@ const { slide, priority = false } = Astro.props;
   ) : (
     <>
       <div class="w-full h-full overflow-hidden">
-        <LazyImage 
-          src={slide.mobile} 
-          alt={slide.alt}
-          class="w-full h-full object-cover object-center md:hidden"
-          priority={priority}
-          style="width: 100%; height: 100%; object-fit: cover;"
-        />
-        <LazyImage 
-          src={slide.desktop} 
-          alt={slide.alt}
-          class="w-full h-full object-contain object-center hidden md:block"
-          priority={priority}
-          style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
-        />
+        {isVideoSlide && videoSrc ? (
+          <video
+            class={imageClass}
+            muted
+            autoplay={priority}
+            playsinline
+            loop
+            preload="auto"
+            data-carousel-video
+            data-carousel-video-priority={priority ? 'true' : undefined}
+            style={`width: 100%; height: 100%; object-fit: ${objectFit}; object-position: center;`}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        ) : imageSrc ? (
+          <LazyImage
+            src={imageSrc}
+            alt={slide.alt}
+            class={imageClass}
+            priority={priority}
+            style={`width: 100%; height: 100%; object-fit: ${objectFit}; object-position: center;`}
+          />
+        ) : null}
       </div>
-      <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
-        <p class="text-lg md:text-xl max-w-2xl drop-shadow">{slide.subtitle}</p>
-      </div>
+      {(slide.title || slide.subtitle) && (
+        <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
+          <p class="text-lg md:text-xl max-w-2xl drop-shadow">{slide.subtitle}</p>
+        </div>
+      )}
     </>
   )}
 </div>

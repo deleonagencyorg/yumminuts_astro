@@ -16,17 +16,49 @@ export interface Props {
   headerColorConfig: HeaderColorConfig;
 }
 
-const { currentLang: propLang, headerColorConfig } = Astro.props;
-const currentLang: Locale = propLang || getLocale() || 'es';
+// Interfaz para contenido 
+interface AboutUsContent {
+  title: string;
+  subtitle: string;
+  intro: string;
+  items: Array<{
+    year: string;
+    image: string;
+    text: string;
+  }>;
+  conclusion: string;
+}
 
-console.log(`[ABOUT US] Idioma recibido por props: ${propLang} | Usando finalmente: ${currentLang}`);
+const { currentLang, headerColorConfig } = Astro.props;
 
 // Get translations from common.json
 const title = t('about_us.title', { namespace: 'common', locale: currentLang });
 const metaDescription = t('meta.about_us.description', { namespace: 'common', locale: currentLang });
+// Cargar todas las traducciones de aboutus.json de forma estática
+const translationModules = import.meta.glob('../../locales/*/aboutus.json', { eager: true });
 
-// Importar contenido específico de aboutus.json idioma seguro
-const aboutUsContent = await import(`../../locales/${currentLang}/aboutus.json`);
+// Función para obtener la traducción con fallback
+function getTranslation(lang: string): AboutUsContent {
+  // Buscar la traducción para el idioma actual
+  const translationPath = `../../locales/${lang}/aboutus.json`;
+  let content = translationModules[translationPath];
+  if (!content) {
+    console.warn(`No se encontró traducción para "${lang}", usando fallback "es"`);
+    const fallbackPath = '../../locales/es/aboutus.json';
+    content = translationModules[fallbackPath];
+  }
+  if (!content) {
+    console.error(`No se encontró traducción para ${lang} ni fallback en español`);
+    return {} as AboutUsContent;
+  }
+  
+  return content as AboutUsContent;
+}
+
+// Obtener el contenido de aboutus.json
+const aboutUsContent = getTranslation(currentLang);
+
+// Extraer propiedades del contenido
 const historyTitle = aboutUsContent.title;
 const historySubtitle = aboutUsContent.subtitle;
 const historyIntro = aboutUsContent.intro;

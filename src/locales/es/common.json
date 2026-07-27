@@ -13,7 +13,7 @@
       "description": "Descubre deliciosas recetas con Yummi Nuts. Desde platos tradicionales hasta creaciones innovadoras."
     },
     "news": {
-      "title": "Noticias",
+      "title": "Blog",
       "description": "Mantente al día con las últimas noticias y eventos de Yummi Nuts."
     },
     "products": {
@@ -66,17 +66,17 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/banner_yummi.webp",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/homemobile.png",
-        "alt": "Home Yumminuts",
+        "type": "video",
+        "desktop": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "mobile": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "alt": "Yummi Nuts",
         "title": "",
         "description": "",
-        "link": "#"
+        "link": ""
       },
       {
         "id": "slide2",
         "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-WEB-YUMMI-NUTS.webp",
-        "mobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-WEB-YUMMI-NUTS.web",
         "alt": "Yumminuts",
         "title": "",
         "description": "",
@@ -212,6 +212,11 @@
       "href": "/es/salud"
     },
     {
+      "id": "news",
+      "text": "Blog",
+      "href": "/es/blog"
+    },
+    {
       "id": "contact",
       "text": "Contacto",
       "href": "/es/contacto"
@@ -245,32 +250,32 @@
       "instagramPosts": [
         {
           "id": "post1",
-          "postUrl": "https://www.instagram.com/reel/DZGa_XHgtNi/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DZGa_XHgtNi/embed",
+          "postUrl": "https://www.instagram.com/reel/DbHZaDmTtDj/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DbHZaDmTtDj/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-1.jpg",
           "fallbackImage": "/images/instagram-fallback-1.jpg",
           "alt": "Yummi Nuts Instagram Post 1"
         },
         {
           "id": "post2",
-          "postUrl": "https://www.instagram.com/reel/DX9hSVeAPPf/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DX9hSVeAPPf/embed",
+          "postUrl": "https://www.instagram.com/reel/DbER9eAgQ2a/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DbER9eAgQ2a/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-2.jpg",
           "fallbackImage": "/images/instagram-fallback-2.jpg",
           "alt": "Yummi Nuts Instagram Post 2"
         },
         {
           "id": "post3",
-          "postUrl": "https://www.instagram.com/reel/DXzOBOhD4j6/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DXzOBOhD4j6/embed",
+          "postUrl": "https://www.instagram.com/reel/DbBVMbKOqXO/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DbBVMbKOqXO/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-3.jpg",
           "fallbackImage": "/images/instagram-fallback-3.jpg",
           "alt": "Yummi Nuts Instagram Post 3"
         },
         {
           "id": "post4",
-          "postUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DWpZ91vFMR_/embed",
+          "postUrl": "https://www.instagram.com/reel/DZs6_peE2qK/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DZs6_peE2qK/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-4.jpg",
           "fallbackImage": "/images/instagram-fallback-4.jpg",
           "alt": "Yummi Nuts Instagram Post 4"
@@ -308,12 +313,12 @@
   "messagetop":[
     {
       "id":"1",
-      "title":"💛 ¡Snacks que te hacen bien y saben mejor! Bienvenido a Yummi Nuts. 🌿🥜",
+      "title":"🌍 Centroamérica sabe a Yummies.​",
       "link":""
     },
     {
       "id":"2",
-      "title":"🌻 Descubre snacks naturales que nutren y deleitan. 🥜✨",
+      "title":"🤤 El antojo real no puede esperar.​",
       "link":""
     }
   ],
