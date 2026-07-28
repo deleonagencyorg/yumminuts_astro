@@ -78,18 +78,15 @@ function productHref(product: any): string {
 
 ---
 
-<div class="w-full py-12 bg-white">
-  <div class="container mx-auto px-4">
-    
-    <!-- Title -->
-    <div class="text-left mb-8">
-      <h2 class="font-heading text-4xl md:text-5xl font-extrabold text-black tracking-[-2px] leading-tight">
-        {title}
-      </h2>
-    </div>
+<div class="products-with-filter w-full" data-products-with-filter>
+  <div class="text-left mb-16 relative z-20">
+    <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+      {title}
+    </h2>
+  </div>
 
-    <!-- Filter Buttons -->
-    <div class="flex flex-wrap gap-3 mb-8 justify-left" id="productsFilters">
+  <!-- Filter Buttons -->
+  <div class="flex flex-wrap gap-3 mb-8 justify-left" id="productsFilters">
       <button 
         type="button" 
         data-filter="all" 
@@ -138,7 +135,6 @@ function productHref(product: any): string {
         </a>
       </div>
     )}
-  </div>
 </div>
 
 <style>
@@ -180,11 +176,23 @@ function productHref(product: any): string {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+@media (min-width: 1024px) {
+  #productsGrid .product-card {
+    display: flex;
+    justify-content: center;
+  }
+
+  #productsGrid .product-card :global(.group) {
+    width: 85%;
+    max-width: 85%;
+  }
+}
 </style>
 
 <script>
   function initProductsFilters() {
-    const root = document.currentScript?.closest('.w-full')?.parentElement || document;
+    const root = document.currentScript?.closest('[data-products-with-filter]') || document;
     const filtersEl = root.querySelector('#productsFilters');
     const gridEl = root.querySelector('#productsGrid');
     const noProductsMessage = root.querySelector('#noProductsMessage');

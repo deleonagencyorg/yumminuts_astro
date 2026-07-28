@@ -5,8 +5,7 @@ import type { Locale } from '../../i18n/i18n';
 import { getLocale } from '../../i18n/i18n';
 import './styles.css';
 import Carousel from '../../components/common/Carousel/index.astro';
-import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
-import Discover from '../../components/common/Discover/index.astro';
+import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
 import VideoSection from '../../components/common/VideoSection/index.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
@@ -17,7 +16,6 @@ const healthHome = t('assets.healthPage', { namespace: 'common', locale: current
 const healthCategories = t('categories', { namespace: 'health', locale: currentLang });
 const healthSlider = t('assets.healthPage.slider', { namespace: 'common', locale: currentLang }) || [];
 const slides = healthSlider;
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 const healthInfoAssets = t('assets.healthInfo', { namespace: 'common', locale: currentLang }) || [];
 
 // Get video section data
@@ -30,16 +28,19 @@ console.log('Health home:', healthHome.title);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <div class="container mx-auto px-4">
-    <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
-  </div>
-  <!-- Slider Section -->
-  <div class="w-full">
-    <Carousel slides={slides} variant="horizontal" />
-  </div>
+  <!-- Hero -->
+  <section class="w-full pt-4 pb-2 bg-white">
+    <div class="container mx-auto px-4">
+      <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+      <div class="mt-4 w-full">
+        <Carousel slides={slides} variant="horizontal" layout="contained" />
+      </div>
+    </div>
+  </section>
 
   <!-- Health Benefits Section -->
-  <section class="container mx-auto px-4 pt-10 md:pt-14 pb-8 md:pb-12">
+  <section class="w-full pt-10 md:pt-14 pb-8 md:pb-12 bg-white">
+    <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
       <!-- Left: Title + Description -->
       <div class="w-full md:w-1/2 text-center md:text-left">
@@ -54,10 +55,11 @@ console.log('Health home:', healthHome.title);
         </div>
       </div>
     </div>
+    </div>
   </section>
 
   <!-- Video Section -->
-<section id="videos" class="w-full bg-white py-8 md:py-12">
+  <section id="videos" class="w-full bg-white py-8 md:py-12">
   <VideoSection 
     title={videoSectionData?.title || 'Tips para mantener tu cuerpo siempre saludable'}
     description={videoSectionData?.description || 'Explora más sobre Yummi Nuts a través de nuestros videos.'}
@@ -65,10 +67,7 @@ console.log('Health home:', healthHome.title);
   />
 </section>
 
-  <!-- Discover Section -->
-  <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
+  <DiscoverSection />
 </main>
 
 <script>

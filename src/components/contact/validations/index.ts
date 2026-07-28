@@ -15,14 +15,7 @@ const baseContactSchema = z.object({
     'Soy un ganador',
     'Otros'
   ]),
-  country: z.enum([
-    'Guatemala',
-    'El Salvador',
-    'Honduras',
-    'Nicaragua',
-    'Costa Rica',
-    'República Dominicana'
-  ]),
+  country: z.string().min(1, 'El país es requerido'),
   city: z.string().min(1, 'La ciudad/departamento es requerido'),
   name: z.string().min(1, 'El nombre completo es requerido'),
   email: z.string().email('Debe ser un email válido'),

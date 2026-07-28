@@ -5,7 +5,7 @@ import Carousel from '../../components/common/Carousel/index.astro';
 import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
-import Discover from '../../components/common/Discover/index.astro';
+import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
 
 // Style Imports
 import './styles.css';
@@ -110,7 +110,6 @@ const slides = Array.isArray(commonAssets)
       }))
   : [];
 
-const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
 const homeVideoUrl = 'https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4';
 
 // Load recipes via Vite glob (same strategy as Recipes page)
@@ -132,20 +131,20 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
-    <!-- Slider Section simplificado como en Products -->
-    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+    <!-- Slider Section: ancho completo -->
+    <section class="w-full max-w-[100vw] overflow-hidden reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
       <Carousel slides={slides} />
-    </div>
+    </section>
     
-    <!-- Sección de Información -->
-    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+    <!-- Iconos de salud: ancho completo -->
+    <section class="w-full py-12 bg-white reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
       <HealthInfoSection />
-    </div>
+    </section>
 
     <!-- Sección de Productos por Categoría -->
     {categoryCards.length > 0 && (
-      <section class="container mx-auto px-4 py-4 bg-white pt-16 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-        <div class="container mx-autxo px-4">
+      <section class="w-full py-12 pt-16 bg-white reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+        <div class="container mx-auto px-4 bg-white">
           <Categories 
             products={categoryCards}
             title={currentLang === 'es' ? 'Categorías' : 'Categories'}
@@ -192,9 +191,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
     </section>
 
     <!-- Sección Descubrenos -->
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
+    <DiscoverSection reveal />
 
 
 

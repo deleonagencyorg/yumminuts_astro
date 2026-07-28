@@ -19,6 +19,71 @@ body {
   padding: 0;
 }
 
+/* Carrusel dentro de container (productos, salud) */
+.carousel-contained {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.carousel-contained .swiper-container.main-carousel {
+  width: 100% !important;
+  max-width: 100% !important;
+  left: 0 !important;
+  transform: none !important;
+  position: relative;
+}
+
+/* Productos: banner completo al ancho del container, sin recorte */
+.carousel-contained:not(.carousel-horizontal) .swiper-container.main-carousel {
+  height: auto !important;
+  aspect-ratio: unset !important;
+  max-height: none !important;
+}
+
+.carousel-contained:not(.carousel-horizontal) .swiper-wrapper,
+.carousel-contained:not(.carousel-horizontal) .swiper-slide,
+.carousel-contained:not(.carousel-horizontal) .swiper-slide > a,
+.carousel-contained:not(.carousel-horizontal) .swiper-slide > div {
+  width: 100%;
+  height: auto !important;
+}
+
+.carousel-contained:not(.carousel-horizontal) .swiper-slide img,
+.carousel-contained:not(.carousel-horizontal) .swiper-slide video {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  object-position: center top !important;
+  display: block;
+}
+
+/* Salud: ratio fijo 16:9 con contain */
+.carousel-contained.carousel-horizontal .swiper-slide,
+.carousel-contained.carousel-horizontal .swiper-slide > a,
+.carousel-contained.carousel-horizontal .swiper-slide > div {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-contained.carousel-horizontal .swiper-slide img,
+.carousel-contained.carousel-horizontal .swiper-slide video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.carousel-contained.carousel-horizontal .swiper-container.main-carousel {
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  width: 100% !important;
+}
+
+.carousel-contained.carousel-horizontal .swiper-container.main-carousel .swiper-slide {
+  height: 100% !important;
+}
+
 /* Media query para dispositivos móviles */
 @media (max-width: 767px) {
   .swiper-container.main-carousel {
@@ -40,16 +105,16 @@ body {
 
   .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide img,
   .swiper-container.main-carousel:not(.main-carousel--horizontal) .swiper-slide video {
-    object-fit: cover !important;
-    object-position: center !important;
-  } 
+    background-size: contain !important;
+  }
 }
 
 /* Media query para tablets */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .swiper-container.main-carousel {
-    width: 100vw; /* Ancho completo de la ventana */
-    height: 500px; /* Altura fija para tablet */
+  .swiper-container.main-carousel:not(.main-carousel--horizontal) {
+    width: 100vw;
+    height: auto;
+    aspect-ratio: 12 / 7;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -67,8 +132,8 @@ body {
     object-fit: contain !important;
     object-position: center !important;
   }
-  
-  .swiper-slide {
+
+  .swiper-container.main-carousel--horizontal .swiper-slide {
     height: auto !important;
   }
   
@@ -98,9 +163,10 @@ body {
 
 /* Media query para desktop */
 @media (min-width: 1024px) {
-  .swiper-container.main-carousel {
+  .swiper-container.main-carousel:not(.main-carousel--horizontal) {
     width: 100vw;
-    height: 950px;/* Altura fija para tablet */
+    height: auto;
+    aspect-ratio: 12 / 7;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -119,8 +185,8 @@ body {
     object-fit: contain !important;
     object-position: center !important;
   }
-  
-  .swiper-slide {
+
+  .swiper-container.main-carousel--horizontal .swiper-slide {
     height: auto !important;
   }
 }
@@ -197,12 +263,4 @@ body {
 
 .swiper-pagination-bullet-active {
   opacity: 1 !important;
-}
-
-.swiper-slide img,
-.swiper-slide video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  object-position: center;
 }

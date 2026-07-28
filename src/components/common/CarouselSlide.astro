@@ -40,10 +40,17 @@ const isVideoSlide =
 
 const videoSrc = (slide.video || '').trim() || (isVideoSlide ? imageSrc : '');
 
-const objectFit = useHorizontalMobile ? 'contain' : 'cover';
-const imageClass = useHorizontalMobile
-  ? 'w-full h-full object-contain object-center'
-  : 'w-full h-full object-cover object-center';
+const imageClass = viewport === 'mobile'
+  ? (useHorizontalMobile
+    ? 'w-full h-full object-contain object-center'
+    : 'w-full h-full object-cover object-center')
+  : (mobileLayout === 'horizontal'
+    ? 'w-full h-full object-contain object-center'
+    : 'w-full h-full object-cover object-center');
+
+const objectFit = viewport === 'mobile'
+  ? (useHorizontalMobile ? 'contain' : 'cover')
+  : (mobileLayout === 'horizontal' ? 'contain' : 'cover');
 ---
 
 <div class="swiper-slide relative h-full w-full">

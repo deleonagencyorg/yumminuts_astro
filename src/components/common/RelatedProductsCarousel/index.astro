@@ -1,0 +1,278 @@
+---
+import ProductCard from '../ProductCard/index.astro';
+
+interface RelatedProduct {
+  id: string;
+  name: string;
+  slug?: string;
+  image: string;
+  background_color?: string;
+}
+
+export interface Props {
+  products: RelatedProduct[];
+  currentLang: string;
+  title?: string;
+  fallbackBgColor?: string;
+}
+
+const {
+  products = [],
+  currentLang,
+  title = currentLang === 'es' ? 'Otros productos' : 'Other products',
+  fallbackBgColor = '#95CFF2',
+} = Astro.props;
+
+const instanceId = `related-products-${Math.random().toString(36).slice(2)}`;
+const productsSegment = currentLang === 'es' ? 'productos' : 'products';
+const langPrefix = currentLang === 'es' ? 'es' : 'en';
+
+function productHref(product: RelatedProduct): string {
+  return `/${langPrefix}/${productsSegment}/${product.slug || product.id}`;
+}
+
+function cleanTitle(name: string): string {
+  return name.replace(/^Yummi\s*Nuts?\s*/i, '');
+}
+---
+
+{products.length > 0 && (
+  <div class="mt-8" data-related-products-instance={instanceId}>
+    <h3 class="text-2xl font-bold mb-4">{title}</h3>
+
+    <div class="md:hidden related-products-row-wrapper relative w-full -mx-4">
+      <div class="related-products-row js-related-products-row flex items-stretch relative w-full min-w-0 gap-4 px-4">
+        {products.map((product) => (
+          <a
+            href={productHref(product)}
+            class="related-products-card group flex flex-col w-[280px] shrink-0"
+          >
+            <ProductCard
+              title={cleanTitle(product.name)}
+              image={product.image}
+              bgColor={product.background_color || fallbackBgColor}
+              size="sm"
+            />
+          </a>
+        ))}
+      </div>
+
+      {products.length > 1 && (
+        <div class="related-products-nav absolute right-2 top-[42%] -translate-y-1/2 z-10">
+          <button type="button" class="js-related-products-next relative size-[50.935px]" aria-label={currentLang === 'es' ? 'Siguiente' : 'Next'}>
+            <div class="absolute backdrop-blur-[11.016px] backdrop-filter bg-primary left-0 rounded-[11.938px] size-[50.935px] top-0">
+              <div aria-hidden="true" class="absolute border-blue border-[0.796px] border-solid inset-0 pointer-events-none rounded-[11.938px]"></div>
+            </div>
+            <div class="absolute flex h-[20.828px] items-center justify-center top-1/2 translate-x-[-50%] translate-y-[-50%] w-[20.828px]" style="left: calc(50% - 0.004px)">
+              <div class="relative size-[20.837px]">
+                <svg class="block max-w-none size-full" viewBox="0 0 21 21" fill="none">
+                  <path d="M7.5 14L12.5 9.5L7.5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+          </button>
+        </div>
+      )}
+    </div>
+
+    <div class="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
+      {products.map((product) => (
+        <a href={productHref(product)} class="block">
+          <ProductCard
+            title={cleanTitle(product.name)}
+            image={product.image}
+            bgColor={product.background_color || fallbackBgColor}
+            size="sm"
+          />
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<script>
+  // @ts-nocheck
+  const MOBILE_AUTOPLAY_MS = 3500;
+  const DESKTOP_BREAKPOINT = 768;
+
+  const initRelatedProductsCarousel = () => {
+    const roots = document.querySelectorAll('[data-related-products-instance]');
+
+    roots.forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
+
+      const row = root.querySelector('.js-related-products-row');
+      const nextBtn = root.querySelector('.js-related-products-next');
+
+      if (!(row instanceof HTMLElement)) return;
+      if (root.dataset.relatedProductsInit === 'true') return;
+      root.dataset.relatedProductsInit = 'true';
+
+      const isDesktop = () => window.innerWidth >= DESKTOP_BREAKPOINT;
+      const cards = () => Array.from(row.querySelectorAll('.related-products-card'));
+
+      let currentIndex = 0;
+      let autoplayTimer = null;
+      let isAdvancing = false;
+
+      const getStep = () => {
+        const items = cards();
+        if (!items.length) return 296;
+        if (items.length === 1) return items[0].offsetWidth;
+
+        const first = items[0];
+        const second = items[1];
+        const gap = second.offsetLeft - first.offsetLeft - first.offsetWidth;
+        return first.offsetWidth + Math.max(gap, 16);
+      };
+
+      const resetTransform = () => {
+        row.style.transform = '';
+        row.style.transition = '';
+        currentIndex = 0;
+      };
+
+      const moveToIndex = (index, animate = true) => {
+        const items = cards();
+        if (!items.length) return;
+
+        currentIndex = ((index % items.length) + items.length) % items.length;
+        const offset = currentIndex * getStep();
+
+        row.style.transition = animate
+          ? 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)'
+          : 'none';
+        row.style.transform = `translate3d(-${offset}px, 0, 0)`;
+      };
+
+      const advance = (animate = true) => {
+        const items = cards();
+        if (items.length <= 1 || isAdvancing || isDesktop()) return;
+
+        isAdvancing = true;
+        moveToIndex(currentIndex + 1, animate);
+
+        window.setTimeout(() => {
+          isAdvancing = false;
+        }, animate ? 460 : 80);
+      };
+
+      const goToPrev = (animate = true) => {
+        const items = cards();
+        if (items.length <= 1 || isAdvancing || isDesktop()) return;
+
+        isAdvancing = true;
+        moveToIndex(currentIndex - 1, animate);
+
+        window.setTimeout(() => {
+          isAdvancing = false;
+        }, animate ? 460 : 80);
+      };
+
+      const stopAutoplay = () => {
+        if (autoplayTimer) {
+          clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+        if (isDesktop() || cards().length <= 1) return;
+
+        autoplayTimer = setInterval(() => {
+          if (!isAdvancing) advance(true);
+        }, MOBILE_AUTOPLAY_MS);
+      };
+
+      const applyLayoutMode = () => {
+        if (isDesktop()) {
+          stopAutoplay();
+          resetTransform();
+          return;
+        }
+
+        moveToIndex(currentIndex, false);
+        startAutoplay();
+      };
+
+      if (nextBtn instanceof HTMLButtonElement) {
+        nextBtn.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          advance(true);
+          startAutoplay();
+        });
+      }
+
+      let touchStartX = 0;
+      let touchMoved = false;
+
+      row.addEventListener('touchstart', (event) => {
+        if (isDesktop()) return;
+        touchStartX = event.touches[0].clientX;
+        touchMoved = false;
+        stopAutoplay();
+      }, { passive: true });
+
+      row.addEventListener('touchmove', () => {
+        touchMoved = true;
+      }, { passive: true });
+
+      row.addEventListener('touchend', (event) => {
+        if (isDesktop() || !touchMoved) return;
+
+        const diff = touchStartX - event.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) advance(true);
+          else goToPrev(true);
+        }
+        startAutoplay();
+      }, { passive: true });
+
+      const visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isDesktop()) startAutoplay();
+          else stopAutoplay();
+        });
+      }, { threshold: 0.2 });
+
+      visibilityObserver.observe(root);
+
+      window.addEventListener('resize', applyLayoutMode);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(applyLayoutMode);
+      });
+    });
+  };
+
+  const initAll = () => initRelatedProductsCarousel();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('astro:page-load', initAll);
+  document.addEventListener('astro:after-swap', initAll);
+</script>
+
+<style>
+  @media (max-width: 767px) {
+    [data-related-products-instance] .related-products-row-wrapper {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      overflow: hidden;
+    }
+
+    [data-related-products-instance] .related-products-row {
+      will-change: transform;
+      padding-left: max(16px, calc((100vw - 280px) / 2));
+      padding-right: max(16px, calc((100vw - 280px) / 2));
+      overflow: visible;
+      touch-action: pan-y;
+    }
+  }
+</style>

@@ -6,7 +6,7 @@ import { getLocale } from '../../i18n/i18n';
 import './styles.css';
 import Carousel from '../../components/common/Carousel/index.astro';
 import ProductsWithFilter from '../../components/common/ProductsWithFilter/index.astro';
-import Discover from '../../components/common/Discover/index.astro';
+import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
 import categoriesConfig from '../../config/categories.json';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 
@@ -15,30 +15,30 @@ const currentLang = getLocale();
 const products = t('items', { namespace: 'products', locale: currentLang });
 const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
 const slides = commonAssets;
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 // Categorías centralizadas (mismas que usa ProductsWithFilter)
 const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.key);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <div class="w-full reveal-on-scroll">
-    <Carousel slides={slides} />
-  </div>
-  <div class="container mx-auto px-4 reveal-on-scroll">
-    <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
-  </div>
+  <!-- Hero -->
+  <section class="w-full pt-4 pb-2 bg-white reveal-on-scroll">
+    <div class="container mx-auto px-4">
+      <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+      <div class="mt-4 w-full">
+        <Carousel slides={slides} layout="contained" />
+      </div>
+    </div>
+  </section>
 
   <!-- New Products with Filter Component -->
-  <div class="reveal-on-scroll -mt-16">
-    <ProductsWithFilter  showAllProducts={true} />
-  </div>
-
-  <div>
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-    <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
+  <section class="w-full py-12 bg-white reveal-on-scroll">
+    <div class="container mx-auto px-4 bg-white">
+      <ProductsWithFilter showAllProducts={true} />
+    </div>
   </section>
-  </div>
+
+  <DiscoverSection />
   
 </main>
 
