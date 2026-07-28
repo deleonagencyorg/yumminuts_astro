@@ -1,0 +1,26 @@
+---
+import Discover from '../Discover/index.astro';
+import { getLocale, t } from '../../../i18n/i18n';
+
+export interface Props {
+  title?: string;
+  reveal?: boolean;
+  className?: string;
+}
+
+const currentLang = getLocale();
+const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+const { title = discoverAssets.title, reveal = false, className = '' } = Astro.props;
+
+const sectionClasses = [
+  'w-full py-12 bg-white reveal-on-scroll',
+  reveal ? 'opacity-0 translate-y-6 transition-all duration-700 ease-out' : '',
+  className,
+].filter(Boolean).join(' ');
+---
+
+<section id="discover" class={sectionClasses}>
+  <div class="container mx-auto px-4">
+    <Discover title={title} />
+  </div>
+</section>

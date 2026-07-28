@@ -15,12 +15,15 @@ export interface Props {
   loading?: boolean;
   /** `default`: slider vertical en móvil (home). `horizontal`: mantiene 16:9 en móvil (salud). */
   variant?: 'default' | 'horizontal';
+  /** `full`: ancho completo (home). `contained`: dentro del container de página (productos, salud). */
+  layout?: 'full' | 'contained';
 }
 
-const { slides: rawSlides, loading = false, variant = 'default' } = Astro.props as {
+const { slides: rawSlides, loading = false, variant = 'default', layout = 'full' } = Astro.props as {
   slides?: any;
   loading?: boolean;
   variant?: 'default' | 'horizontal';
+  layout?: 'full' | 'contained';
 };
 
 function normalizeSlideImage(value: unknown): string {
@@ -199,6 +202,9 @@ const heroVideoUrl =
 
         document.querySelectorAll('[data-carousel-root]').forEach((root) => {
           const containers = root.querySelectorAll('.js-main-carousel');
+          const useAutoHeight =
+            root.classList.contains('carousel-contained') &&
+            !root.classList.contains('carousel-horizontal');
 
           containers.forEach((container) => {
             if (!(container instanceof HTMLElement)) return;
@@ -225,6 +231,7 @@ const heroVideoUrl =
               slidesPerView: 1,
               spaceBetween: 0,
               loop: slideCount > 1,
+              autoHeight: useAutoHeight,
               observer: true,
               observeParents: true,
               autoplay: slideCount > 1 ? {
@@ -318,7 +325,7 @@ const heroVideoUrl =
   <Skeleton items={1} />
 ) : (
   <div
-    class={`relative overflow-hidden w-full mx-auto${isHorizontal ? ' carousel-horizontal' : ''}`}
+    class={`relative overflow-hidden w-full mx-auto${isHorizontal ? ' carousel-horizontal' : ''}${layout === 'contained' ? ' carousel-contained' : ''}`}
     data-carousel-root={instanceId}
     transition:animate="fade"
   >

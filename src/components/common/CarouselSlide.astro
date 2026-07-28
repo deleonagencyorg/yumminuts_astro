@@ -44,11 +44,13 @@ const imageClass = viewport === 'mobile'
   ? (useHorizontalMobile
     ? 'w-full h-full object-contain object-center'
     : 'w-full h-full object-cover object-center')
-  : 'w-full h-full object-contain object-center';
+  : (mobileLayout === 'horizontal'
+    ? 'w-full h-full object-contain object-center'
+    : 'w-full h-full object-cover object-center');
 
 const objectFit = viewport === 'mobile'
   ? (useHorizontalMobile ? 'contain' : 'cover')
-  : 'contain';
+  : (mobileLayout === 'horizontal' ? 'contain' : 'cover');
 ---
 
 <div class="swiper-slide relative h-full w-full">

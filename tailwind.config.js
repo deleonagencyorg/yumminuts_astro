@@ -14,6 +14,10 @@ module.exports = {
     'bg-green', 'text-green', 'border-green',
     ],
   theme: {
+    container: {
+      center: true,
+      padding: '1rem',
+    },
     extend: {
       colors: {
         primary: '#385CAD',

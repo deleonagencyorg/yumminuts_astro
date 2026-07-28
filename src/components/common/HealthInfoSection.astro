@@ -3,23 +3,20 @@
 import { t, getLocale } from '../../i18n/i18n';
 import LazyImage from '../common/LazyImage.astro';
 
-// Get current locale and health info assets
 const locale = getLocale();
 const healthInfo = t('assets.healthInfo', { locale });
 ---
 
-<section class="w-full py-12 bg-white">
-  <div class="container mx-auto px-4">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {healthInfo && healthInfo.map((item: any) => (
-        <div class="flex justify-center">
-          <LazyImage
-            src={item.icon} 
-            alt={item.alt} 
-            class="w-24 h-24 md:w-32 md:h-32 object-contain"  
-          />
-        </div>
-      ))}
+<div class="w-full px-4 sm:px-6 lg:px-8">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 max-w-[100vw] mx-auto">
+  {healthInfo && healthInfo.map((item: any) => (
+    <div class="flex justify-center">
+      <LazyImage
+        src={item.icon} 
+        alt={item.alt} 
+        class="w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 object-contain"  
+      />
     </div>
+  ))}
   </div>
-</section>
+</div>

@@ -10,9 +10,9 @@ import ProductCard from '../../../components/common/ProductCard/index.astro';
 import LazyImage from '../../../components/common/LazyImage.astro';
 import ProductImageCarousel from '../../../components/common/ProductImageCarousel/index.astro';
 import ProductBenefits from '../../../components/common/ProductBenefits/index.astro';
-import RelatedProducts from '../../../components/common/RelatedProducts/index.astro';
+import RelatedProductsCarousel from '../../../components/common/RelatedProductsCarousel/index.astro';
 import Categories from '../../../components/common/Categories/index.astro';
-import Discover from '../../../components/common/Discover/index.astro';
+import DiscoverSection from '../../../components/common/DiscoverSection/index.astro';
 import categoriesConfig from '../../../config/categories.json';
 import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
 
@@ -60,7 +60,6 @@ const slides = commonAssets;
 const products = t('items', { namespace: 'products', locale: currentLang as Locale }) || [];
 const stockists = t('stockist', { namespace: 'products', locale: currentLang as Locale }) || [];
 const newsAssets = t('', { namespace: 'news', locale: currentLang }) || {};
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
 
 // Helper: get category key from a slug (supports es/en)
 function getCategoryKeyFromSlug(slug: string): string | null {
@@ -222,11 +221,11 @@ const productBenefits = [
               )}
 
             {/* Benefits icons row (3 placeholders based on productBenefits) */}
-              <div class="flex flex-row flex-wrap justify-start gap-4 mt-4 mb-8">
+              <div class="grid grid-cols-3 gap-3 md:gap-6 mt-4 mb-8">
                 {productBenefits.slice(0, 3).map((b) => (
-                  <div class="flex flex-col items-center text-center w-[120px]">
-                    <img src={b.icon} alt={b.alt} class="w-10 h-10 mb-2" />
-                    <span class="text-primary text-sm font-medium">{b.text}</span>
+                  <div class="flex flex-col items-center text-center min-w-0 px-1">
+                    <img src={b.icon} alt={b.alt} class="w-12 h-12 md:w-16 md:h-16 mb-2 md:mb-3 shrink-0" />
+                    <span class="text-primary text-sm md:text-base font-medium leading-snug">{b.text}</span>
                   </div>
                 ))}
               </div>
@@ -259,25 +258,11 @@ const productBenefits = [
               )}
 
             {/* Related smaller product cards from same category */}
-              {relatedProducts.length > 0 && (
-                <div class="mt-8">
-                  <h3 class="text-2xl font-bold mb-4">
-                    {currentLang === 'es' ? 'Otros productos' : 'Other products'}
-                  </h3>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {relatedProducts.map((p: any) => (
-                      <a href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}/${p.slug || p.id}`} class="block">
-                        <ProductCard
-                          title={p.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
-                          image={p.image}
-                          bgColor={p.background_color || safeProduct.background_color}
-                          size="sm"
-                        />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <RelatedProductsCarousel
+                products={relatedProducts}
+                currentLang={currentLang}
+                fallbackBgColor={safeProduct.background_color}
+              />
             </>
           );
         })()}
@@ -299,14 +284,7 @@ const productBenefits = [
   )}
 
 
-  <div>
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
-  </div>
-
-  
-  
+  <DiscoverSection />
 </main>
 
 <script>

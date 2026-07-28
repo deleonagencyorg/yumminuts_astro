@@ -3,6 +3,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .container {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 1024px;
+  }
+
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1200px;
+    }
+  }
+}
+
 html, body {
   overflow-x: hidden;
   width: 100%;

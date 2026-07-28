@@ -1,6 +1,5 @@
 ---
 // src/components/common/Discover/index.astro
-import { Image } from 'astro:assets';
 import { getLocale } from '../../../i18n/i18n';
 import esCommon from '../../../locales/es/common.json';
 import enCommon from '../../../locales/en/common.json';
@@ -26,57 +25,72 @@ const instagramPosts =
     ? esCommon.home.socialmedia.instagramPosts
     : enCommon.home.socialmedia.instagramPosts;
 
-// ID único por instancia para aislar el JS cuando hay varias secciones en la misma página
 const uid = `discover-${Math.random().toString(36).slice(2, 7)}`;
+const nextLabel = locale === 'es' ? 'Siguiente' : 'Next';
 ---
 
-<div class="box-border flex flex-col gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-start justify-start w-full max-w-[100vw] mx-auto py-4 sm:py-5 md:py-6 lg:py-8 px-3 sm:px-4 md:px-5 lg:px-6 bg-white overflow-x-hidden">
+<div class="w-full" data-discover-instance={uid}>
+  <div class="text-left mb-6 sm:mb-16 relative z-20">
+    <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+      {title}
+    </h2>
+  </div>
 
-  <h2 class="font-heading leading-tight not-italic text-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-left w-full px-2 sm:px-0 mb-1 sm:mb-4">
-    {title}
-  </h2>
-
-  <!-- carousel scroll-snap mobile -->
-  <div class="relative w-full sm:hidden">
-
-    <!--deslizable -->
-    <div
-      id={`${uid}-track`}
-      class="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 scroll-smooth px-[6vw]"
-      style="scrollbar-width: none; -ms-overflow-style: none;"
-    >
+  <!-- Mobile: carousel — 1 iframe por slide -->
+  <div class="sm:hidden discover-row-wrapper relative w-full">
+    <div class="discover-row js-discover-row flex items-stretch relative w-full min-w-0 gap-4">
       {instagramPosts.map((post: any) => (
-        <div class="snap-center shrink-0 w-[88vw] aspect-[8/16] overflow-hidden rounded-xl">
-          <iframe
-            src={post.embedUrl}
-            class="w-full h-full border-0"
-            allowtransparency="true"
-            allowfullscreen
-            frameborder="0"
-            scrolling="no"
-            style="height: 100%; min-height: 320px;"
-          ></iframe>
+        <div class="discover-slide shrink-0 w-[min(82vw,300px)]">
+          <div class="discover-iframe-wrap w-full aspect-[9/16] overflow-hidden rounded-xl bg-gray-50">
+            <iframe
+              src={post.embedUrl}
+              class="w-full h-full border-0"
+              allowtransparency="true"
+              allowfullscreen
+              frameborder="0"
+              scrolling="no"
+              title={post.alt || 'Instagram'}
+            ></iframe>
+          </div>
         </div>
       ))}
     </div>
 
-    <!-- Puntos indicadores -->
-    <div id={`${uid}-dots`} class="flex justify-center gap-2 mt-3">
+    {instagramPosts.length > 1 && (
+      <div class="discover-nav absolute right-3 top-[42%] -translate-y-1/2 z-10">
+        <button type="button" class="js-discover-next relative size-[50.935px]" aria-label={nextLabel}>
+          <div class="absolute backdrop-blur-[11.016px] backdrop-filter bg-primary left-0 rounded-[11.938px] size-[50.935px] top-0">
+            <div aria-hidden="true" class="absolute border-blue border-[0.796px] border-solid inset-0 pointer-events-none rounded-[11.938px]"></div>
+          </div>
+          <div class="absolute flex h-[20.828px] items-center justify-center top-1/2 translate-x-[-50%] translate-y-[-50%] w-[20.828px]" style="left: calc(50% - 0.004px)">
+            <div class="relative size-[20.837px]">
+              <svg class="block max-w-none size-full" viewBox="0 0 21 21" fill="none">
+                <path d="M7.5 14L12.5 9.5L7.5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </div>
+    )}
+  </div>
+
+  {instagramPosts.length > 1 && (
+    <div class="sm:hidden flex justify-center gap-2 mt-4" id={`${uid}-dots`}>
       {instagramPosts.map((_: any, i: number) => (
         <button
+          type="button"
           data-index={i}
-          aria-label={`Ir al reel ${i + 1}`}
+          aria-label={`${locale === 'es' ? 'Ir al reel' : 'Go to reel'} ${i + 1}`}
           class={`discover-dot w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-black scale-125' : 'bg-gray-300'}`}
         />
       ))}
     </div>
+  )}
 
-  </div>
-
-  <!--grid desktop- tablet-->
-  <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5 sm:gap-2 md:gap-2 lg:gap-3 w-full">
+  <!-- Desktop / tablet: grid -->
+  <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2 lg:gap-2 w-full min-w-0">
     {instagramPosts.map((post: any) => (
-      <div class="w-full aspect-[7/14] overflow-hidden rounded-xl sm:rounded-2xl">
+      <div class="w-full min-w-0 aspect-[7/14] lg:aspect-[7/16] overflow-hidden rounded-xl sm:rounded-2xl">
         <iframe
           src={post.embedUrl}
           class="w-full h-full border-0"
@@ -84,58 +98,221 @@ const uid = `discover-${Math.random().toString(36).slice(2, 7)}`;
           allowfullscreen
           frameborder="0"
           scrolling="no"
-          style="height: 100%; min-height: 320px;"
+          title={post.alt || 'Instagram'}
         ></iframe>
       </div>
     ))}
   </div>
-
 </div>
 
-<style>
-  /* Ocultar scrollbar en WebKit */
-  [id$="-track"]::-webkit-scrollbar {
-    display: none;
-  }
-</style>
-
 <script define:vars={{ uid, total: instagramPosts.length }}>
+  // @ts-nocheck
+  const MOBILE_AUTOPLAY_MS = 4500;
+  const DESKTOP_BREAKPOINT = 640;
+
   function initDiscoverCarousel(uid, total) {
-    const track = document.getElementById(`${uid}-track`);
+    const root = document.querySelector(`[data-discover-instance="${uid}"]`);
+    if (!(root instanceof HTMLElement)) return;
+    if (root.dataset.discoverInit === 'true') return;
+    root.dataset.discoverInit = 'true';
+
+    const row = root.querySelector('.js-discover-row');
+    const nextBtn = root.querySelector('.js-discover-next');
     const dotsContainer = document.getElementById(`${uid}-dots`);
-    if (!track || !dotsContainer) return;
 
-    const dots = Array.from(dotsContainer.querySelectorAll('.discover-dot'));
+    if (!(row instanceof HTMLElement)) return;
 
-    // Actualizar dot activo según posición de scroll
-    let scrollTimer;
-    track.addEventListener('scroll', () => {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        const itemWidth = track.scrollWidth / total;
-        const current = Math.round(track.scrollLeft / itemWidth);
-        dots.forEach((dot, i) => {
-          dot.classList.toggle('bg-black', i === current);
-          dot.classList.toggle('scale-125', i === current);
-          dot.classList.toggle('bg-gray-300', i !== current);
-        });
-      }, 50);
-    }, { passive: true });
+    const isDesktop = () => window.innerWidth >= DESKTOP_BREAKPOINT;
+    const slides = () => Array.from(row.querySelectorAll('.discover-slide'));
+    const dots = dotsContainer
+      ? Array.from(dotsContainer.querySelectorAll('.discover-dot'))
+      : [];
 
-    // Navegar al hacer clic en un punto
+    let currentIndex = 0;
+    let autoplayTimer = null;
+    let isAdvancing = false;
+
+    const getStep = () => {
+      const items = slides();
+      if (!items.length) return 316;
+      if (items.length === 1) return items[0].offsetWidth;
+
+      const first = items[0];
+      const second = items[1];
+      const gap = second.offsetLeft - first.offsetLeft - first.offsetWidth;
+      return first.offsetWidth + Math.max(gap, 16);
+    };
+
+    const updateDots = () => {
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-black', i === currentIndex);
+        dot.classList.toggle('scale-125', i === currentIndex);
+        dot.classList.toggle('bg-gray-300', i !== currentIndex);
+      });
+    };
+
+    const resetTransform = () => {
+      row.style.transform = '';
+      row.style.transition = '';
+      currentIndex = 0;
+      updateDots();
+    };
+
+    const moveToIndex = (index, animate = true) => {
+      const items = slides();
+      if (!items.length) return;
+
+      currentIndex = ((index % items.length) + items.length) % items.length;
+      const offset = currentIndex * getStep();
+
+      row.style.transition = animate
+        ? 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)'
+        : 'none';
+      row.style.transform = `translate3d(-${offset}px, 0, 0)`;
+      updateDots();
+    };
+
+    const advance = (animate = true) => {
+      const items = slides();
+      if (items.length <= 1 || isAdvancing || isDesktop()) return;
+
+      isAdvancing = true;
+      moveToIndex(currentIndex + 1, animate);
+
+      window.setTimeout(() => {
+        isAdvancing = false;
+      }, animate ? 460 : 80);
+    };
+
+    const goToPrev = (animate = true) => {
+      const items = slides();
+      if (items.length <= 1 || isAdvancing || isDesktop()) return;
+
+      isAdvancing = true;
+      moveToIndex(currentIndex - 1, animate);
+
+      window.setTimeout(() => {
+        isAdvancing = false;
+      }, animate ? 460 : 80);
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      if (isDesktop() || slides().length <= 1) return;
+
+      autoplayTimer = setInterval(() => {
+        if (!isAdvancing) advance(true);
+      }, MOBILE_AUTOPLAY_MS);
+    };
+
+    const applyLayoutMode = () => {
+      if (isDesktop()) {
+        stopAutoplay();
+        resetTransform();
+        return;
+      }
+
+      moveToIndex(currentIndex, false);
+      startAutoplay();
+    };
+
+    if (nextBtn instanceof HTMLButtonElement) {
+      nextBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        advance(true);
+        startAutoplay();
+      });
+    }
+
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
         const idx = Number(dot.dataset.index);
-        const itemWidth = track.scrollWidth / total;
-        track.scrollTo({ left: idx * itemWidth, behavior: 'smooth' });
+        if (Number.isNaN(idx) || isDesktop()) return;
+        moveToIndex(idx, true);
+        startAutoplay();
       });
+    });
+
+    let touchStartX = 0;
+    let touchMoved = false;
+
+    row.addEventListener('touchstart', (event) => {
+      if (isDesktop()) return;
+      touchStartX = event.touches[0].clientX;
+      touchMoved = false;
+      stopAutoplay();
+    }, { passive: true });
+
+    row.addEventListener('touchmove', () => {
+      touchMoved = true;
+    }, { passive: true });
+
+    row.addEventListener('touchend', (event) => {
+      if (isDesktop() || !touchMoved) return;
+
+      const diff = touchStartX - event.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) advance(true);
+        else goToPrev(true);
+      }
+      startAutoplay();
+    }, { passive: true });
+
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !isDesktop()) startAutoplay();
+        else stopAutoplay();
+      });
+    }, { threshold: 0.2 });
+
+    visibilityObserver.observe(root);
+    window.addEventListener('resize', applyLayoutMode);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(applyLayoutMode);
     });
   }
 
-  // Inicializar en carga y en navegación Astro View Transitions
-  function setup() { initDiscoverCarousel(uid, total); }
+  function setup() {
+    initDiscoverCarousel(uid, total);
+  }
+
   document.addEventListener('astro:page-load', setup);
   document.addEventListener('astro:after-swap', setup);
   if (document.readyState !== 'loading') setup();
   else document.addEventListener('DOMContentLoaded', setup);
 </script>
+
+<style>
+  @media (max-width: 639px) {
+    [data-discover-instance] .discover-row-wrapper {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      overflow: hidden;
+    }
+
+    [data-discover-instance] .discover-row {
+      will-change: transform;
+      padding-left: max(16px, calc((100vw - min(82vw, 300px)) / 2));
+      padding-right: max(16px, calc((100vw - min(82vw, 300px)) / 2));
+      overflow: visible;
+      touch-action: pan-y;
+    }
+
+    [data-discover-instance] .discover-iframe-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    }
+  }
+</style>
