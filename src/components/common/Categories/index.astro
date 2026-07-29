@@ -10,19 +10,21 @@ interface Product {
 export interface Props {
   products: Product[];
   title?: string;
+  /** Si es true, muestra todos los productos en el carrusel (home). Por defecto solo 4. */
+  showAll?: boolean;
 }
 
 import { getLocale } from '../../../i18n/i18n';
 
 const {
   products = [],
-  title = 'Productos'
+  title = 'Productos',
+  showAll = false,
 } = Astro.props;
 
 const instanceId = `categories-${Math.random().toString(36).slice(2)}`;
 
-// Show up to 4 categories on desktop, and only 2 on mobile
-const displayProducts = products.slice(0, 4);
+const displayProducts = showAll ? products : products.slice(0, 4);
 
 const currentLang = getLocale();
 function slugify(input: string): string {
@@ -53,10 +55,10 @@ function productHref(p: Product): string {
   <div class="content-stretch flex flex-col gap-[10px] items-start justify-start relative shrink-0 w-full">
     <div class="categories-row-wrapper relative w-full -mx-4 md:mx-0">
       <!-- Products container: mobile horizontal scroll with snap; desktop 4-up -->
-      <div class="categories-row js-categories-row content-stretch flex items-stretch relative w-full min-w-0 gap-4 px-4 md:px-0">
+      <div class="categories-row js-categories-row content-stretch flex items-start relative w-full min-w-0 gap-4 px-4 md:px-0">
         {displayProducts.map((product) => {
           return (
-          <a href={productHref(product)} class="group categories-card flex flex-col h-[470px] w-[280px] lg:h-auto lg:w-auto shrink-0 opacity-0 translate-y-6 transition-all duration-700 ease-out" data-reveal-child>
+          <a href={productHref(product)} class="group categories-card flex flex-col h-auto w-[280px] lg:h-auto lg:w-auto shrink-0 opacity-0 translate-y-6 transition-all duration-700 ease-out" data-reveal-child>
             <div class="categories-card-media relative w-full h-[405px] lg:h-auto shrink-0">
               <div class="categories-card-bg absolute left-0 right-0 top-0 h-[99%] w-full rounded-lg pointer-events-none overflow-hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 377 375" fill="none" preserveAspectRatio="none" class="block w-full h-full">
@@ -68,8 +70,8 @@ function productHref(p: Product): string {
                 style={{ backgroundImage: `url('${product.image}')` }}
               ></div>
             </div>
-            <div class="font-sans leading-[0] not-italic text-black text-lg md:text-2xl tracking-[-1.5px] mt-4 md:mt-5 shrink-0">
-              <p class="leading-[25.465px] md:leading-tight md:font-bold">{product.title}</p>
+            <div class="categories-card-title font-sans not-italic text-black text-lg md:text-2xl tracking-[-1.5px] mt-4 md:mt-5 shrink-0 text-left w-full">
+              <p class="leading-snug md:leading-tight md:font-bold">{product.title}</p>
             </div>
           </a>
         )})}
@@ -349,7 +351,7 @@ function productHref(p: Product): string {
       aspect-ratio: 275 / 405;
     }
 
-    [data-categories-instance] .categories-card > .font-sans {
+    [data-categories-instance] .categories-card > .categories-card-title {
       width: 85%;
     }
 
@@ -364,15 +366,22 @@ function productHref(p: Product): string {
       width: 100vw;
       margin-left: calc(50% - 50vw);
       margin-right: calc(50% - 50vw);
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     [data-categories-instance] .categories-row {
       will-change: transform;
+      align-items: flex-start;
       padding-left: max(16px, calc((100vw - 280px) / 2));
       padding-right: max(16px, calc((100vw - 280px) / 2));
       overflow: visible;
       touch-action: pan-y;
+    }
+
+    [data-categories-instance] .categories-card {
+      height: auto !important;
+      min-height: 0;
     }
   }
 </style>
