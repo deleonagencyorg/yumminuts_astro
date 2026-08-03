@@ -1,0 +1,217 @@
+---
+import ProductCard from '../ProductCard/index.astro';
+import { getLocale } from '../../../i18n/i18n';
+
+export interface HomeProduct {
+  id: string;
+  title: string;
+  image: string;
+  bgColor: string;
+  slug?: string;
+  categoryKey?: string;
+}
+
+export interface Props {
+  products: HomeProduct[];
+  title?: string;
+}
+
+const currentLang = getLocale();
+const {
+  products = [],
+  title = currentLang === 'es' ? 'Nuestros Productos' : 'Our Products',
+} = Astro.props;
+
+const homeRowGroups: string[][] = [
+  ['manies'],
+  ['maranones', 'semillas'],
+  ['barras'],
+];
+
+function sortWithinCategory(products: HomeProduct[]): HomeProduct[] {
+  return [...products].sort((a, b) => a.title.localeCompare(b.title, currentLang));
+}
+
+const groupedRows = homeRowGroups
+  .map((keys) => sortWithinCategory(
+    products.filter((product) => keys.includes(product.categoryKey || ''))
+  ))
+  .filter((row) => row.length > 0);
+
+const sortedProducts = groupedRows.flat();
+
+const productsSegment = currentLang === 'es' ? 'productos' : 'products';
+const langPrefix = currentLang === 'es' ? 'es' : 'en';
+const loadMoreLabel = currentLang === 'es' ? 'Cargar más' : 'Load more';
+const instanceId = `home-products-${Math.random().toString(36).slice(2)}`;
+
+function productHref(product: HomeProduct): string {
+  return `/${langPrefix}/${productsSegment}/${product.slug || product.id}`;
+}
+---
+
+{sortedProducts.length > 0 && (
+  <div class="w-full" data-home-products-grid={instanceId} data-total-products={sortedProducts.length}>
+    <div class="text-left mb-10 md:mb-16 relative z-20" data-reveal-child>
+      <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+        {title}
+      </h2>
+    </div>
+
+    <div
+      id={`${instanceId}-grid`}
+      class="home-products-rows w-full"
+    >
+      {groupedRows.map((rowProducts, rowIndex) => (
+        <div class="home-products-row" data-row-index={rowIndex}>
+          {rowProducts.map((product, index) => (
+            <a
+              href={productHref(product)}
+              class="home-product-card block w-full min-w-0"
+              data-row={rowIndex}
+              data-index={index}
+            >
+              <ProductCard
+                title={product.title}
+                image={product.image}
+                bgColor={product.bgColor}
+              />
+            </a>
+          ))}
+        </div>
+      ))}
+    </div>
+
+    {sortedProducts.length > 0 && (
+      <div class="mt-8 w-full home-products-load-more-wrap hidden">
+        <button
+          type="button"
+          class="js-home-products-load-more filter-btn w-full text-center px-4 py-3 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white"
+          data-mobile-batch="1"
+          data-desktop-batch="1"
+        >
+          {loadMoreLabel}
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .home-products-rows {
+    --home-products-cols: 2;
+    --home-products-gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--home-products-gap) * 1.5);
+    width: 100%;
+  }
+
+  .home-products-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--home-products-gap);
+    width: 100%;
+  }
+
+  .home-products-row.hidden-row {
+    display: none !important;
+  }
+
+  .home-products-row .home-product-card {
+    width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
+    max-width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .home-products-rows {
+      --home-products-gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .home-products-row .home-product-card :global(.font-sans) {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .home-products-rows {
+      --home-products-cols: 4;
+      --home-products-gap: 1.5rem;
+    }
+
+    .home-products-row .home-product-card {
+      display: flex;
+      justify-content: center;
+    }
+
+    .home-products-row .home-product-card :global(.group) {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .home-products-row .home-product-card :global(.font-sans) {
+      font-size: 1.3rem;
+      line-height: 2rem;
+    }
+  }
+</style>
+
+<script define:vars={{ instanceId, totalRows: groupedRows.length }}>
+  function initHomeProductsGrid(instanceId, totalRows) {
+    const root = document.querySelector(`[data-home-products-grid="${instanceId}"]`);
+    if (!(root instanceof HTMLElement)) return;
+    if (root.dataset.homeProductsInit === 'true') return;
+    root.dataset.homeProductsInit = 'true';
+
+    const rowsContainer = root.querySelector('.home-products-rows');
+    const loadMoreWrap = root.querySelector('.home-products-load-more-wrap');
+    const loadMoreBtn = root.querySelector('.js-home-products-load-more');
+    if (!(rowsContainer instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
+
+    const rowBatch = Number(loadMoreBtn.dataset.mobileBatch) || 1;
+
+    const allRows = () => Array.from(rowsContainer.querySelectorAll('.home-products-row'));
+    const rowCount = () => Math.max(allRows().length, totalRows);
+
+    let visibleRows = Math.min(rowBatch, rowCount());
+
+    const updateVisible = () => {
+      const rows = allRows();
+      const count = rows.length;
+      visibleRows = Math.min(visibleRows, count);
+
+      rows.forEach((row, index) => {
+        row.classList.toggle('hidden-row', index >= visibleRows);
+      });
+
+      const hasMore = visibleRows < count;
+      if (loadMoreWrap instanceof HTMLElement) {
+        loadMoreWrap.classList.toggle('hidden', !hasMore);
+      }
+    };
+
+    loadMoreBtn.addEventListener('click', () => {
+      visibleRows = Math.min(visibleRows + rowBatch, allRows().length);
+      updateVisible();
+    });
+
+    updateVisible();
+  }
+
+  function setup() {
+    initHomeProductsGrid(instanceId, totalRows);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:after-swap', setup);
+</script>
