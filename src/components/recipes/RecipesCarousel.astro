@@ -127,9 +127,9 @@ const filterOptions = [
 
     <!-- Filtros desktop: botones -->
     {!providedMode && (
-    <div class="hidden md:flex md:justify-start md:gap-2.5 mb-6" id="recipesFilters" data-recipes-filters-desktop>
+    <div class="hidden md:flex md:justify-center md:gap-2.5 mb-6 px-4 md:px-0" id="recipesFilters" data-recipes-filters-desktop>
       {filterOptions.map((option) => (
-        <button type="button" data-filter={option.key} class="filter-btn text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
+        <button type="button" data-filter={option.key} class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white ring-2 ring-brown">
           {option.label}
         </button>
       ))}
@@ -220,8 +220,8 @@ const filterOptions = [
     
     <!-- Botón "Ver Todas" - oculto cuando se proveen items -->
     {!providedMode && (
-    <div class="mt-6 w-full">
-      <a href={`/${currentLang === 'es' ? 'es/recetas' : 'en/recipes'}`} class="block w-full text-center px-4 py-2 text-md rounded-md border bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
+    <div class="flex justify-center mt-6 w-full px-4 md:px-0">
+      <a href={`/${currentLang === 'es' ? 'es/recetas' : 'en/recipes'}`} class=" px-4 py-2 text-md rounded-md border  bg-secondary font-bold text-blue hover:bg-primary hover:text-white transition-colors">
         {textButton}
       </a>
     </div>
