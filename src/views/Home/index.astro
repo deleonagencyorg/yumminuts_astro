@@ -4,7 +4,7 @@ import LazyImage from '../../components/common/LazyImage.astro';
 import Carousel from '../../components/common/Carousel/index.astro';
 import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
-import Categories from '../../components/common/Categories/index.astro';
+import HomeProductsGrid from '../../components/common/HomeProductsGrid/index.astro';
 import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
 
 // Style Imports
@@ -32,7 +32,7 @@ const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
 const products = t('items', { namespace: 'products', locale: currentLang }) || [];
 
 // Build carousel cards from all products
-type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
+type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string; categoryKey?: string };
 
 function normalizeCategory(value: string): string {
   const v = (value || '').toLowerCase();
@@ -64,6 +64,7 @@ const productCards: CatProduct[] = (Array.isArray(products) ? products : [])
     image: typeof p.image === 'string' ? p.image : p.image?.url ?? '',
     bgColor: getProductBgColor(p),
     slug: p.slug || p.id,
+    categoryKey: normalizeCategory(p.category || p.name || ''),
   }));
 
 const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
@@ -143,10 +144,9 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
     {productCards.length > 0 && (
       <section class="w-full py-12 pt-16 bg-white reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
         <div class="container mx-auto px-4 bg-white">
-          <Categories
+          <HomeProductsGrid
             products={productCards}
             title={currentLang === 'es' ? 'Nuestros Productos' : 'Our Products'}
-            showAll={true}
           />
         </div>
       </section>
