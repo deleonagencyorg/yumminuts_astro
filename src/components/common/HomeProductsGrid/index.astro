@@ -1,0 +1,226 @@
+---
+import ProductCard from '../ProductCard/index.astro';
+import categoriesConfig from '../../../config/categories.json';
+import { getLocale } from '../../../i18n/i18n';
+
+export interface HomeProduct {
+  id: string;
+  title: string;
+  image: string;
+  bgColor: string;
+  slug?: string;
+  categoryKey?: string;
+}
+
+export interface Props {
+  products: HomeProduct[];
+  title?: string;
+}
+
+const currentLang = getLocale();
+const {
+  products = [],
+  title = currentLang === 'es' ? 'Nuestros Productos' : 'Our Products',
+} = Astro.props;
+
+const categoryOrder = ((categoriesConfig as any).categories || []).map((c: any) => c.key);
+
+const sortedProducts = [...products].sort((a, b) => {
+  const idxA = categoryOrder.indexOf(a.categoryKey || '');
+  const idxB = categoryOrder.indexOf(b.categoryKey || '');
+  const orderA = idxA === -1 ? categoryOrder.length : idxA;
+  const orderB = idxB === -1 ? categoryOrder.length : idxB;
+  if (orderA !== orderB) return orderA - orderB;
+  return a.title.localeCompare(b.title, currentLang);
+});
+
+const productsSegment = currentLang === 'es' ? 'productos' : 'products';
+const langPrefix = currentLang === 'es' ? 'es' : 'en';
+const loadMoreLabel = currentLang === 'es' ? 'Cargar más' : 'Load more';
+const instanceId = `home-products-${Math.random().toString(36).slice(2)}`;
+
+function productHref(product: HomeProduct): string {
+  return `/${langPrefix}/${productsSegment}/${product.slug || product.id}`;
+}
+---
+
+{sortedProducts.length > 0 && (
+  <div class="w-full" data-home-products-grid={instanceId} data-total-products={sortedProducts.length}>
+    <div class="text-left mb-10 md:mb-16 relative z-20" data-reveal-child>
+      <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
+        {title}
+      </h2>
+    </div>
+
+    <div
+      id={`${instanceId}-grid`}
+      class="home-products-grid w-full"
+    >
+      {sortedProducts.map((product, index) => (
+        <a
+          href={productHref(product)}
+          class="home-product-card block w-full min-w-0"
+          data-index={index}
+        >
+          <ProductCard
+            title={product.title}
+            image={product.image}
+            bgColor={product.bgColor}
+          />
+        </a>
+      ))}
+    </div>
+
+    {sortedProducts.length > 0 && (
+      <div class="mt-8 w-full home-products-load-more-wrap hidden">
+        <button
+          type="button"
+          class="js-home-products-load-more filter-btn w-full text-center px-4 py-3 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white"
+          data-mobile-batch="4"
+          data-desktop-batch="8"
+        >
+          {loadMoreLabel}
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .home-products-grid {
+    --home-products-cols: 2;
+    --home-products-gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--home-products-gap);
+  }
+
+  .home-products-grid .home-product-card {
+    width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
+    max-width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
+    min-width: 0;
+  }
+
+  .home-products-grid .home-product-card.hidden-card {
+    display: none !important;
+  }
+
+  @media (min-width: 640px) {
+    .home-products-grid {
+      --home-products-gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .home-products-grid .home-product-card :global(.product-card-media) {
+      height: auto !important;
+      aspect-ratio: 275 / 405;
+    }
+
+    .home-products-grid .home-product-card :global(.font-sans) {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .home-products-grid {
+      --home-products-cols: 4;
+      --home-products-gap: 1.5rem;
+    }
+
+    .home-products-grid .home-product-card {
+      display: flex;
+      justify-content: center;
+    }
+
+    .home-products-grid .home-product-card :global(.group) {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .home-products-grid .home-product-card :global(.product-card-media) {
+      width: 85%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .home-products-grid .home-product-card :global(.font-sans) {
+      width: 85%;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+  }
+</style>
+
+<script define:vars={{ instanceId, total: sortedProducts.length }}>
+  function initHomeProductsGrid(instanceId, total) {
+    const root = document.querySelector(`[data-home-products-grid="${instanceId}"]`);
+    if (!(root instanceof HTMLElement)) return;
+    if (root.dataset.homeProductsInit === 'true') return;
+    root.dataset.homeProductsInit = 'true';
+
+    const grid = root.querySelector('.home-products-grid');
+    const loadMoreWrap = root.querySelector('.home-products-load-more-wrap');
+    const loadMoreBtn = root.querySelector('.js-home-products-load-more');
+    if (!(grid instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
+
+    const totalProducts = Number(root.dataset.totalProducts) || 0;
+    const mobileBatch = Number(loadMoreBtn.dataset.mobileBatch) || 4;
+    const desktopBatch = Number(loadMoreBtn.dataset.desktopBatch) || 8;
+    const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
+
+    const getBatchSize = () => (isMobile() ? mobileBatch : desktopBatch);
+
+    const allCards = () => Array.from(grid.querySelectorAll('.home-product-card'));
+    const itemCount = () => Math.max(allCards().length, totalProducts);
+
+    let visibleCount = Math.min(getBatchSize(), itemCount());
+
+    const updateVisible = () => {
+      const items = allCards();
+      const count = items.length;
+      visibleCount = Math.min(visibleCount, count);
+
+      items.forEach((card, index) => {
+        card.classList.toggle('hidden-card', index >= visibleCount);
+      });
+
+      const hasMore = visibleCount < count;
+      if (loadMoreWrap instanceof HTMLElement) {
+        loadMoreWrap.classList.toggle('hidden', !hasMore);
+      }
+    };
+
+    loadMoreBtn.addEventListener('click', () => {
+      visibleCount = Math.min(visibleCount + getBatchSize(), allCards().length);
+      updateVisible();
+    });
+
+    const onResize = () => {
+      const batch = getBatchSize();
+      if (visibleCount < batch) {
+        visibleCount = Math.min(batch, itemCount());
+      }
+      updateVisible();
+    };
+
+    window.addEventListener('resize', onResize);
+    updateVisible();
+  }
+
+  function setup() {
+    initHomeProductsGrid(instanceId, total);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:after-swap', setup);
+</script>

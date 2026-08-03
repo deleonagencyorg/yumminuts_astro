@@ -55,6 +55,17 @@ const filterLabels = currentLang === 'es'
       dinner: 'Dinner'
     };
 
+const filterOptions = [
+  { key: 'all', label: filterLabels.all },
+  { key: 'breakfast', label: filterLabels.breakfast },
+  { key: 'snacks', label: filterLabels.snacks },
+  { key: 'lunch', label: filterLabels.lunch },
+  { key: 'dinner', label: filterLabels.dinner },
+];
+
+const loadMoreLabel = currentLang === 'es' ? 'Cargar más' : 'Load more';
+const filterAriaLabel = currentLang === 'es' ? 'Filtrar recetas' : 'Filter recipes';
+
 // Normaliza la categoría de receta.
 // Nota: en los JSON se usa "type" para cosas como el tipo de media (p.ej. "image").
 // Para los filtros debemos priorizar la propiedad "category" si existe.
@@ -86,13 +97,26 @@ function normalizeType(r: Recipe): string {
       <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
     </div>
 
-    <!-- Filter Buttons -->
-    <div id="recipeFilters" class="grid grid-cols-2 gap-3 mb-8 max-w-md mx-auto md:max-w-none md:grid-cols-5 md:gap-4 md:flex md:justify-center">
-      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="all">{filterLabels.all}</button>
-      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="breakfast">{filterLabels.breakfast}</button>
-      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="snacks">{filterLabels.snacks}</button>
-      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="lunch">{filterLabels.lunch}</button>
-      <button class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter="dinner">{filterLabels.dinner}</button>
+    <!-- Filtro mobile: selector -->
+    <div class="md:hidden mb-6 w-full">
+      <div class="recipes-filter-select-wrap relative w-full">
+        <select
+          id="recipeFilterSelect"
+          class="recipes-page-filter-select w-full text-left px-4 py-2 pr-10 rounded-md bg-secondary text-primary font-bold border border-white cursor-pointer"
+          aria-label={filterAriaLabel}
+        >
+          {filterOptions.map((option) => (
+            <option value={option.key}>{option.label}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <!-- Filtros desktop: botones -->
+    <div id="recipeFilters" class="hidden md:grid md:grid-cols-5 md:gap-4 mb-8">
+      {filterOptions.map((option) => (
+        <button type="button" class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white" data-filter={option.key}>{option.label}</button>
+      ))}
     </div>
 
     {allRecipes.length === 0 ? (
@@ -116,8 +140,18 @@ function normalizeType(r: Recipe): string {
       <div id="noResults" class="hidden mt-6 items-center justify-center h-48 md:h-64">
         <span class="text-white text-lg md:text-xl font-semibold">{noFilterResultsText}</span>
       </div>
-      <!-- Infinite scroll sentinel -->
-      <div id="infiniteSentinel" class="w-full h-10"></div>
+      <!-- Cargar más -->
+      <div id="recipesLoadMoreWrap" class="mt-8 mb-10 w-full hidden">
+        <button
+          type="button"
+          id="recipesLoadMoreBtn"
+          class="filter-btn w-full text-center px-4 py-3 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white"
+          data-mobile-batch="6"
+          data-desktop-batch="8"
+        >
+          {loadMoreLabel}
+        </button>
+      </div>
     )}
   </div>
 </div>
@@ -127,29 +161,30 @@ function normalizeType(r: Recipe): string {
     'use strict';
     
     function initRecipesPage() {
-      // Filters
-      const filterButtons = Array.from(document.querySelectorAll('#recipeFilters .filter-btn'));
+      const filtersContainer = document.getElementById('recipeFilters');
+      const filterSelect = document.getElementById('recipeFilterSelect');
+      const filterButtons = Array.from(filtersContainer?.querySelectorAll('.filter-btn') || []);
       const cards = Array.from(document.querySelectorAll('#recipesGrid .recipe-card'));
       const noResultsEl = document.getElementById('noResults');
-      const sentinel = document.getElementById('infiniteSentinel');
+      const loadMoreWrap = document.getElementById('recipesLoadMoreWrap');
+      const loadMoreBtn = document.getElementById('recipesLoadMoreBtn');
 
-      if (filterButtons.length === 0 || cards.length === 0) {
-        console.log('Recipes page elements not found, skipping initialization');
+      if (cards.length === 0) {
         return;
       }
 
-      // Pagination settings
-      const pageSize = 8;
+      const mobileBatch = Number(loadMoreBtn?.dataset.mobileBatch) || 6;
+      const desktopBatch = Number(loadMoreBtn?.dataset.desktopBatch) || 8;
+      const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
+      const getBatchSize = () => (isMobile() ? mobileBatch : desktopBatch);
+
       let currentFilter = 'all';
       let revealedCount = 0;
-      let observer = null;
 
-      // Hide all cards
       function hideAll() {
         cards.forEach((c) => (c.style.display = 'none'));
       }
 
-      // Get cards matching filter
       function getMatchingCards(filter) {
         return cards.filter((card) => {
           const type = (card.dataset.type || 'other').toLowerCase();
@@ -157,14 +192,19 @@ function normalizeType(r: Recipe): string {
         });
       }
 
-      // Reveal next page of matching cards
+      function updateLoadMoreVisibility() {
+        if (!loadMoreWrap) return;
+        const matching = getMatchingCards(currentFilter);
+        const hasMore = revealedCount < matching.length;
+        loadMoreWrap.classList.toggle('hidden', !hasMore);
+      }
+
       function revealNextPage() {
         const matching = getMatchingCards(currentFilter);
-        const nextBatch = matching.slice(revealedCount, revealedCount + pageSize);
+        const nextBatch = matching.slice(revealedCount, revealedCount + getBatchSize());
         nextBatch.forEach((card) => (card.style.display = ''));
         revealedCount += nextBatch.length;
 
-        // Toggle no-results
         const anyVisible = matching.length > 0;
         if (noResultsEl) {
           if (anyVisible) {
@@ -175,78 +215,75 @@ function normalizeType(r: Recipe): string {
             noResultsEl.classList.add('flex');
           }
         }
+
+        updateLoadMoreVisibility();
       }
 
-      // Apply filter and reset pagination
       function applyFilter(filter) {
         currentFilter = filter;
         revealedCount = 0;
         hideAll();
         revealNextPage();
-        setTimeout(() => {
-          if (sentinel) { 
-            const rect = sentinel.getBoundingClientRect();
-            if (rect.top < window.innerHeight) {
-              revealNextPage();
-            }
-            observer.disconnect();
-            observer.observe(sentinel);
-          }
-        }, 100);
       }
 
-      function setActive(btn) {
-        // Reset styles for all buttons
-        filterButtons.forEach(b => {
+      function setActiveButton(btn) {
+        filterButtons.forEach((b) => {
           b.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
-          // Asegurar texto blanco siempre
           b.classList.add('text-primary');
         });
-        // Highlight active
         btn.classList.add('bg-secondary', 'text-primary');
-        // Dim the rest
-        filterButtons.forEach(b => {
+        filterButtons.forEach((b) => {
           if (b !== btn) b.classList.add('opacity-40');
         });
       }
 
+      function setActiveFilter(filter) {
+        currentFilter = filter || 'all';
+
+        if (filterSelect instanceof HTMLSelectElement && filterSelect.value !== currentFilter) {
+          filterSelect.value = currentFilter;
+        }
+
+        const activeBtn = filterButtons.find((b) => b.getAttribute('data-filter') === currentFilter);
+        if (activeBtn) {
+          setActiveButton(activeBtn);
+        }
+
+        applyFilter(currentFilter);
+      }
+
       filterButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          const filter = btn.getAttribute('data-filter') || 'all';
-          setActive(btn);
-          applyFilter(filter);
+          setActiveFilter(btn.getAttribute('data-filter') || 'all');
         });
       });
 
-      // Initialize default state (ALL)
-      const defaultBtn = filterButtons.find(b => b.getAttribute('data-filter') === 'all');
-      if (defaultBtn) {
-        setActive(defaultBtn);
-        applyFilter('all');
+      if (filterSelect instanceof HTMLSelectElement) {
+        filterSelect.addEventListener('change', () => {
+          setActiveFilter(filterSelect.value || 'all');
+        });
       }
 
-      // Infinite scroll observer
-      if ('IntersectionObserver' in window && sentinel) {
-        // Cleanup previous observer if exists
-        if (observer) {
-          observer.disconnect();
-        }
-        
-        observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const matching = getMatchingCards(currentFilter);
-              if (revealedCount < matching.length) {
-                revealNextPage();
-              }
-            }
-          });
+      if (loadMoreBtn instanceof HTMLButtonElement) {
+        loadMoreBtn.addEventListener('click', () => {
+          revealNextPage();
         });
-        observer.observe(sentinel);
       }
+
+      setActiveFilter('all');
+
+      window.addEventListener('resize', () => {
+        const matching = getMatchingCards(currentFilter);
+        if (revealedCount < getBatchSize() && matching.length > 0) {
+          revealedCount = 0;
+          hideAll();
+          revealNextPage();
+        } else {
+          updateLoadMoreVisibility();
+        }
+      });
     }
 
-    // Initialize on different events
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initRecipesPage);
     } else {
@@ -259,7 +296,25 @@ function normalizeType(r: Recipe): string {
 </script>
 
 <style>
-  /* Active filter visual state (keeps tailwind classes consistent) */
+  .recipes-page-filter-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+  }
+
+  .recipes-page-filter-select::-ms-expand {
+    display: none;
+  }
+
+  .recipes-page-filter-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-brown, #8b4513);
+  }
+
   #recipeFilters .filter-btn.bg-brown {
     /* nothing else, class toggles handle colors */
   }

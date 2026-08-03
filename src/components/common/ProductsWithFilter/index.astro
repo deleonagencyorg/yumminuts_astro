@@ -76,6 +76,14 @@ function productHref(product: any): string {
   return `/${lang}/${seg}/${slug}`;
 }
 
+const allProductsLabel = currentLang === 'es' ? 'Todos los Productos' : 'All Products';
+const filterAriaLabel = currentLang === 'es' ? 'Filtrar productos' : 'Filter products';
+
+const filterOptions = [
+  { key: 'all', label: allProductsLabel },
+  ...filterCategories.map((category) => ({ key: category.key, label: category.name })),
+];
+
 ---
 
 <div class="products-with-filter w-full" data-products-with-filter>
@@ -85,30 +93,25 @@ function productHref(product: any): string {
     </h2>
   </div>
 
-  <!-- Filter Buttons -->
-  <div class="flex flex-wrap gap-3 mb-8 justify-left" id="productsFilters">
-      <button 
-        type="button" 
-        data-filter="all" 
-        class="category-filter active px-6 py-3 rounded-lg font-medium text-sm md:text-base transition-all duration-300 whitespace-nowrap"
+  <!-- Filtro: selector -->
+  <div class="mb-6 w-full">
+    <div class="relative w-full">
+      <select
+        data-products-filter-select
+        class="products-page-filter-select w-full text-left px-4 py-2 pr-10 rounded-md bg-secondary text-primary font-bold border border-white cursor-pointer"
+        aria-label={filterAriaLabel}
       >
-        {currentLang === 'es' ? 'Todos los Productos' : 'All Products'}
-      </button>
-      {filterCategories.map((category) => (
-        <button 
-          type="button" 
-          data-filter={category.key}
-          class="category-filter px-6 py-3 rounded-lg font-medium text-sm md:text-base transition-all duration-300 whitespace-nowrap"
-        >
-          {category.name}
-        </button>
-      ))}
+        {filterOptions.map((option) => (
+          <option value={option.key}>{option.label}</option>
+        ))}
+      </select>
     </div>
+  </div>
 
     <!-- Products Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12" id="productsGrid">
+    <div class="products-page-grid grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" id="productsGrid">
       {displayProducts.map((product: any) => (
-        <a href={productHref(product)} class="product-card group cursor-pointer block" data-category={getProductCategory(product)}>
+        <a href={productHref(product)} class="product-card group cursor-pointer block min-w-0" data-category={getProductCategory(product)}>
           <ProductCard 
             title={product.title || product.name}
             image={product.image || '/images/products/placeholder.jpg'}
@@ -138,43 +141,46 @@ function productHref(product: any): string {
 </div>
 
 <style>
-/* Filter button styles */
-.category-filter {
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: 2px solid transparent;
+.products-page-filter-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.25rem;
 }
 
-.category-filter:hover:not(.active) {
-  background-color: #e5e7eb;
-  transform: translateY(-2px);
+.products-page-filter-select::-ms-expand {
+  display: none;
 }
 
-.category-filter.active {
-  background-color: #3b82f6;
-  color: white;
-  border-color: #1d4ed8;
+.products-page-filter-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-brown, #8b4513);
 }
 
 /* Product card animations */
 .product-card {
   opacity: 1;
   transform: scale(1);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .product-card.hidden {
-  opacity: 0;
-  transform: scale(0.95);
-  pointer-events: none;
+  display: none !important;
 }
 
-/* Text clamp utility */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+@media (max-width: 1023px) {
+  #productsGrid .product-card :global(.product-card-media) {
+    height: auto !important;
+    aspect-ratio: 275 / 405;
+  }
+
+  #productsGrid .product-card :global(.font-sans) {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -184,28 +190,41 @@ function productHref(product: any): string {
   }
 
   #productsGrid .product-card :global(.group) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #productsGrid .product-card :global(.product-card-media) {
     width: 85%;
-    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #productsGrid .product-card :global(.font-sans) {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 }
 </style>
 
 <script>
-  function initProductsFilters() {
-    const root = document.currentScript?.closest('[data-products-with-filter]') || document;
-    const filtersEl = root.querySelector('#productsFilters');
+  function initProductsFilters(root: Element) {
+    if ((root as HTMLElement).dataset?.productsFiltersBound === '1') return;
+
+    const filterSelect = root.querySelector('[data-products-filter-select]');
     const gridEl = root.querySelector('#productsGrid');
     const noProductsMessage = root.querySelector('#noProductsMessage');
 
-    if (!filtersEl || !gridEl) return;
-    if ((filtersEl as any).dataset?.productsFiltersBound === '1') return;
+    if (!gridEl || !(filterSelect instanceof HTMLSelectElement)) return;
 
-    const filterButtons = Array.from(filtersEl.querySelectorAll('.category-filter'));
     const productCards = Array.from(gridEl.querySelectorAll('.product-card'));
 
-    if (!filterButtons.length || !productCards.length) return;
+    if (!productCards.length) return;
 
-    (filtersEl as any).dataset.productsFiltersBound = '1';
+    (root as HTMLElement).dataset.productsFiltersBound = '1';
 
     function apply(category: string) {
       let visibleCount = 0;
@@ -220,24 +239,32 @@ function productHref(product: any): string {
       }
     }
 
-    filterButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const category = button.getAttribute('data-filter') || 'all';
-        filterButtons.forEach((b) => b.classList.remove('active'));
-        button.classList.add('active');
-        apply(category);
-      });
+    function setActiveFilter(category: string) {
+      const filter = category || 'all';
+      if (filterSelect.value !== filter) {
+        filterSelect.value = filter;
+      }
+      apply(filter);
+    }
+
+    filterSelect.addEventListener('change', () => {
+      setActiveFilter(filterSelect.value || 'all');
     });
 
-    // Initial state
-    apply('all');
+    setActiveFilter('all');
+  }
+
+  function initAll() {
+    document.querySelectorAll('[data-products-with-filter]').forEach((root) => {
+      initProductsFilters(root);
+    });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProductsFilters);
+    document.addEventListener('DOMContentLoaded', initAll);
   } else {
-    initProductsFilters();
+    initAll();
   }
-  document.addEventListener('astro:page-load', initProductsFilters);
-  document.addEventListener('astro:after-swap', initProductsFilters);
+  document.addEventListener('astro:page-load', initAll);
+  document.addEventListener('astro:after-swap', initAll);
 </script>
