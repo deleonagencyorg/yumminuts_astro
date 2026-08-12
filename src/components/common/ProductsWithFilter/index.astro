@@ -58,7 +58,29 @@ function getProductCategory(product: any): string {
 }
 
 // Display products (limit to 6 if not showing all)
-const displayProducts = showAllProducts ? productItems : productItems.slice(0, 6);
+const sourceProducts = showAllProducts ? productItems : productItems.slice(0, 6);
+
+const productRowGroups: string[][] = [
+  ['manies'],
+  ['maranones', 'semillas'],
+  ['barras'],
+];
+
+function getProductTitle(product: any): string {
+  return String(product?.title || product?.name || '');
+}
+
+function sortWithinCategory(items: any[]): any[] {
+  return [...items].sort((a, b) =>
+    getProductTitle(a).localeCompare(getProductTitle(b), currentLang)
+  );
+}
+
+const groupedRows = productRowGroups
+  .map((keys) => sortWithinCategory(
+    sourceProducts.filter((product) => keys.includes(getProductCategory(product)))
+  ))
+  .filter((row) => row.length > 0);
 
 function slugify(input: string): string {
   return (input || '')
@@ -109,16 +131,20 @@ const filterOptions = [
   </div>
 
     <!-- Products Grid -->
-    <div class="products-page-grid grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" id="productsGrid">
-      {displayProducts.map((product: any) => (
-        <a href={productHref(product)} class="product-card group cursor-pointer block min-w-0" data-category={getProductCategory(product)}>
-          <ProductCard 
-            title={product.title || product.name}
-            image={product.image || '/images/products/placeholder.jpg'}
-            bgColor={(product.background_color || product.color_button || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
-            description={product.description}
-          />
-        </a>
+    <div class="products-page-rows w-full" id="productsGrid">
+      {groupedRows.map((rowProducts, rowIndex) => (
+        <div class="products-page-row" data-row-index={rowIndex}>
+          {rowProducts.map((product: any) => (
+            <a href={productHref(product)} class="product-card group cursor-pointer block min-w-0" data-category={getProductCategory(product)}>
+              <ProductCard 
+                title={getProductTitle(product)}
+                image={product.image || '/images/products/placeholder.jpg'}
+                bgColor={(product.background_color || product.color_button || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
+                description={product.description}
+              />
+            </a>
+          ))}
+        </div>
       ))}
     </div>
 
@@ -171,41 +197,65 @@ const filterOptions = [
   display: none !important;
 }
 
-@media (max-width: 1023px) {
-  #productsGrid .product-card :global(.product-card-media) {
-    height: auto !important;
-    aspect-ratio: 275 / 405;
-  }
+.products-page-rows {
+  --products-page-cols: 2;
+  --products-page-gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--products-page-gap) * 1.5);
+  width: 100%;
+}
 
-  #productsGrid .product-card :global(.font-sans) {
+.products-page-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--products-page-gap);
+  width: 100%;
+}
+
+.products-page-row.hidden-row {
+  display: none !important;
+}
+
+.products-page-row .product-card {
+  width: calc((100% - (var(--products-page-cols) - 1) * var(--products-page-gap)) / var(--products-page-cols));
+  max-width: calc((100% - (var(--products-page-cols) - 1) * var(--products-page-gap)) / var(--products-page-cols));
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .products-page-rows {
+    --products-page-gap: 1.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .products-page-row .product-card :global(.font-sans) {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
 }
 
 @media (min-width: 1024px) {
-  #productsGrid .product-card {
+  .products-page-rows {
+    --products-page-cols: 4;
+    --products-page-gap: 1.5rem;
+  }
+
+  .products-page-row .product-card {
     display: flex;
     justify-content: center;
   }
 
-  #productsGrid .product-card :global(.group) {
+  .products-page-row .product-card :global(.group) {
     width: 100%;
     max-width: 100%;
   }
 
-  #productsGrid .product-card :global(.product-card-media) {
-    width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  #productsGrid .product-card :global(.font-sans) {
-    width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
+  .products-page-row .product-card :global(.font-sans) {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 }
 </style>
@@ -221,6 +271,7 @@ const filterOptions = [
     if (!gridEl || !(filterSelect instanceof HTMLSelectElement)) return;
 
     const productCards = Array.from(gridEl.querySelectorAll('.product-card'));
+    const productRows = Array.from(gridEl.querySelectorAll('.products-page-row'));
 
     if (!productCards.length) return;
 
@@ -234,6 +285,12 @@ const filterOptions = [
         card.classList.toggle('hidden', !shouldShow);
         if (shouldShow) visibleCount++;
       });
+
+      productRows.forEach((row) => {
+        const visibleInRow = row.querySelectorAll('.product-card:not(.hidden)').length;
+        row.classList.toggle('hidden-row', visibleInRow === 0);
+      });
+
       if (noProductsMessage) {
         noProductsMessage.classList.toggle('hidden', visibleCount !== 0);
       }

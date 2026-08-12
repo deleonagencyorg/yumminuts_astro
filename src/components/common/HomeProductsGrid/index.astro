@@ -1,6 +1,5 @@
 ---
 import ProductCard from '../ProductCard/index.astro';
-import categoriesConfig from '../../../config/categories.json';
 import { getLocale } from '../../../i18n/i18n';
 
 export interface HomeProduct {
@@ -23,16 +22,23 @@ const {
   title = currentLang === 'es' ? 'Nuestros Productos' : 'Our Products',
 } = Astro.props;
 
-const categoryOrder = ((categoriesConfig as any).categories || []).map((c: any) => c.key);
+const homeRowGroups: string[][] = [
+  ['manies'],
+  ['maranones', 'semillas'],
+  ['barras'],
+];
 
-const sortedProducts = [...products].sort((a, b) => {
-  const idxA = categoryOrder.indexOf(a.categoryKey || '');
-  const idxB = categoryOrder.indexOf(b.categoryKey || '');
-  const orderA = idxA === -1 ? categoryOrder.length : idxA;
-  const orderB = idxB === -1 ? categoryOrder.length : idxB;
-  if (orderA !== orderB) return orderA - orderB;
-  return a.title.localeCompare(b.title, currentLang);
-});
+function sortWithinCategory(products: HomeProduct[]): HomeProduct[] {
+  return [...products].sort((a, b) => a.title.localeCompare(b.title, currentLang));
+}
+
+const groupedRows = homeRowGroups
+  .map((keys) => sortWithinCategory(
+    products.filter((product) => keys.includes(product.categoryKey || ''))
+  ))
+  .filter((row) => row.length > 0);
+
+const sortedProducts = groupedRows.flat();
 
 const productsSegment = currentLang === 'es' ? 'productos' : 'products';
 const langPrefix = currentLang === 'es' ? 'es' : 'en';
@@ -54,20 +60,25 @@ function productHref(product: HomeProduct): string {
 
     <div
       id={`${instanceId}-grid`}
-      class="home-products-grid w-full"
+      class="home-products-rows w-full"
     >
-      {sortedProducts.map((product, index) => (
-        <a
-          href={productHref(product)}
-          class="home-product-card block w-full min-w-0"
-          data-index={index}
-        >
-          <ProductCard
-            title={product.title}
-            image={product.image}
-            bgColor={product.bgColor}
-          />
-        </a>
+      {groupedRows.map((rowProducts, rowIndex) => (
+        <div class="home-products-row" data-row-index={rowIndex}>
+          {rowProducts.map((product, index) => (
+            <a
+              href={productHref(product)}
+              class="home-product-card block w-full min-w-0"
+              data-row={rowIndex}
+              data-index={index}
+            >
+              <ProductCard
+                title={product.title}
+                image={product.image}
+                bgColor={product.bgColor}
+              />
+            </a>
+          ))}
+        </div>
       ))}
     </div>
 
@@ -76,8 +87,8 @@ function productHref(product: HomeProduct): string {
         <button
           type="button"
           class="js-home-products-load-more filter-btn w-full text-center px-4 py-3 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white"
-          data-mobile-batch="4"
-          data-desktop-batch="8"
+          data-mobile-batch="1"
+          data-desktop-batch="1"
         >
           {loadMoreLabel}
         </button>
@@ -87,133 +98,113 @@ function productHref(product: HomeProduct): string {
 )}
 
 <style>
-  .home-products-grid {
+  .home-products-rows {
     --home-products-cols: 2;
     --home-products-gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--home-products-gap) * 1.5);
+    width: 100%;
+  }
+
+  .home-products-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--home-products-gap);
+    width: 100%;
   }
 
-  .home-products-grid .home-product-card {
+  .home-products-row.hidden-row {
+    display: none !important;
+  }
+
+  .home-products-row .home-product-card {
     width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
     max-width: calc((100% - (var(--home-products-cols) - 1) * var(--home-products-gap)) / var(--home-products-cols));
     min-width: 0;
   }
 
-  .home-products-grid .home-product-card.hidden-card {
-    display: none !important;
-  }
-
   @media (min-width: 640px) {
-    .home-products-grid {
+    .home-products-rows {
       --home-products-gap: 1.5rem;
     }
   }
 
   @media (max-width: 1023px) {
-    .home-products-grid .home-product-card :global(.product-card-media) {
-      height: auto !important;
-      aspect-ratio: 275 / 405;
-    }
-
-    .home-products-grid .home-product-card :global(.font-sans) {
+    .home-products-row .home-product-card :global(.font-sans) {
       font-size: 1.25rem;
       line-height: 1.75rem;
     }
   }
 
   @media (min-width: 1024px) {
-    .home-products-grid {
+    .home-products-rows {
       --home-products-cols: 4;
       --home-products-gap: 1.5rem;
     }
 
-    .home-products-grid .home-product-card {
+    .home-products-row .home-product-card {
       display: flex;
       justify-content: center;
     }
 
-    .home-products-grid .home-product-card :global(.group) {
+    .home-products-row .home-product-card :global(.group) {
       width: 100%;
       max-width: 100%;
     }
 
-    .home-products-grid .home-product-card :global(.product-card-media) {
-      width: 85%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .home-products-grid .home-product-card :global(.font-sans) {
-      width: 85%;
-      margin-left: auto;
-      margin-right: auto;
+    .home-products-row .home-product-card :global(.font-sans) {
       font-size: 1.3rem;
       line-height: 2rem;
     }
   }
 </style>
 
-<script define:vars={{ instanceId, total: sortedProducts.length }}>
-  function initHomeProductsGrid(instanceId, total) {
+<script define:vars={{ instanceId, totalRows: groupedRows.length }}>
+  function initHomeProductsGrid(instanceId, totalRows) {
     const root = document.querySelector(`[data-home-products-grid="${instanceId}"]`);
     if (!(root instanceof HTMLElement)) return;
     if (root.dataset.homeProductsInit === 'true') return;
     root.dataset.homeProductsInit = 'true';
 
-    const grid = root.querySelector('.home-products-grid');
+    const rowsContainer = root.querySelector('.home-products-rows');
     const loadMoreWrap = root.querySelector('.home-products-load-more-wrap');
     const loadMoreBtn = root.querySelector('.js-home-products-load-more');
-    if (!(grid instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
+    if (!(rowsContainer instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
 
-    const totalProducts = Number(root.dataset.totalProducts) || 0;
-    const mobileBatch = Number(loadMoreBtn.dataset.mobileBatch) || 4;
-    const desktopBatch = Number(loadMoreBtn.dataset.desktopBatch) || 8;
-    const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
+    const rowBatch = Number(loadMoreBtn.dataset.mobileBatch) || 1;
 
-    const getBatchSize = () => (isMobile() ? mobileBatch : desktopBatch);
+    const allRows = () => Array.from(rowsContainer.querySelectorAll('.home-products-row'));
+    const rowCount = () => Math.max(allRows().length, totalRows);
 
-    const allCards = () => Array.from(grid.querySelectorAll('.home-product-card'));
-    const itemCount = () => Math.max(allCards().length, totalProducts);
-
-    let visibleCount = Math.min(getBatchSize(), itemCount());
+    let visibleRows = Math.min(rowBatch, rowCount());
 
     const updateVisible = () => {
-      const items = allCards();
-      const count = items.length;
-      visibleCount = Math.min(visibleCount, count);
+      const rows = allRows();
+      const count = rows.length;
+      visibleRows = Math.min(visibleRows, count);
 
-      items.forEach((card, index) => {
-        card.classList.toggle('hidden-card', index >= visibleCount);
+      rows.forEach((row, index) => {
+        row.classList.toggle('hidden-row', index >= visibleRows);
       });
 
-      const hasMore = visibleCount < count;
+      const hasMore = visibleRows < count;
       if (loadMoreWrap instanceof HTMLElement) {
         loadMoreWrap.classList.toggle('hidden', !hasMore);
       }
     };
 
     loadMoreBtn.addEventListener('click', () => {
-      visibleCount = Math.min(visibleCount + getBatchSize(), allCards().length);
+      visibleRows = Math.min(visibleRows + rowBatch, allRows().length);
       updateVisible();
     });
 
-    const onResize = () => {
-      const batch = getBatchSize();
-      if (visibleCount < batch) {
-        visibleCount = Math.min(batch, itemCount());
-      }
-      updateVisible();
-    };
-
-    window.addEventListener('resize', onResize);
     updateVisible();
   }
 
   function setup() {
-    initHomeProductsGrid(instanceId, total);
+    initHomeProductsGrid(instanceId, totalRows);
   }
 
   if (document.readyState === 'loading') {
