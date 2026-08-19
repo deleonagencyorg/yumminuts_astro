@@ -35,7 +35,7 @@
     },
     "phone": {
       "label": "Número de celular",
-      "placeholder": "1234-56789",
+      "placeholder": "Teléfono",
       "required": false
     },
     "message": {
