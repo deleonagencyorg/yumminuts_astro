@@ -68,7 +68,7 @@
         "id": "slide1",
         "type": "video",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "mobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Videovertical-home-mov.webm",
         "alt": "Yummi Nuts",
         "title": "",
         "description": "",
@@ -142,55 +142,55 @@
         {
           "id": "video1",
           "url": "https://www.youtube.com/embed/AVOMZkoahhw",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-1.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap1.webp",
           "title": "Natalia and YummiNuts tell us about Mindful Eating"
         },
         {
           "id": "video2",
           "url": "https://www.youtube.com/embed/jV8qCeP-Fp0",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-2.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap2.webp",
           "title": "Mindful Eating with Yummi Nuts"
         },
         {
           "id": "video3",
           "url": "https://www.youtube.com/embed/RZWuIvyxjiY",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-3.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap3.webp",
           "title": "The Role of Carbohydrates in Your Diet"
         },
         {
           "id": "video4",
           "url": "https://www.youtube.com/embed/KzgnTHbebzc",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-4.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap4.webp",
           "title": "Proteins in Our Diet"
         },
         {
           "id": "video5",
           "url": "https://www.youtube.com/embed/sYBax1yU3j8",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-5.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap5.webp",
           "title": "How Much Do I Need to Eat?"
         },
         {
           "id": "video6",
           "url": "https://www.youtube.com/embed/T2nWko83keI",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-6.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap6.webp",
           "title": "How to Recognize Hunger Signals?"
         },
         {
           "id": "video7",
           "url": "https://www.youtube.com/embed/zdNXdG9AsS8",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-7.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap7.webp",
           "title": "Hunger Triggers"
         },
         {
           "id": "video8",
           "url": "https://www.youtube.com/embed/j0nJbP00V9c",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-8.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap8.webp",
           "title": "Am I Really Hungry?"
         },
         {
           "id": "video10",
           "url": "https://www.youtube.com/embed/cRQ2LjO1syo",
-          "thumbnail":"https://snack.yummiespromociones.com/yumminuts/Tennis-Video.jpg",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap9.webp",
           "title": "Recharge Your Energy with Yummi Nuts"
         }
       ]

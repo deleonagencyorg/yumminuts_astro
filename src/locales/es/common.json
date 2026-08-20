@@ -68,7 +68,7 @@
         "id": "slide1",
         "type": "video",
         "desktop": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/yumminutsvideo.mp4",
+        "mobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Videovertical-home-mov.webm",
         "alt": "Yummi Nuts",
         "title": "",
         "description": "",
@@ -137,55 +137,55 @@
         {
           "id": "video1",
           "url": "https://www.youtube.com/embed/AVOMZkoahhw",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-1.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap1.webp",
           "title": "Natalia y YummiNuts nos cuentan sobre la Alimentación Consciente"
         },
         {
           "id": "video2",
           "url": "https://www.youtube.com/embed/jV8qCeP-Fp0",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-2.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap2.webp",
           "title": "Alimentación consciente con Yummi Nuts"
         },
         {
           "id": "video3",
           "url": "https://www.youtube.com/embed/RZWuIvyxjiY",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-3.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap3.webp",
           "title": "El papel de los carbohidratos en tu alimentación"
         },
         {
           "id": "video4",
           "url": "https://www.youtube.com/embed/KzgnTHbebzc",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-4.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap4.webp",
           "title": "Las proteínas en nuestra alimentación"
         },
         {
           "id": "video5",
           "url": "https://www.youtube.com/embed/sYBax1yU3j8",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-5.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap5.webp",
           "title": "¿Cuánto necesito comer?"
         },
         {
           "id": "video6",
           "url": "https://www.youtube.com/embed/T2nWko83keI",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-6.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap6.webp",
           "title": "¿Cómo reconocer las señales de hambre?"
         },
         {
           "id": "video7",
           "url": "https://www.youtube.com/embed/zdNXdG9AsS8",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-7.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap7.webp",
           "title": "Detonantes del hambre"
         },
         {
           "id": "video8",
           "url": "https://www.youtube.com/embed/j0nJbP00V9c",
-          "thumbnail": "https://snack.yummiespromociones.com/yumminuts/Alimentacion-8.png",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap8.webp",
           "title": "¿Realmente tengo hambre?"
         },
         {
           "id": "video10",
           "url": "https://www.youtube.com/embed/cRQ2LjO1syo",
-          "thumbnail":"https://snack.yummiespromociones.com/yumminuts/Tennis-Video.jpg",
+          "thumbnail": "https://snack.yummiespromociones.com/SnacksyummiesAssets/Cap9.webp",
           "title": "Recargate de energía con Yummi Nuts"
         }
       ]

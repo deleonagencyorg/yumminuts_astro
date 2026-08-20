@@ -10,8 +10,8 @@
     "slider": [
       {
         "id": "slide1",
-        "desktop": "https://snack.yummiespromociones.com/yumminuts/banner-productos.png",
-        "mobile": "https://snack.yummiespromociones.com/yumminuts/mobileproducts.jpg",
+        "desktop": "https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_BANNERS-WEB_DESKTOP.webp",
+        "mobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_BANNERS-WEB_MOBILE.webp",
         "alt": "Home Yumminuts",
         "title": "",
         "description": "",
