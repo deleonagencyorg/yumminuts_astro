@@ -2,10 +2,9 @@
 // src/components/common/Footer/index.astro
 import { t, type Locale } from '../../../i18n/i18n';
 import { getRouteById } from '../../../config/routes';
-import { logos } from '../../../config/assets';
 import './styles.css';
 import Skeleton from './Skeleton.astro';
-import LazyImage from '../LazyImage.astro';
+import { getFooterLabels } from '../../../services/api/footer';
 
 export interface Props {
   currentLang: Locale;
@@ -14,34 +13,11 @@ export interface Props {
 
 const { currentLang, loading = false } = Astro.props;
 
-// Obtener textos del footer desde los archivos de traducción
-const mainText = t('footer.main_text', { namespace: 'common', locale: currentLang });
-const description = t('footer.description', { namespace: 'common', locale: currentLang });
-const followUs = t('footer.follow_us', { namespace: 'common', locale: currentLang });
-const contactUs = t('footer.contact_us', { namespace: 'common', locale: currentLang });
-const choose = t('footer.choose', { namespace: 'common', locale: currentLang });
-const instagramText = t('footer.instagram_text', { namespace: 'common', locale: currentLang });
-const facebookText = t('footer.facebook_text', { namespace: 'common', locale: currentLang });
-const email = t('footer.email', { namespace: 'common', locale: currentLang });
-const copyrightText = t('footer.copyright', { namespace: 'common', locale: currentLang });
+const footer = await getFooterLabels(currentLang);
 
-
-// Social media URLs
 const instagramUrl = t('social_media.instagram.url', { namespace: 'common', locale: currentLang });
 const facebookUrl = t('social_media.facebook.url', { namespace: 'common', locale: currentLang });
-const instagramIconUrl = t('social_media.instagram.iconUrl', { namespace: 'common', locale: currentLang });
-const facebookIconUrl = t('social_media.facebook.iconUrl', { namespace: 'common', locale: currentLang });
-const twitterUrl = t('social_media.twitter.url', { namespace: 'common', locale: currentLang });
-const twitterIconUrl = t('social_media.twitter.iconUrl', { namespace: 'common', locale: currentLang });
-const twitterText = t('social_media.twitter.text', { namespace: 'common', locale: currentLang });
-const youtubeUrl = t('social_media.youtube.url', { namespace: 'common', locale: currentLang });
-const youtubeIconUrl = t('social_media.youtube.iconUrl', { namespace: 'common', locale: currentLang });
-const youtubeText = t('social_media.youtube.text', { namespace: 'common', locale: currentLang });
 
-// Obtener el logo específico de Yumminuts desde brands.json
-const logoYumminuts = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp';
-
-// Helper: build localized path from a route ID
 function langPath(routeId: string): string {
   const route = getRouteById(routeId);
   if (!route) return `/${currentLang}`;
@@ -52,17 +28,17 @@ function langPath(routeId: string): string {
 
 {loading ? (
   <Skeleton />
-) : (
+) : footer ? (
   <footer class="bg-secondary text-primary relative overflow-hidden py-8 md:py-16">
     <div class="container mx-auto px-4 md:px-6 py-4 md:py-8 flex flex-col md:flex-row items-start gap-8 md:gap-12 justify-center mb-8">
       <div class="flex flex-col gap-6 md:gap-8 items-start justify-start w-full md:w-auto">
         <div class="font-title font-normal text-primary w-full">
           <div class="flex flex-col gap-4 items-start justify-start">
             <h3 class="text-2xl md:text-3xl font-bold">
-              {t('footer.newsletter', { namespace: 'common', locale: currentLang })}
+              {footer.newsletter}
             </h3>
             <p class="text-base md:text-lg mb-2">
-              {currentLang === 'es' ? 'Únete a nuestra comunidad registrándote en' : 'Join our community by registering in'}
+              {footer.newsletterDescription}
             </p>
           </div>
           <div class="mt-4 w-full sm:w-auto">
@@ -77,20 +53,20 @@ function langPath(routeId: string): string {
         <!-- Columna HOME -->
         <div class="flex flex-col gap-6 md:gap-8">
           <div class="font-title text-xl sm:text-2xl md:text-3xl font-bold text-primary">
-            {t('footer.home', { namespace: 'common', locale: currentLang })}
+            {footer.home}
           </div>
           <div class="flex flex-col font-sans gap-3 md:gap-4 items-start justify-start text-primary text-base md:text-lg">
-            <a href={langPath('products')} class="hover:underline hover:text-blue">{t('footer.products', { namespace: 'common', locale: currentLang })}</a>
-            <a href={langPath('health')} class="hover:underline hover:text-blue">{t('footer.health', { namespace: 'common', locale: currentLang })}</a>
-            <a href={langPath('news')} class="hover:underline hover:text-blue">{t('footer.latest_news', { namespace: 'common', locale: currentLang })}</a>
-            <a href={langPath('contact')} class="hover:underline hover:text-blue">{t('footer.contact', { namespace: 'common', locale: currentLang })}</a>
+            <a href={langPath('products')} class="hover:underline hover:text-blue">{footer.products}</a>
+            <a href={langPath('health')} class="hover:underline hover:text-blue">{footer.health}</a>
+            <a href={langPath('news')} class="hover:underline hover:text-blue">{footer.latestNews}</a>
+            <a href={langPath('contact')} class="hover:underline hover:text-blue">{footer.contact}</a>
           </div>
         </div>
 
         <!-- Columna HELP -->
         <div class="flex flex-col gap-6 md:gap-8">
           <div class="font-title text-xl sm:text-2xl md:text-3xl font-bold text-primary">
-            {t('footer.help', { namespace: 'common', locale: currentLang })}
+            {footer.help}
           </div>
           <div class="flex gap-4 items-center">
             <a href={instagramUrl} target="_blank" rel="noopener noreferrer" class="hover:text-blue hover:scale-110 transition-transform">
@@ -111,7 +87,7 @@ function langPath(routeId: string): string {
         <!-- Columna CONTACTO (Teléfonos) -->
         <div class="col-span-2 w-[100%] mx-auto flex flex-col items-center gap-6 md:gap-8 md:items-start md:w-auto md:mx-0">
           <div class="font-title text-lg sm:text-2xl font-bold text-center md:text-left uppercase">
-            {currentLang === 'es' ? 'Contacto' : 'Contact'}
+            {footer.contactUs}
           </div>
               <ul class="grid grid-cols-2 font-sans gap-4 md:gap-2 text-sm md:text-lg justify-items-center md:grid-cols-1 justify-items-center md:justify-items-start [&>li]:whitespace-nowrap">
               <li class="flex items-center gap-2">
@@ -146,49 +122,9 @@ function langPath(routeId: string): string {
     <!-- Copyright Section -->
     <div class="container mx-auto px-4 md:px-6 mt-8 text-center">
       <p class="text-xs md:text-sm text-primary opacity-80">
-        &copy; {new Date().getFullYear()} Yummi Nuts. {copyrightText || 'Todos los derechos reservados.'}
+        &copy; {new Date().getFullYear()} Yummi Nuts. {footer.copyright || 'Todos los derechos reservados.'}
       </p>
     </div>
-    
-    {/* <div class="w-full bg-blue mt-6 pt-6 mb-8">
-        <div class="container mx-auto mb-8">
-          <div class="text-center mb-4">
-            <h3 class="text-white  font-sans text-xl font-medium">DINANT - Contacto</h3>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 justify-items-center text-white mb-8 py-4">
-            <!-- Guatemala -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="Guatemala">🇬🇹</span>
-              <span>(+502) 2502-7050</span>
-            </div>
-            <!-- El Salvador -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="El Salvador">🇸🇻</span>
-              <span>(+503) 2510-8300</span>
-            </div>
-            <!-- Costa Rica -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="Costa Rica">🇨🇷</span>
-              <span>(+506) 2234-7259</span>
-            </div>
-            <!-- República Dominicana -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="República Dominicana">🇩🇴</span>
-              <span>01 809-273 1042</span>
-            </div>
-            <!-- Nicaragua -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="Nicaragua">🇳🇮</span>
-              <span>2275-3370</span>
-            </div>
-            <!-- Honduras -->
-            <div class="flex items-center space-x-2">
-              <span class="text-2xl" role="img" aria-label="Honduras">🇭🇳</span>
-              <span>(+505) 2255-7480</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
   </footer>
-)}
+) : null}
 

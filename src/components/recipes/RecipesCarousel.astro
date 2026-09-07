@@ -99,6 +99,13 @@ const hasMultipleRecipes = recipeItems.length > 1;
       </button>
     </div>
     )}
+
+    {recipeItems.length === 0 ? (
+      <p class="text-center text-gray-500 py-8">
+        {currentLang === 'es' ? 'No hay recetas disponibles en este momento.' : 'No recipes available at this time.'}
+      </p>
+    ) : (
+    <>
      
     <!-- Carousel de recetas - MOBILE (1 por slide) - Solo visible en mobile -->
     <div class="recipes-carousel-mobile relative md:hidden">
@@ -190,7 +197,8 @@ const hasMultipleRecipes = recipeItems.length > 1;
       </a>
     </div>
     )}
-      </>
+    </>
+    )}
   </div>
 </div>
 

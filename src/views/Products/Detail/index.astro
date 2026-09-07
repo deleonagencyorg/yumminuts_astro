@@ -16,6 +16,7 @@ import Discover from '../../../components/common/Discover/index.astro';
 import categoriesConfig from '../../../config/categories.json';
 import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
 import { getAllProducts } from '../../../services/api/products';
+import { getDiscoverSection } from '../../../services/api/descubrenos';
 
 // Interfaces locales
 interface ProductSize {
@@ -45,10 +46,7 @@ const { currentLang, productId, product } = Astro.props as {
 };
 //console.log('[product del cms]', JSON.stringify(product, null, 2));
 
-// Datos que aún vienen del sistema local
-const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
-const slides = commonAssets;
-const discoverAssets = t('assets.discoverSection', { namespace: 'common', locale: currentLang }) || {};
+const discover = await getDiscoverSection(currentLang, 'products');
 
 // Si el producto no existe, lanzar error
 if (!product) {
@@ -82,8 +80,8 @@ const safeProduct = {
   image: typeof product.image === 'string'
     ? product.image
     : product.image?.url ?? '',
-  background_color: product.background_color || '',
-  color_button: product.color_button || '',
+  background_color: (product as any).backgroundColor || product.background_color || '',
+  color_button: (product as any).colorButton || product.color_button || '',
   sizes: Array.isArray(product.sizes) ? product.sizes : [],
   description: product.description || '',
   weight: Array.isArray(product.weight) ? product.weight : [],
@@ -113,7 +111,7 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
     id: (first.id || c.key) as string,
     title: (c.labels?.[currentLang] || c.labels?.es || '') as string,
     image: (first.image || '') as string,
-    bgColor: (first.background_color || c.background || '#95CFF2') as string, 
+    bgColor: (first.backgroundColor || first.background_color || c.background || '#95CFF2') as string, 
     slug: (first.slug || first.id || '') as string,
   };
 }).filter((cp: CatProduct) => cp.image);
@@ -270,11 +268,13 @@ const productBenefits = [
   )}
 
 
-  <div>
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
-  </div>
+  {discover && (
+    <div>
+      <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+        <Discover title={discover.title} posts={discover.posts} />
+      </section>
+    </div>
+  )}
 
   
   

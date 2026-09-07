@@ -1,6 +1,8 @@
 // src/services/api/client.ts
-const CMS_URL = import.meta.env.PUBLIC_CMS_URL;
-const CMS_TOKEN = import.meta.env.PUBLIC_CMS_TOKEN;
+import { cmsConfig } from './config';
+
+const CMS_URL = cmsConfig.url;
+const CMS_TOKEN = cmsConfig.token;
 
 if (!CMS_URL || !CMS_TOKEN) {
   console.warn('Faltan PUBLIC_CMS_URL o PUBLIC_CMS_TOKEN');

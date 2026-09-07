@@ -6,7 +6,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import RecipeDetail from '../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../services/api/recipes';
 import SEO from '../../components/SEO.astro';
-import { getPageBySlug } from '../../services/api/pages';
+import { getPageByRouteId } from '../../services/api/pages';
 
 // Define the expected structure of the dynamically imported modules
 interface PageModule {
@@ -146,20 +146,10 @@ if (!isRecipeDetail) {
     return Astro.redirect(`/${lang}/404`);
   }
 
-  pageTitle = currentRoute.metaTitleKey ? t(currentRoute.metaTitleKey) : 'Page';
-  pageDescription = currentRoute.metaDescriptionKey ? t(currentRoute.metaDescriptionKey) : '';
+  const cmsPage = await getPageByRouteId(currentRoute.id, lang);
 
-  // Mapeo de routeId a slug del CMS
-  const cmsPageSlugs: Record<string, string> = {
-    health: lang === 'es' ? 'salud' : 'health',
-    contact: lang === 'es' ? 'contacto' : 'contact',
-  };
-
-  const cmsSlug = cmsPageSlugs[currentRoute.id];
-  const cmsPage = cmsSlug ? await getPageBySlug(cmsSlug, lang) : null;
-
-  pageTitle = cmsPage?.metaTitle || pageTitle;
-  pageDescription = cmsPage?.metaDescription || pageDescription;
+  pageTitle = cmsPage?.metaTitle || cmsPage?.title || '';
+  pageDescription = cmsPage?.metaDescription || cmsPage?.excerpt || '';
   pageImage = cmsPage?.ogImage?.seoUrl ?? cmsPage?.ogImage?.originalUrl ?? '';
   ogTitle = cmsPage?.ogTitle || pageTitle;
   ogDescription = cmsPage?.ogDescription || pageDescription;

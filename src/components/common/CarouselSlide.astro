@@ -1,68 +1,206 @@
 ---
 import LazyImage from './LazyImage.astro';
+import { isEmbedVideoUrl } from '../../services/api/multimedia';
+
+export interface SlideHtml {
+  background?: string;
+  backgroundMobile?: string;
+  image?: string;
+  imageMobile?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+}
 
 export interface Props {
   slide: {
+    type?: 'image' | 'video' | 'html';
     desktop: string;
     mobile: string;
     alt: string;
     title: string;
     subtitle: string;
-    link?: string;
     description?: string;
+    link?: string;
+    html?: SlideHtml;
   };
   priority?: boolean;
 }
 
 const { slide, priority = false } = Astro.props;
+const type = slide.type || 'image';
+const html = slide.html;
+const title = html?.title || slide.title;
+const subtitle = html?.subtitle || slide.subtitle;
+const description = html?.description || slide.description || '';
+const link = html?.buttonUrl || slide.link || '';
+const buttonText = html?.buttonText || '';
+const hasText = Boolean(title || subtitle || description);
 ---
 
 <div class="swiper-slide relative h-full w-full">
-  {slide.link ? (
-    <a href={slide.link} class="block w-full h-full">
+  {type === 'video' ? (
+    <div class="w-full h-full overflow-hidden bg-black">
+      {isEmbedVideoUrl(slide.mobile || slide.desktop) ? (
+        <>
+          <iframe
+            class="w-full h-full md:hidden"
+            src={slide.mobile || slide.desktop}
+            title={slide.alt || title || 'Yummi Nuts'}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+          <iframe
+            class="w-full h-full hidden md:block"
+            src={slide.desktop || slide.mobile}
+            title={slide.alt || title || 'Yummi Nuts'}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </>
+      ) : (
+        <>
+          <video
+            class="w-full h-full object-cover md:hidden"
+            src={slide.mobile || slide.desktop}
+            muted
+            playsinline
+            autoplay
+            loop
+            preload={priority ? 'auto' : 'metadata'}
+            aria-label={slide.alt || title || 'Yummi Nuts'}
+          ></video>
+          <video
+            class="w-full h-full object-cover hidden md:block"
+            src={slide.desktop || slide.mobile}
+            muted
+            playsinline
+            autoplay
+            loop
+            preload={priority ? 'auto' : 'metadata'}
+            aria-label={slide.alt || title || 'Yummi Nuts'}
+          ></video>
+        </>
+      )}
+
+      {hasText && (
+        <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4 pointer-events-none">
+          {title && <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{title}</h2>}
+          {subtitle && <p class="text-lg md:text-xl max-w-2xl drop-shadow">{subtitle}</p>}
+        </div>
+      )}
+    </div>
+  ) : type === 'html' ? (
+    <div class="relative w-full h-full overflow-hidden">
+      {(html?.backgroundMobile || slide.mobile) && (
+        <LazyImage
+          src={html?.backgroundMobile || slide.mobile}
+          alt=""
+          decorative
+          class="absolute inset-0 w-full h-full object-cover md:hidden"
+          priority={priority}
+          style="width: 100%; height: 100%; object-fit: cover;"
+        />
+      )}
+      {(html?.background || slide.desktop) && (
+        <LazyImage
+          src={html?.background || slide.desktop}
+          alt=""
+          decorative
+          class="absolute inset-0 w-full h-full object-cover hidden md:block"
+          priority={priority}
+          style="width: 100%; height: 100%; object-fit: cover;"
+        />
+      )}
+      <div class="relative z-10 w-full h-full flex items-center">
+        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="w-full md:w-1/2 text-center md:text-left text-white">
+            {title && <h2 class="font-heading text-3xl md:text-5xl lg:text-6xl font-bold mb-3 drop-shadow-lg">{title}</h2>}
+            {subtitle && <p class="text-lg md:text-2xl mb-3 drop-shadow">{subtitle}</p>}
+            {description && <p class="text-sm md:text-lg max-w-xl mb-6 drop-shadow">{description}</p>}
+            {buttonText && link && (
+              <a
+                href={link}
+                class="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold rounded-full hover:opacity-90 transition-opacity"
+              >
+                {buttonText}
+              </a>
+            )}
+          </div>
+          {(html?.image || html?.imageMobile) && (
+            <div class="banner-html-overlay w-full md:w-1/2 flex justify-center">
+              {html?.imageMobile && (
+                <LazyImage
+                  src={html.imageMobile}
+                  alt={slide.alt || title || 'Yummi Nuts'}
+                  class="max-h-[40vh] w-auto object-contain md:hidden"
+                  priority={priority}
+                />
+              )}
+              {html?.image && (
+                <LazyImage
+                  src={html.image}
+                  alt={slide.alt || title || 'Yummi Nuts'}
+                  class="max-h-[70%] w-auto object-contain hidden md:block"
+                  priority={priority}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  ) : link ? (
+    <a href={link} class="block w-full h-full">
       <div class="w-full h-full overflow-hidden">
-        <LazyImage 
-          src={slide.mobile} 
+        <LazyImage
+          src={slide.mobile}
           alt={slide.alt}
           class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
           style="width: 100%; height: 100%; object-fit: cover;"
         />
-        <LazyImage 
-          src={slide.desktop} 
+        <LazyImage
+          src={slide.desktop}
           alt={slide.alt}
           class="w-full h-full object-contain object-center hidden md:block"
           priority={priority}
           style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
         />
       </div>
-      <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
-        <p class="text-lg md:text-xl max-w-2xl drop-shadow">{slide.subtitle}</p>
-      </div>
+      {hasText && (
+        <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
+          {title && <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{title}</h2>}
+          {subtitle && <p class="text-lg md:text-xl max-w-2xl drop-shadow">{subtitle}</p>}
+        </div>
+      )}
     </a>
   ) : (
     <>
       <div class="w-full h-full overflow-hidden">
-        <LazyImage 
-          src={slide.mobile} 
+        <LazyImage
+          src={slide.mobile}
           alt={slide.alt}
           class="w-full h-full object-cover object-center md:hidden"
           priority={priority}
           style="width: 100%; height: 100%; object-fit: cover;"
         />
-        <LazyImage 
-          src={slide.desktop} 
+        <LazyImage
+          src={slide.desktop}
           alt={slide.alt}
           class="w-full h-full object-contain object-center hidden md:block"
           priority={priority}
           style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
         />
       </div>
-      <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{slide.title}</h2>
-        <p class="text-lg md:text-xl max-w-2xl drop-shadow">{slide.subtitle}</p>
-      </div>
+      {hasText && (
+        <div class="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center text-center text-white px-4">
+          {title && <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">{title}</h2>}
+          {subtitle && <p class="text-lg md:text-xl max-w-2xl drop-shadow">{subtitle}</p>}
+        </div>
+      )}
     </>
   )}
 </div>

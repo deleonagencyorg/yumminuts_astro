@@ -6,7 +6,7 @@ import ContactView from '../../../views/Contact/index.astro';
 import { type Locale } from '../../../i18n/i18n';
 import { getHeaderColors } from '../../../config/headerColors';
 import { config } from '../../../i18n/config';
-import { getPageBySlug } from '../../../services/api/pages';
+import { getPageByRouteId } from '../../../services/api/pages';
 
 export async function getStaticPaths() {
   return config.supportedLocales.map((locale) => ({
@@ -18,9 +18,9 @@ export async function getStaticPaths() {
 const { currentLang } = Astro.props;
 
 const headerColorConfig = getHeaderColors('contact');
-const page = await getPageBySlug('contact', currentLang);
+const page = await getPageByRouteId('contact', currentLang);
 
-const pageTitle = page?.metaTitle || page?.title || 'Contact - Yummi Nuts';
+const pageTitle = page?.metaTitle || page?.title || '';
 const pageDescription = page?.metaDescription || page?.excerpt || '';
 const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---

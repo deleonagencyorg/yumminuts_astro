@@ -5,12 +5,25 @@ import './styles.css';
 
 export interface Props {
   slides: Array<{
+    type?: 'image' | 'video' | 'html';
     desktop: string;
     mobile: string;
     alt: string;
     title: string;
     subtitle: string;
+    description?: string;
     link?: string;
+    html?: {
+      background?: string;
+      backgroundMobile?: string;
+      image?: string;
+      imageMobile?: string;
+      title?: string;
+      subtitle?: string;
+      description?: string;
+      buttonText?: string;
+      buttonUrl?: string;
+    };
   }>;
   loading?: boolean;
 }
@@ -20,17 +33,9 @@ const { slides: rawSlides, loading = false } = Astro.props as { slides?: any; lo
 const slides = Array.isArray(rawSlides) ? rawSlides : [];
 const hasMultipleSlides = slides.length > 1;
 
-// Log de depuración
-
-
-// Identificar la primera imagen para cargarla con prioridad
 const firstSlide = slides[0] || {};
-
-// Log del primer slide
-
-
-// Opcional: Precargar la primera imagen para mejorar el LCP
-const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
+const preloadFirstImage =
+  firstSlide.type !== 'video' && Boolean(firstSlide.mobile && firstSlide.desktop);
 
 ---
 
@@ -109,14 +114,17 @@ const preloadFirstImage = true && firstSlide.mobile && firstSlide.desktop;
     <div class="swiper-container main-carousel">
       <div class="swiper-wrapper">
         {slides.map((slide, index) => (
-          <CarouselSlide 
+          <CarouselSlide
             slide={{
+              type: slide.type || 'image',
               desktop: slide.desktop,
               mobile: slide.mobile,
-              alt: slide.alt || 'Snacks Yummies',
+              alt: slide.alt || 'Yummi Nuts',
               title: slide.title || '',
               subtitle: slide.subtitle || '',
-              link: slide.link || ''
+              description: slide.description || '',
+              link: slide.link || '',
+              html: slide.html,
             }}
             priority={index === 0}
           />

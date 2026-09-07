@@ -111,8 +111,8 @@ function productHref(product: any): string {
         <a href={productHref(product)} class="product-card group cursor-pointer block" data-category={getProductCategory(product)}>
           <ProductCard 
             title={product.title || product.name}
-            image={product.image || '/images/products/placeholder.jpg'}
-            bgColor={(product.background_color || product.color_button || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
+            image={typeof product.image === 'string' ? product.image : product.image?.url || '/images/products/placeholder.jpg'}
+            bgColor={(product.backgroundColor || product.background_color || product.colorButton || product.color_button || product.headerTextColor || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
             description={product.description}
           />
         </a>
@@ -120,8 +120,8 @@ function productHref(product: any): string {
     </div>
 
     <!-- No products message -->
-    <div id="noProductsMessage" class="text-center py-12 hidden">
-      <p class="text-gray-500 text-lg">{currentLang === 'es' ? 'No hay productos en esta categoría.' : 'No products in this category.'}</p>
+    <div id="noProductsMessage" class={`text-center py-12 ${displayProducts.length === 0 ? '' : 'hidden'}`}>
+      <p class="text-gray-500 text-lg">{currentLang === 'es' ? 'No hay productos disponibles en este momento.' : 'No products available at this time.'}</p>
     </div>
 
     <!-- Show All Button (if not showing all products) -->

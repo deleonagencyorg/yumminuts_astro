@@ -1,8 +1,8 @@
 // src/services/api/recipes.ts
 import { cmsClient } from './client';
+import { belongsToCurrentBrand, cmsConfig, withBrandFilter } from './config';
 import type { Recipe, CMSRecipesResponse, CMSRecipeRaw } from './types';
-
-const BRAND_SLUG = import.meta.env.PUBLIC_CMS_BRAND_SLUG ?? 'yummi-nuts';
+import { cmsMediaSrc } from './multimedia';
 
 function slugify(text: string): string {
   return text
@@ -22,8 +22,8 @@ function mapRecipe(item: CMSRecipeRaw): Recipe {
     id: item.id,
     slug: item.slug || slugify(item.title),
     title: item.title,
-    image: item.image,
-    preparation_time: item.preparation_time,
+    image: cmsMediaSrc(item.image),
+    preparation_time: item.preparationTime ?? item.preparation_time,
     category: item.category,
     description: item.description,
     ingredients: item.ingredients ?? [],
@@ -43,22 +43,26 @@ function mapRecipe(item: CMSRecipeRaw): Recipe {
 
 export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
   console.log('INICIO GETALLRECIPES');
-  console.log(`URL: ${import.meta.env.PUBLIC_CMS_URL}`);
-  console.log(`BRAND SLUG: ${BRAND_SLUG}`);
+  console.log(`URL: ${cmsConfig.url}`);
+  console.log(`BRAND SLUG: ${cmsConfig.brandSlug}`);
   console.log(`LOCALE: ${locale}`);
-  console.log(`PUBLIC_CMS_SITE_ID: ${import.meta.env.PUBLIC_CMS_SITE_ID}`);
+  console.log(`PUBLIC_CMS_SITE_ID: ${cmsConfig.siteId}`);
 
   try {
-    const response = await cmsClient.get<CMSRecipesResponse>('v1/recipes', {
-      page: 1,
-      pageSize: 100,
-      brandSlug: BRAND_SLUG,
-      languageCode: locale,
-    });
-    const recipes = response.data.map(mapRecipe);
+    const response = await cmsClient.get<CMSRecipesResponse>(
+      'v1/recipes',
+      withBrandFilter({
+        page: 1,
+        pageSize: 100,
+        languageCode: locale,
+      })
+    );
+    const recipes = (response.data ?? [])
+      .filter((item) => belongsToCurrentBrand(item.brands))
+      .map(mapRecipe);
     console.log(`RECETAS CARGADAS - TOTAL: ${recipes.length} - IDIOMA: ${locale.toUpperCase()}`);
     console.log(`EXITO - RECETAS RECIBIDAS: ${response?.data?.length ?? 0}`);
-    return response.data.map(mapRecipe);
+    return recipes;
   } catch (error: any) {
     console.error('ERROR AL OBTENER RECETAS');
     console.error(`MENSAJE: ${error?.message || 'SIN MENSAJE'}`);
@@ -69,10 +73,15 @@ export async function getAllRecipes(locale: string = 'es'): Promise<Recipe[]> {
 
 export async function getRecipeBySlug(slug: string, locale: string = 'es'): Promise<Recipe | null> {
   try {
-    const response = await cmsClient.get<{ data: CMSRecipeRaw }>(`v1/recipes/${slug}`, {
-      languageCode: locale,
-    });
-    return mapRecipe(response.data);
+    const response = await cmsClient.get<{ data: CMSRecipeRaw } | CMSRecipeRaw>(
+      `v1/recipes/${slug}`,
+      withBrandFilter({
+        languageCode: locale,
+      })
+    );
+    const item = 'data' in response && response.data ? response.data : (response as CMSRecipeRaw);
+    if (!item?.id || !belongsToCurrentBrand(item.brands)) return null;
+    return mapRecipe(item);
   } catch (error: any) {
     console.error(`ERROR AL OBTENER RECETA ${slug}`);
     console.error(`MENSAJE: ${error?.message || 'SIN MENSAJE'}`);

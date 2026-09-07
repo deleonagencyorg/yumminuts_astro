@@ -1,12 +1,14 @@
 ---
 import LazyImage from '../../components/common/LazyImage.astro';
 // Component Imports
-import Carousel from '../../components/common/Carousel/index.astro';
 import RecipesCarousel from "../../components/recipes/RecipesCarousel.astro";
 import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
+import Carousel from '../../components/common/Carousel/index.astro';
 import { getAllProducts } from '../../services/api/products';
+import { getDiscoverSection } from '../../services/api/descubrenos';
+import type { BannerSlide } from '../../services/api/pages';
 
 // Style Imports
 import './styles.css';
@@ -20,8 +22,9 @@ import categoriesConfig from '../../config/categories.json';
 // Props
 export interface Props {
   loading?: boolean;
+  cmsBanners?: BannerSlide[] | null;
 }
-const { loading = false } = Astro.props;
+const { loading = false, cmsBanners = null } = Astro.props;
 
 // Language and Data Setup
 const currentLang = getLocale();
@@ -64,34 +67,21 @@ const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || [])
   const rawImage = first.image;
   const image = typeof rawImage === 'string' ? rawImage : rawImage?.url ?? '';
   // Use category config color to paint SVG, independent of product
-  const bgColor = (first.background_color || c.background || '#95CFF2') as string;
+  const bgColor = (first.backgroundColor || first.background_color || c.background || '#95CFF2') as string;
   const id = (first.id || c.key) as string;
   const slug = (first.slug || first.id || '') as string;
   return { id, title, image, bgColor, slug };
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
-const commonAssets = t('assets.slider', { namespace: 'common', locale: currentLang }) || [];
-const slides = Array.isArray(commonAssets) 
-  ? commonAssets
-    .filter(asset => asset && typeof asset === 'object' && asset.desktop && asset.mobile)
-    .map(asset => ({
-      desktop: asset.desktop,
-      mobile: asset.mobile,
-      alt: asset.alt || "Yumminuts",
-      title: asset.title || '',
-      subtitle: asset.description || '',
-      link: asset.url || asset.link || ''
-    }))
-  : [];
-
-const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: currentLang }) || {};
+const discover = await getDiscoverSection(currentLang, 'home');
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
-    <!-- Slider Section simplificado como en Products -->
-    <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
-      <Carousel slides={slides} />
-    </div>
+    {cmsBanners && cmsBanners.length > 0 && (
+      <div class="w-full">
+        <Carousel slides={cmsBanners} loading={loading} />
+      </div>
+    )}
     
     <!-- Sección de Información -->
     <div class="w-full reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
@@ -137,9 +127,11 @@ const discoverAssets = t('home.socialmedia', { namespace: 'common', locale: curr
     </section>
 
     <!-- Sección Descubrenos -->
-    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
-      <Discover title={discoverAssets.title} images={discoverAssets.images || []} />
-    </section>
+    {discover && (
+      <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+        <Discover title={discover.title} posts={discover.posts} />
+      </section>
+    )}
 
 
 

@@ -3,31 +3,23 @@
 import { getLocale } from '../../i18n/i18n';
 import type { Locale } from '../../i18n/i18n';
 import SuccessModal from '../common/SuccessModal.astro';
-
-// Import locale files statically
-import contactEs from '../../locales/es/contact.json';
-import contactEn from '../../locales/en/contact.json';
+import type { ContactFormView } from '../../services/api/contact';
 
 interface Props {
   currentLang?: Locale;
+  form?: ContactFormView;
 }
 
-const { currentLang } = Astro.props;
+const { currentLang, form } = Astro.props;
 
-// Get current locale if not provided
-const locale = currentLang || getLocale(Astro.url);
+const locale = currentLang || getLocale();
 
-// Get contact data from locale
-const contact = locale === 'es' ? contactEs : contactEn;
-
-// Get localized labels for fields not in contact.json
 const countryLabel = locale === 'es' ? 'País' : 'Country';
-const departmentLabel = locale === 'es' ? 'Departamento/Estado' : 'Department/State';
 const cityLabel = locale === 'es' ? 'Ciudad' : 'City';
 const countryPlaceholder = locale === 'es' ? 'Selecciona tu país' : 'Select your country';
 const departmentPlaceholder = locale === 'es' ? 'Primero selecciona un país' : 'First select a country';
-const contactReasonPlaceholder = locale === 'es' ? 'Selecciona el tipo de consulta' : 'Select the type of inquiry';
-const messagePlaceholder = contact.form.message.placeholder;
+const contactReasonPlaceholder = form?.contactReason?.placeholder ?? '';
+const messagePlaceholder = form?.message?.placeholder ?? '';
 
 // Get API configuration from environment variables
 const apiHost = import.meta.env.PUBLIC_CONTACT_API_HOST || 'https://api-crm.yummiespromociones.com/api';
@@ -110,6 +102,7 @@ const options = dynamicOptions[locale];
   }
 </style>
 
+{form && (
 <div 
   class="bg-cover bg-center bg-no-repeat rounded-2xl p-8" 
   style="background-image: url('https://snack.yummiespromociones.com/yumminuts/form-bg.png')" 
@@ -130,7 +123,7 @@ const options = dynamicOptions[locale];
     <!-- Header -->
     <div class="flex flex-col gap-6 items-center w-full">
       <h2 class="font-rockeby font-black text-primary text-2xl md:text-3xl text-center uppercase leading-tight">
-        ¿Tienes preguntas? ¡estamos aquí para tí!
+        {form.title}
       </h2>
     </div>
 
@@ -140,29 +133,18 @@ const options = dynamicOptions[locale];
         <!-- Contact Reason Dropdown -->
         <div class="flex-1">
           <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
-            {contact.form.contactReason.label} *
+            {form.contactReason.label}{form.contactReason.required ? ' *' : ''}
           </label>
           <select 
             name="contactReason" 
             id="contactReasonSelect"
-            required
+            required={form.contactReason.required}
             class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
           >
             <option value="">{contactReasonPlaceholder}</option>
-            {locale === 'es' ? (
-              // En español, mostrar todas las opciones incluido "Soy un ganador"
-              dynamicOptions.es.contactReason.map((reason) => (
-                <option value={reason}>{reason}</option>
-              ))
-            ) : (
-              // En inglés, mostrar solo las opciones que tienen texto (filtrar vacías)
-              dynamicOptions.en.contactReason.map((reason, index) => {
-                if (reason) { // Solo mostrar si tiene texto
-                  return <option value={dynamicOptions.es.contactReason[index]}>{reason}</option>;
-                }
-                return null;
-              })
-            )}
+            {form.contactReason.options.map((reason) => (
+              <option value={reason.value}>{reason.label}</option>
+            ))}
           </select>
         </div>
 
@@ -203,13 +185,13 @@ const options = dynamicOptions[locale];
         <!-- Name -->
         <div class="flex-1">
           <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
-            {contact.form.fullName.label} *
+            {form.fullName.label}{form.fullName.required ? ' *' : ''}
           </label>
           <input 
             type="text" 
             name="name" 
-            required
-            placeholder={contact.form.fullName.placeholder}
+            required={form.fullName.required}
+            placeholder={form.fullName.placeholder}
             class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
           />
         </div>
@@ -220,13 +202,13 @@ const options = dynamicOptions[locale];
         <!-- Email -->
         <div class="flex-1">
           <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
-            {contact.form.email.label} *
+            {form.email.label}{form.email.required ? ' *' : ''}
           </label>
           <input 
             type="email" 
             name="email" 
-            required
-            placeholder={contact.form.email.placeholder}
+            required={form.email.required}
+            placeholder={form.email.placeholder}
             class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
           />
         </div>
@@ -234,12 +216,13 @@ const options = dynamicOptions[locale];
         <!-- Phone -->
         <div class="flex-1">
           <label class="block font-rockeby font-bold text-primary text-base uppercase mb-2.5">
-            {contact.form.phone.label}
+            {form.phone.label}{form.phone.required ? ' *' : ''}
           </label>
           <input 
             type="number" 
             name="phone" 
-            placeholder={contact.form.phone.placeholder}
+            required={form.phone.required}
+            placeholder={form.phone.placeholder}
             class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-full bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
           />
         </div>
@@ -248,13 +231,13 @@ const options = dynamicOptions[locale];
       <!-- Fila para comentario -->
       <div class="flex flex-col gap-2.5">
         <label class="block font-rockeby font-bold text-primary text-base uppercase">
-          {contact.form.message.label} *
+          {form.message.label}{form.message.required ? ' *' : ''}
         </label>
         <textarea 
           name="message" 
-          required
+          required={form.message.required}
           rows="4"
-          placeholder={contact.form.message.placeholder}
+          placeholder={form.message.placeholder}
           class="w-full font-rockeby font-bold text-primary text-lg uppercase px-3 py-2 border-[1.5px] border-primary rounded-[30px] bg-transparent placeholder:text-primary placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all resize-none"
         ></textarea>
       </div>
@@ -271,13 +254,13 @@ const options = dynamicOptions[locale];
           id="submitButton"
           class="w-full bg-primary border-[1.5px] border-skyblue font-rockeby font-bold text-white text-2xl uppercase py-2 px-4 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
         >
-          {contact.form.submit}
+          {form.submit}
         </button>
       </div>
     </form>
   </div>
 </div>
-
+)}
 <!-- Success Modal -->
 <SuccessModal 
   title={locale === 'es' ? "¡Gracias por contactarnos!" : "Thank you for contacting us!"}

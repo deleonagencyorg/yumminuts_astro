@@ -27,7 +27,8 @@ export interface CMSRecipeRaw {
   id: string;
   slug?: string;
   title: string;
-  image?: string | { url: string };
+  image?: string | { url?: string; originalUrl?: string; optimizedUrl?: string };
+  preparationTime?: number;
   preparation_time?: number;
   category?: string;
   description?: string;
@@ -36,6 +37,7 @@ export interface CMSRecipeRaw {
   people?: string | number;
   difficulty?: string;
   tags?: string[];
+  brands?: { id?: string; name?: string; slug?: string }[];
   // seo
   metaTitle?: string;
   metaDescription?: string;
@@ -59,7 +61,7 @@ export interface Product {
   slug?: string;
   name: string;
   category?: string;
-  image?: string | { url: string };
+  image?: string;
   description?: string;
   backgroundColor?: string;
   headerTextColor?: string;
@@ -87,12 +89,12 @@ export interface CMSProductRaw {
   slug?: string;
   name: string;
   category?: string;
-  image?: string | { url: string };
+  image?: string | { url?: string; originalUrl?: string; optimizedUrl?: string };
   description?: string;
-  background_color?: string;
-  header_color?: string;
-  text_color?: string;
-  color_button?: string;
+  backgroundColor?: string;
+  headerTextColor?: string;
+  textColor?: string;
+  colorButton?: string;
   weight?: string[];
   nutrition?: any;
   // seo

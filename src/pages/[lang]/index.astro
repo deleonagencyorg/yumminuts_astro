@@ -1,11 +1,11 @@
 ---
 // src/pages/[lang]/index.astro
-import { routesConfig, getRouteById } from '../../config/routes';
-import { setLocale, t, type Locale } from '../../i18n/i18n';
+import { getRouteById } from '../../config/routes';
+import { setLocale, type Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
 import SEO from '../../components/SEO.astro';
 import HomePageContent from '../../views/Home/index.astro';
-import { getPageBySlug } from '../../services/api/pages';
+import { getPageByRouteId } from '../../services/api/pages';
 
 export async function getStaticPaths() {
   const homeRoute = getRouteById('home');
@@ -22,14 +22,11 @@ setLocale(lang);
 const homeRoute = getRouteById('home');
 if (!homeRoute) throw new Error("Home route configuration is missing.");
 
-// Obtener datos SEO del CMS
-const pageSlug = lang === 'es' ? 'inicio' : 'home';
-const page = await getPageBySlug(pageSlug, lang);
+const page = await getPageByRouteId('home', lang);
 
-// Usar datos del CMS con fallback a los datos locales
-const pageTitle = page?.metaTitle || (homeRoute.metaTitleKey ? t(homeRoute.metaTitleKey) : 'Home');
-const pageDescription = page?.metaDescription || (homeRoute.metaDescriptionKey ? t(homeRoute.metaDescriptionKey) : '');
-const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? 'https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp';
+const pageTitle = page?.metaTitle || page?.title || '';
+const pageDescription = page?.metaDescription || page?.excerpt || '';
+const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---
 
 <MainLayout title={pageTitle} description={pageDescription}>
@@ -82,6 +79,6 @@ const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? 'https:
       "inLanguage": lang === 'es' ? "es-ES" : "en-US"
     })}></script>
   </Fragment>
-  <HomePageContent />
+  <HomePageContent cmsBanners={page?.banners ?? null} />
 </MainLayout>
 

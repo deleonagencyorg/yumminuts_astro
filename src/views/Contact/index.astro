@@ -1,17 +1,10 @@
 ---
 // src/views/Contact/index.astro
-import { t, getLocale } from '../../i18n/i18n';
+import { getLocale } from '../../i18n/i18n';
 import type { Locale } from '../../i18n/i18n';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
-import LazyImage from '../../components/common/LazyImage.astro';
 import FormContact from '../../components/contact/FormContact.astro';
-import { fade } from 'astro:transitions';
-
-// Import locale files statically
-import contactEs from '../../locales/es/contact.json';
-import contactEn from '../../locales/en/contact.json';
-
-// Importar estilos separados
+import { getContactPage } from '../../services/api/contact';
 import './styles.css';
 
 interface Props {
@@ -22,57 +15,49 @@ interface Props {
   headerColorConfig?: any;
 }
 
-const { currentLang, headerColorConfig } = Astro.props;
-
-// Get current locale if not provided
+const { currentLang } = Astro.props;
 const locale = currentLang || getLocale();
-
-// Get contact data from locale
-const contact = locale === 'es' ? contactEs : contactEn;
-
+const contactPage = await getContactPage(locale);
+const offices = contactPage?.offices ?? [];
+const firstOffice = offices[0];
+const officesByCode = Object.fromEntries(offices.map((office) => [office.countryCode, office]));
 const locationUnavailableText = locale === 'es' ? 'Ubicación no disponible' : 'Location not available';
-
-// Meta information
-const title = contact.title;
-const metaDescription = contact.description;
-console.log('headerColorConfig in Contact:', headerColorConfig);
-const headerColors = {
-  backgroundColor: '#FE5A00',
-  textColor: '#FFFFFF'
-};
 ---
   <div class=" w-[100%] mx-auto ">
         <Breadcrumb bgColor="bg-white" textColor="text-black" hoverColor="hover:text-black" />
     
 
     <!-- Main Contact Section -->
+    {contactPage && (
     <div class="flex flex-col justify-center px-4 items-start lg:flex-row gap-12 py-12" >
       
       <!-- Left Column - Contact Info -->
     <div class="w-[100%] lg:w-[40%] pl-8 lg:pl-16 flex flex-col justify-center h-[100%] lg:h-[600px]">
         <h2 class="text-black font-heading text-4xl uppercase md:text-4xl lg:text-5xl font-bold mb-6">
-          {contact.title}
+          {contactPage.title}
         </h2>
         
         <p class="text-gray font-sans text-2xl lg:text-lg mb-8 leading-relaxed ">
-          {contact.description}
+          {contactPage.description}
         </p>
      
       </div>
       
       <!-- Right Column - Contact Form -->
       <div class="w-[100%] lg:w-[40%] -mt-4 lg:-mt-0">
-        <FormContact currentLang={locale} />
+        <FormContact currentLang={locale} form={contactPage.form} />
       </div>
     </div>
+    )}
     
     <!-- Offices Section -->
-    <div class="container mx-auto bg-white p-8" data-contact-offices data-contact-locations={JSON.stringify(contact.offices.locations)}>
+    {offices.length > 0 && firstOffice && (
+    <div class="container mx-auto bg-white p-8" data-contact-offices data-contact-locations={JSON.stringify(officesByCode)}>
       
       <!-- Tabs and Office Info -->
       <div class="flex flex-col mb-4">
         <h3 class="text-black md:text-4xl text-4xl font-heading uppercase font-bold mb-4 flex items-center justify-left ml-9 gap-1">
-          <span class="font-heading">{contact.offices.title.split(' ')[0]} {contact.offices.title.split(' ')[1]}</span>
+          <span class="font-heading">{contactPage?.officesTitle}</span>
         </h3>
         <!-- Office Details -->
         <div class="order-2 w-[95%] md:w-[80%] mx-auto">
@@ -80,31 +65,22 @@ const headerColors = {
             <div class="flex flex-col lg:flex-row justify-between items-center">
               <div class="space-y-4">
                 <h3 id="officeName" class="text-black font-heading text-5xl md:text-4xl uppercase font-extrabold  mb-4">
-                  {contact.offices.locations["+504"].name}
+                  {firstOffice.name}
                 </h3>
                 
                 <div class="flex items-start space-x-3">
-                  <p id="officeAddress" class="text-black leading-relaxed font-semibold ">{` ${contact.offices.locations["+504"].address}`}</p>
+                  <p id="officeAddress" class="text-black leading-relaxed font-semibold ">{` ${firstOffice.address}`}</p>
                 </div>
                 
                 <div class="flex items-center space-x-3">
                   <div id="officePhones" class="text-black flex flex-col">
-                    {contact.offices.locations["+504"].phones.map((phone: string) => (
+                    {firstOffice.phones.map((phone: string) => (
                      <div> <a href={`tel:${phone}`} class="text-black hover:text-primary transition-colors">
                         {phone}
                       </a></div>
                     ))}
                   </div>
                 </div>
-                
-                <!-- <div class="flex items-center space-x-3">
-                  <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  <a id="officeEmail" href={`mailto:${contact.offices.locations["+504"].email}`} class="text-primary hover:text-secondary transition-colors">
-                    {contact.offices.locations["+504"].email}
-                  </a>
-                </div> -->
               </div>
             </div>
           </div>
@@ -114,10 +90,10 @@ const headerColors = {
         <div class="order-1 mt-4">
           <!-- Country Tabs -->
           <div class="mb-6 grid grid-cols-2 gap-3 w-[95%] mx-auto md:w-[95%] md:mx-auto md:flex md:flex-wrap md:justify-center md:gap-2">
-          {Object.entries(contact.offices.locations).map(([countryCode, location]: [string, any], index: number) => (
+          {offices.map((location, index) => (
             <button 
               type="button"
-              data-country-code={countryCode}
+              data-country-code={location.countryCode}
               class={`country-tab w-full md:w-auto px-4 md:px-10 py-4 text-black uppercase text-xs md:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2.5 text-center leading-tight
                 ${index === 0 
                   ? 'h-[54px] bg-skyblue opacity-100 border border-white' 
@@ -134,9 +110,9 @@ const headerColors = {
             <div class="w-full overflow-hidden rounded-xl h-[60vh] md:h-[500px]">
               <!-- Container for all map iframes -->
               <div id="maps-container" style="width: 100%; height: 100%;">
-                {Object.entries(contact.offices.locations).map(([countryCode, location]: [string, any], index: number) => (
+                {offices.map((location, index) => (
                   <div 
-                    data-map-country={countryCode}
+                    data-map-country={location.countryCode}
                     style={`width: 100%; height: 100%; ${index === 0 ? 'display: block;' : 'display: none;'}`}
                   >
                     {location.mapEmbed ? (
@@ -163,6 +139,7 @@ const headerColors = {
         </div>
       </div>
     </div>
+    )}
 
     <script is:inline data-astro-rerun>
       // Función que se ejecutará cuando el DOM esté listo o cuando se llame manualmente
