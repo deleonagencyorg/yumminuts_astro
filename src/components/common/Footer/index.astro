@@ -1,10 +1,11 @@
 ---
 // src/components/common/Footer/index.astro
-import { t, type Locale } from '../../../i18n/i18n';
+import type { Locale } from '../../../i18n/i18n';
 import { getRouteById } from '../../../config/routes';
 import './styles.css';
 import Skeleton from './Skeleton.astro';
 import { getFooterLabels } from '../../../services/api/footer';
+import { getSocialMediaLinks } from '../../../services/api/social-media';
 
 export interface Props {
   currentLang: Locale;
@@ -15,8 +16,9 @@ const { currentLang, loading = false } = Astro.props;
 
 const footer = await getFooterLabels(currentLang);
 
-const instagramUrl = t('social_media.instagram.url', { namespace: 'common', locale: currentLang });
-const facebookUrl = t('social_media.facebook.url', { namespace: 'common', locale: currentLang });
+const socialMedia = await getSocialMediaLinks(currentLang);
+const instagramUrl = socialMedia.find((sm) => sm.platform.toLowerCase() === 'instagram')?.url || '';
+const facebookUrl = socialMedia.find((sm) => sm.platform.toLowerCase() === 'facebook')?.url || '';
 
 function langPath(routeId: string): string {
   const route = getRouteById(routeId);

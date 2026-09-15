@@ -8,14 +8,15 @@ import Discover from '../../components/common/Discover/index.astro';
 import Carousel from '../../components/common/Carousel/index.astro';
 import { getAllProducts } from '../../services/api/products';
 import { getDiscoverSection } from '../../services/api/descubrenos';
+import { getProductCategories } from '../../services/api/product-categories';
+import { getSiteTexts, text } from '../../services/api/site-texts';
 import type { BannerSlide } from '../../services/api/pages';
 
 // Style Imports
 import './styles.css';
 
 // i18n and Data Imports
-import { t, getLocale } from '../../i18n/i18n';
-import categoriesConfig from '../../config/categories.json';
+import { getLocale } from '../../i18n/i18n';
 
 
 
@@ -28,14 +29,12 @@ const { loading = false, cmsBanners = null } = Astro.props;
 
 // Language and Data Setup
 const currentLang = getLocale();
-const homeAssets = t('home', { namespace: 'common', locale: currentLang }) || {};
-const recipesAssets = t('', { namespace: 'recipes', locale: currentLang }) || {};
-const galleryAssets = t('', { namespace: 'gallery', locale: currentLang }) || {};
-const aboutAssets = t('', { namespace: 'aboutus', locale: currentLang }) || {};
-const newsAssets =  t('', { namespace: 'news', locale: currentLang }) || {};
+const siteTexts = await getSiteTexts(currentLang);
+const recipesHomeTitle = text(siteTexts, 'recipes.home.title');
+const recipesHomeViewMore = text(siteTexts, 'recipes.home.view_more');
 const products = await getAllProducts(currentLang);
+const categories = await getProductCategories(currentLang);
 
-// Build first product per category using centralized categories config
 type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
 function normalizeCategory(value: string): string {
   const v = (value || '').toLowerCase();
@@ -45,32 +44,27 @@ function normalizeCategory(value: string): string {
   if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
   if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
   if (v.includes('barra') || v.includes('bar') || v.includes('bars')) return 'barras';
-  // Try direct match with labels from config
-  const cfg = (categoriesConfig as any).categories || [];
-  const match = cfg.find((c: any) => [c.labels?.es, c.labels?.en, c.key].map((s: string) => (s||'').toLowerCase()).includes(v));
+  const match = categories.find((c) => [c.label, c.key].map((s) => (s || '').toLowerCase()).includes(v));
   return match?.key || '';
 }
 
 const productsByCategory: Record<string, any[]> = {};
 for (const p of products as any[]) {
-  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+  const key = normalizeCategory((p as any).category || (p as any).name || '');
   if (!key) continue;
   if (!productsByCategory[key]) productsByCategory[key] = [];
   productsByCategory[key].push(p);
 }
 
-const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
+const categoryCards: CatProduct[] = categories.map((c) => {
   const list = productsByCategory[c.key] || [];
-  const first = list[0] || {};
+  const first: any = list[0] || {};
   // Always show the category label (ES/EN) below the image, not the product name
-  const title = (c.labels?.[currentLang] || c.labels?.es || c.labels?.en || '') as string;
-  const rawImage = first.image;
-  const image = typeof rawImage === 'string' ? rawImage : rawImage?.url ?? '';
-  // Use category config color to paint SVG, independent of product
-  const bgColor = (first.backgroundColor || first.background_color || c.background || '#95CFF2') as string;
+  const image = (first.image || '') as string;
+  const bgColor = (first.backgroundColor || c.backgroundColor || '#95CFF2') as string;
   const id = (first.id || c.key) as string;
   const slug = (first.slug || first.id || '') as string;
-  return { id, title, image, bgColor, slug };
+  return { id, title: c.label, image, bgColor, slug };
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const discover = await getDiscoverSection(currentLang, 'home');
@@ -110,17 +104,17 @@ const discover = await getDiscoverSection(currentLang, 'home');
     <!-- Sección de Recetas -->
     <section id="recipes" class="w-full py-12 reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out" transition:animate="slide">
       <div class="container mx-auto px-4 bg-white">
-        {recipesAssets.home?.title && (
+        {recipesHomeTitle && (
           <div class="text-left mb-16 relative z-20" >
             <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
-              {recipesAssets.home?.title}
+              {recipesHomeTitle}
             </h2>
-            
+
           </div>
         )}
-        <RecipesCarousel 
-          title={recipesAssets.home?.title || 'Recetas'}
-          textButton={recipesAssets.home?.view_more || 'Ver Todas'}
+        <RecipesCarousel
+          title={recipesHomeTitle || 'Recetas'}
+          textButton={recipesHomeViewMore || 'Ver Todas'}
           limit={25}
         />
       </div>

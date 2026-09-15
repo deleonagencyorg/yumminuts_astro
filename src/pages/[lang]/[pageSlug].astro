@@ -1,7 +1,7 @@
 ---
 // src/pages/[lang]/[pageSlug].astro
 import { routesConfig, findRouteBySlug } from '../../config/routes';
-import { setLocale, t, type Locale } from '../../i18n/i18n';
+import { setLocale, type Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
 import RecipeDetail from '../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../services/api/recipes';
@@ -67,16 +67,14 @@ if (urlParts.length === 3) {
     console.log(`Detectada ruta de receta: ${detailId}`);
     
     try {
-      // Cargar datos de recetas directamente
+      const langs = ['es', 'en'] as const;
       const allRecipesByLang = await Promise.all(
-        ['es', 'en'].map(lang => getAllRecipes(lang))
+        langs.map(lang => getAllRecipes(lang))
       );
-      console.log("Recetas cargadas por idioma:", allRecipesByLang);
-      const allRecipes = t('items', { namespace: 'recipes', locale: langCode as Locale }) || [];
+      const allRecipes = allRecipesByLang[langs.indexOf(langCode as (typeof langs)[number])] || [];
       console.log(`Total de recetas cargadas: ${allRecipes.length}`);
-      console.log('IDs de recetas disponibles:', allRecipes.map((r: any) => r.id));
-      
-      const recipe = allRecipes.find((r: any) => r.id === detailId);
+
+      const recipe = allRecipes.find((r) => r.slug === detailId || r.id === detailId);
       console.log('Receta encontrada:', recipe ? recipe.id : 'NO');
 
       if (recipe) {

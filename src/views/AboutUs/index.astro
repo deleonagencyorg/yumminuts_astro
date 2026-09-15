@@ -1,13 +1,15 @@
 ---
 //src/views/AboutUs/index.astro
 import Layout from '../../layouts/MainLayout.astro';
-import { t, getLocale } from '../../i18n/i18n';
+import { getLocale } from '../../i18n/i18n';
 import type { Locale } from '../../i18n/i18n';
 import type { HeaderColorConfig } from '../../config/headerColors';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 import { fade } from 'astro:transitions';
 import VideoHero from '../../components/common/VideoHero/VideoHero.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
+import { getSiteTexts, text } from '../../services/api/site-texts';
+import { getContentList } from '../../services/api/content-lists';
 
 // Importar estilos separados
 import './styles.css';
@@ -20,19 +22,21 @@ export interface Props {
 const { currentLang: propLang, headerColorConfig } = Astro.props;
 const currentLang: Locale = propLang || getLocale() || 'es';
 
-console.log(`[ABOUT US] Idioma recibido por props: ${propLang} | Usando finalmente: ${currentLang}`);
+const siteTexts = await getSiteTexts(currentLang);
+const timeline = await getContentList('about-us-timeline', currentLang);
 
-// Get translations from common.json
-const title = t('about_us.title', { namespace: 'common', locale: currentLang });
-const metaDescription = t('meta.about_us.description', { namespace: 'common', locale: currentLang });
+const title = text(siteTexts, 'about_us.title');
+const metaDescription = text(siteTexts, 'meta.about_us.description');
 
-// Importar contenido específico de aboutus.json idioma seguro
-const aboutUsContent = await import(`../../locales/${currentLang}/aboutus.json`);
-const historyTitle = aboutUsContent.title;
-const historySubtitle = aboutUsContent.subtitle;
-const historyIntro = aboutUsContent.intro;
-const historyItems = aboutUsContent.items;
-const historyConclusion = aboutUsContent.conclusion;
+const historyTitle = text(siteTexts, 'about_us.title');
+const historySubtitle = text(siteTexts, 'about_us.subtitle');
+const historyIntro = text(siteTexts, 'about_us.intro');
+const historyConclusion = text(siteTexts, 'about_us.conclusion');
+const historyItems = (timeline?.items ?? []).map((item) => ({
+  year: item.title,
+  image: item.imageUrl,
+  text: item.description,
+}));
 
 // Video and image URLs for hero section
 const videoUrl = 'https://snack.yummiespromociones.com/SnacksyummiesAssets/YUMMIES_INSTITUCIONAL_1920X1080.webm';

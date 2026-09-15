@@ -1,10 +1,11 @@
 ---
 import LanguageSwitcher from '../../i18n/LanguageSwitcher.astro';
 import LocalizedImage from '../LazyImage.astro';
-import { t, type Locale } from '../../../i18n/i18n';
-import { socialMediaIconUrls, logos } from '../../../config/assets';
+import type { Locale } from '../../../i18n/i18n';
+import { logos } from '../../../config/assets';
 import type { HeaderColorConfig } from '../../../config/headerColors';
 import SocialMediaIcons from '../SocialMediaIcons/index.astro';
+import { getNavigation } from '../../../services/api/navigation';
 
 export interface Props {
   currentLang: Locale;
@@ -17,9 +18,8 @@ const { currentLang, headerColorConfig } = Astro.props;
 const { pathname } = Astro.url;
 const currentPath = pathname;
 
-// Obtener los datos de social media y menú desde las traducciones
-const socialMedia = t('social_media', { namespace: 'common', locale: currentLang }) as any;
-const menuItems = t('menu_items', { namespace: 'common', locale: currentLang }) as any[];
+const navigation = await getNavigation(currentLang);
+const menuItems = navigation?.items ?? [];
 ---
 
 <!-- Desktop Navigation -->

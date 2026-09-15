@@ -1,7 +1,8 @@
 ---
 // Breadcrumb.astro - Component for showing navigation breadcrumbs
-import { t, getLocale } from '../../../i18n/i18n';
+import { getLocale } from '../../../i18n/i18n';
 import type { Locale } from '../../../i18n/i18n';
+import { getSiteTexts, text } from '../../../services/api/site-texts';
 import './styles.css';
 
 // Props for the component
@@ -61,19 +62,12 @@ const segments = cleanPath ? cleanPath.split('/') : [];
 // Get section name (first segment)
 const section = segments.length > 0 ? segments[0] : '';
 
-// Get section title from translations - use the locale from the URL path
+const siteTexts = await getSiteTexts(pathLocale);
 let sectionTitle = '';
 if (section) {
-  // First try to get the title from the common namespace
-  sectionTitle = t(`meta.${section}.title`, { namespace: 'common', locale: pathLocale });
-  
-  // If not found, try the section-specific namespace (e.g., brands namespace for /brands)
-  if (sectionTitle === `meta.${section}.title`) {
-    sectionTitle = t('title', { namespace: section, locale: pathLocale });
-  }
-  
-  // If still not found, use the section name with capitalization
-  if (sectionTitle === 'title' || sectionTitle === `meta.${section}.title`) {
+  sectionTitle = text(siteTexts, `meta.${section}.title`);
+
+  if (!sectionTitle) {
     sectionTitle = section.charAt(0).toUpperCase() + section.slice(1);
   }
 }
@@ -88,7 +82,7 @@ const homeUrl = `/`;
     <ol class="breadcrumb-list">
       <!-- Home link always present -->
       <li class="breadcrumb-item" style={`color: ${textColorValue};`}>
-        <a href={homeUrl} class="breadcrumb-link home-link" style={`color: ${textColorValue};`} aria-label={t('meta.home.title', { namespace: 'common' })}>
+        <a href={homeUrl} class="breadcrumb-link home-link" style={`color: ${textColorValue};`} aria-label={text(siteTexts, 'meta.home.title')}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="breadcrumb-home-icon">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>

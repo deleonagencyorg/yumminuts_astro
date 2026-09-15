@@ -2,12 +2,12 @@
 // Hybrid component combining Categories products display with Recipe-style filtering
 import { getLocale } from '../../../i18n/i18n';
 import ProductCard from '../ProductCard/index.astro';
-import categoriesConfig from '../../../config/categories.json';
 import { getAllProducts } from '../../../services/api/products';
+import { getProductCategories } from '../../../services/api/product-categories';
 
 const currentLang = getLocale();
-// Load all products from localized JSON
 const products = await getAllProducts(currentLang);
+const categories = await getProductCategories(currentLang);
 
 export interface Props {
   title?: string;
@@ -19,25 +19,21 @@ const {
   showAllProducts = false
 } = Astro.props;
 
-// Build filter categories from centralized config with localized labels
-const filterCategories = (categoriesConfig.categories || []).map((c: any) => ({
+const filterCategories = categories.map((c) => ({
   key: c.key,
-  name: currentLang === 'es' ? c.labels.es : c.labels.en,
-  icon: c.icon,
-  background: c.background,
-  slug: currentLang === 'es' ? c.slugs.es : c.slugs.en
+  name: c.label,
+  background: c.backgroundColor,
+  slug: c.slug,
 }));
 
-// Function to get category from product using categories config first
 function getProductCategory(product: any): string {
-  const cfg = (categoriesConfig as any).categories || [];
   const raw = String(product?.category || product?.title || product?.name || '').toLowerCase();
   // Try exact match against labels/slugs/keys
-  for (const c of cfg) {
-    const labels = [c?.labels?.es, c?.labels?.en].map((s: string) => String(s || '').toLowerCase());
-    const slugs = [c?.slugs?.es, c?.slugs?.en].map((s: string) => String(s || '').toLowerCase());
-    const key = String(c?.key || '').toLowerCase();
-    if (labels.includes(raw) || slugs.includes(raw) || raw === key) return c.key;
+  for (const c of categories) {
+    const label = String(c.label || '').toLowerCase();
+    const slug = String(c.slug || '').toLowerCase();
+    const key = String(c.key || '').toLowerCase();
+    if (raw === label || raw === slug || raw === key) return c.key;
   }
   // Heuristics (fallback)
   const title = String(product?.title || '').toLowerCase();
@@ -51,7 +47,7 @@ function getProductCategory(product: any): string {
   if (title.includes('semilla') || id.includes('semilla') || title.includes('seed') || category.includes('seed') ||
       title.includes('almond') || category.includes('almond') || title.includes('mix') || id.includes('mix')) return 'semillas';
   // Ultimate fallback
-  return (cfg[0]?.key) || 'manies';
+  return categories[0]?.key || 'manies';
 }
 
 // Display products (limit to 6 if not showing all)

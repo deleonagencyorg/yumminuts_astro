@@ -1,22 +1,21 @@
 ---
-// src/components/common/ProteinSection.astro
-import { t, getLocale } from '../../i18n/i18n';
+import { getLocale } from '../../i18n/i18n';
 import LazyImage from '../common/LazyImage.astro';
+import { getContentList } from '../../services/api/content-lists';
 
-// Get current locale and health info assets
 const locale = getLocale();
-const healthInfo = t('assets.healthInfo', { locale });
+const healthInfo = await getContentList('health-info-icons', locale);
 ---
 
 <section class="w-full py-12 bg-white">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {healthInfo && healthInfo.map((item: any) => (
+      {healthInfo?.items.map((item) => (
         <div class="flex justify-center">
           <LazyImage
-            src={item.icon} 
-            alt={item.alt} 
-            class="w-24 h-24 md:w-32 md:h-32 object-contain"  
+            src={item.imageUrl}
+            alt={item.title}
+            class="w-24 h-24 md:w-32 md:h-32 object-contain"
           />
         </div>
       ))}

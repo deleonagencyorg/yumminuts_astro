@@ -1,6 +1,8 @@
 ---
-import { t, type Locale } from '../i18n/i18n';
+import type { Locale } from '../i18n/i18n';
 import config from '../i18n/config';
+import { getSiteTexts, text } from '../services/api/site-texts';
+import { getSocialMediaLinks } from '../services/api/social-media';
 
 export interface Props {
   currentLang: Locale;
@@ -12,20 +14,22 @@ export interface Props {
 
 const { currentLang, title, description, canonicalUrl, imageUrl } = Astro.props;
 
-// Get translations for meta tags
-const meta = t('meta', { namespace: 'common', locale: currentLang }) as any;
-const socialMedia = t('social_media', { namespace: 'common', locale: currentLang }) as any;
+const siteTexts = await getSiteTexts(currentLang);
+const socialMedia = await getSocialMediaLinks(currentLang);
 
 // Default values
-const pageTitle = title || meta.home.title;
-const pageDescription = description || meta.home.description;
+const pageTitle = title || text(siteTexts, 'meta.home.title');
+const pageDescription = description || text(siteTexts, 'meta.home.description');
 const pageImage = imageUrl || 'https://snack.yummiespromociones.com/snacksyummies/graphqlsocial.webp';
 const pageUrl = canonicalUrl || `https://snacksyummies.com/${currentLang}`;
 
 // Social media URLs
-const facebookUrl = socialMedia?.facebook?.url || '';
-const instagramUrl = socialMedia?.instagram?.url || '';
-const twitterUrl = socialMedia?.twitter?.url || '';
+function urlFor(platform: string): string {
+  return socialMedia.find((sm) => sm.platform.toLowerCase() === platform)?.url || '';
+}
+const facebookUrl = urlFor('facebook');
+const instagramUrl = urlFor('instagram');
+const twitterUrl = urlFor('twitter');
 const locales: string[] = (config.supportedLocales as unknown as string[]) || [];
 
 ---
@@ -73,9 +77,9 @@ const locales: string[] = (config.supportedLocales as unknown as string[]) || []
   "url": "https://yumminuts.com",
   "logo": "https://snack.yummiespromociones.com/snacksyummies/logo.webp",
   "sameAs": [
-    socialMedia.facebook?.url,
-    socialMedia.instagram?.url,
-    socialMedia.tiktok?.url
+    facebookUrl,
+    instagramUrl,
+    urlFor('tiktok')
   ].filter(Boolean)
 })}></script>
 

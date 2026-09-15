@@ -1,10 +1,10 @@
 ---
 import LanguageSwitcher from '../../i18n/LanguageSwitcher.astro';
-import LocalizedImage from '../LazyImage.astro';
-import { t, type Locale } from '../../../i18n/i18n';
-import { socialMediaIconUrls, logos } from '../../../config/assets';
+import type { Locale } from '../../../i18n/i18n';
+import { logos } from '../../../config/assets';
 import type { HeaderColorConfig } from '../../../config/headerColors';
 import SocialMediaIcons from '../SocialMediaIcons/index.astro';
+import { getNavigation } from '../../../services/api/navigation';
 
 export interface Props {
   currentLang: Locale;
@@ -13,13 +13,10 @@ export interface Props {
 
 const { currentLang, headerColorConfig } = Astro.props;
 
-// Obtener los datos de social media y menú desde las traducciones
-const socialMedia = t('social_media', { namespace: 'common', locale: currentLang }) as any;
-const menuItems = t('menu_items', { namespace: 'common', locale: currentLang }) as any[];
-
-// Traducciones
-const openMenuLabel = t('menu_labels.open_main_menu', { namespace: 'common', locale: currentLang }) || 'Open main menu';
-const closeMenuLabel = t('menu_labels.close_main_menu', { namespace: 'common', locale: currentLang }) || 'Close main menu';
+const navigation = await getNavigation(currentLang);
+const menuItems = navigation?.items ?? [];
+const openMenuLabel = navigation?.openMenuLabel || 'Open main menu';
+const closeMenuLabel = navigation?.closeMenuLabel || 'Close main menu';
 
 ---
 
@@ -97,32 +94,11 @@ const closeMenuLabel = t('menu_labels.close_main_menu', { namespace: 'common', l
   />
 </div>
     <div class="flex justify-center">
-      <SocialMediaIcons 
-        currentLang={currentLang} 
+      <SocialMediaIcons
+        currentLang={currentLang}
         iconColor="white"
-        centered={false} 
+        centered={false}
       />
-    </div>
-
-    <div class="mt-auto flex space-x-4">
-      {socialMedia && Object.entries(socialMedia).map(([key, social]) => {
-        const sm = social as { name: string; url: string; alt?: string; iconUrl?: string };
-        return (
-          <a href={sm.url} target="_blank" rel="noopener noreferrer" title={sm.name} class="text-white hover:text-gray-300">
-            <span class="sr-only">{sm.name}</span>
-            {sm.iconUrl && (
-              <LocalizedImage
-                assetKey={sm.iconUrl}
-                alt={sm.alt || sm.name}
-                class="h-6 w-6 filter invert"
-                width={24}
-                height={24}
-                loading="lazy"
-              />
-            )}
-          </a>
-        );
-      })}
     </div>
   </div>
 </div>

@@ -5,9 +5,7 @@ import './styles.css';
 import ProductsWithFilter from '../../components/common/ProductsWithFilter/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
 import Carousel from '../../components/common/Carousel/index.astro';
-import categoriesConfig from '../../config/categories.json';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
-import { getAllProducts } from '../../services/api/products';
 import { getDiscoverSection } from '../../services/api/descubrenos';
 import { getPageBanners } from '../../services/api/pages';
 
@@ -15,10 +13,6 @@ import { getPageBanners } from '../../services/api/pages';
 const currentLang = getLocale();
 const discover = await getDiscoverSection(currentLang, 'products');
 const banners = await getPageBanners('products', currentLang);
-
-// Categorías centralizadas (mismas que usa ProductsWithFilter)
-const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.key);
-const allProducts = await getAllProducts(currentLang);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">

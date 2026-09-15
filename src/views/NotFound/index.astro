@@ -1,7 +1,9 @@
 ---
-import { t, type Locale } from '../../i18n/i18n';
+import type { Locale } from '../../i18n/i18n';
 import Categories from '../../components/common/Categories/index.astro';
-import categoriesConfig from '../../config/categories.json';
+import { getSiteTexts, text } from '../../services/api/site-texts';
+import { getAllProducts } from '../../services/api/products';
+import { getProductCategories } from '../../services/api/product-categories';
 
 export interface Props {
   lang: Locale;
@@ -9,13 +11,20 @@ export interface Props {
 
 const { lang } = Astro.props;
 
-const texts = t('not_found', { namespace: 'common', locale: lang }) as Record<string, string>;
+const siteTexts = await getSiteTexts(lang);
+const texts = {
+  title: text(siteTexts, 'not_found.title'),
+  description: text(siteTexts, 'not_found.description'),
+  go_home: text(siteTexts, 'not_found.go_home'),
+  explore_products: text(siteTexts, 'not_found.explore_products'),
+};
 
 const homeUrl = `/${lang}`;
 const productsUrl = lang === 'es' ? `/${lang}/productos` : `/${lang}/products`;
 
 // Exact same logic as home page to build category cards
-const products = (t('items', { namespace: 'products', locale: lang }) || []) as any[];
+const products = await getAllProducts(lang);
+const categories = await getProductCategories(lang);
 
 function normalizeCategory(value: string): string {
   const v = (value || '').toLowerCase();
@@ -24,29 +33,27 @@ function normalizeCategory(value: string): string {
   if (v.includes('marañ') || v.includes('maranon') || v.includes('cashew')) return 'maranones';
   if (v.includes('semilla') || v.includes('seed') || v.includes('almend') || v.includes('mix')) return 'semillas';
   if (v.includes('barra') || v.includes('bar') || v.includes('bars')) return 'barras';
-  const cfg = (categoriesConfig as any).categories || [];
-  const match = cfg.find((c: any) => [c.labels?.es, c.labels?.en, c.key].map((s: string) => (s||'').toLowerCase()).includes(v));
+  const match = categories.find((c) => [c.label, c.key].map((s) => (s || '').toLowerCase()).includes(v));
   return match?.key || '';
 }
 
 const productsByCategory: Record<string, any[]> = {};
 for (const p of products) {
-  const key = normalizeCategory((p as any).category || (p as any).title || (p as any).name || '');
+  const key = normalizeCategory((p as any).category || (p as any).name || '');
   if (!key) continue;
   if (!productsByCategory[key]) productsByCategory[key] = [];
   productsByCategory[key].push(p);
 }
 
 type CatProduct = { id: string; title: string; image: string; bgColor: string; slug?: string };
-const categoryCards: CatProduct[] = ((categoriesConfig as any).categories || []).map((c: any) => {
+const categoryCards: CatProduct[] = categories.map((c) => {
   const list = productsByCategory[c.key] || [];
-  const first = list[0] || {};
-  const title = (c.labels?.[lang] || c.labels?.es || c.labels?.en || '') as string;
+  const first: any = list[0] || {};
   const image = (first.image || '') as string;
-  const bgColor = (c.background || '#95CFF2') as string;
+  const bgColor = c.backgroundColor || '#95CFF2';
   const id = (first.id || c.key) as string;
   const slug = (first.slug || first.id || '') as string;
-  return { id, title, image, bgColor, slug };
+  return { id, title: c.label, image, bgColor, slug };
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const categoriesTitle = lang === 'es' ? 'Categorías' : 'Categories';

@@ -1,6 +1,7 @@
 ---
-import { t, type Locale } from '../../../i18n/i18n';
+import type { Locale } from '../../../i18n/i18n';
 import type { HeaderColorConfig } from '../../../config/headerColors';
+import { getNavigation } from '../../../services/api/navigation';
 
 export interface Props {
   currentLang: Locale;
@@ -9,8 +10,8 @@ export interface Props {
 
 const { currentLang, headerColorConfig } = Astro.props;
 
-// Traducciones
-const openMenuLabel = t('menu_labels.open_main_menu', { namespace: 'common', locale: currentLang }) || 'Open main menu';
+const navigation = await getNavigation(currentLang);
+const openMenuLabel = navigation?.openMenuLabel || 'Open main menu';
 
 // SVG Icons
 const menuIconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

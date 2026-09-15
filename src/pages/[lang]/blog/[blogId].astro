@@ -1,19 +1,21 @@
 ---
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { type Locale } from '../../../i18n/i18n';
+import { getAllNews } from '../../../services/api/news';
 
 export async function getStaticPaths() {
-  const locales = ['en', 'es'];
+  const locales = ['en', 'es'] as const;
   const paths = [];
   for (const locale of locales) {
-    const blogPosts = (await import(`../../../locales/${locale}/news.json`)).items || [];
+    const news = await getAllNews(locale);
+    const blogPosts = news.map((item) => ({ ...item, summary: item.excerpt }));
     for (const blogPost of blogPosts) {
       paths.push({
-        params: { 
-          lang: locale, 
-          blogId: blogPost.slug || blogPost.id 
+        params: {
+          lang: locale,
+          blogId: blogPost.slug || blogPost.id
         },
-        props: { 
+        props: {
           blogPost,
           currentLang: locale as Locale,
           allBlogPosts: blogPosts

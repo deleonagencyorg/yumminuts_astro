@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import config from '../i18n/config';
-import { t } from '../i18n/i18n';
+import { getAllProducts } from '../services/api/products';
 
 const staticPages = ['/', '/menu', '/nosotros', '/contacto'];
 
@@ -37,12 +37,12 @@ export const GET: APIRoute = async () => {
   // Build product URLs for each supported locale
   const productUrls: string[] = [];
   for (const lang of config.supportedLocales) {
-    const items = (t('items', { namespace: 'products', locale: lang as any }) as any[]) || [];
+    const items = await getAllProducts(lang);
     const seg = lang === 'es' ? 'productos' : 'products';
     for (const p of items) {
-      const id = p?.id || '';
-      if (!id) continue;
-      productUrls.push(`/${lang}/${seg}/${id}`);
+      const slug = p?.slug || p?.id || '';
+      if (!slug) continue;
+      productUrls.push(`/${lang}/${seg}/${slug}`);
     }
   }
 

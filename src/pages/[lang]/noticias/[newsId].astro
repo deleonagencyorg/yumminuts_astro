@@ -5,23 +5,19 @@ import MainLayout from '../../../layouts/MainLayout.astro';
 import SEO from '../../../components/SEO.astro';
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { config } from '../../../i18n/config';
-import { t } from '../../../i18n/i18n'; // reemplace with actual translation function if needed
+import { getAllNews } from '../../../services/api/news';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
   const locales = config.supportedLocales as Locale[];
-  const paths = [];
 
-  for (const locale of locales) {
-    const blogPosts = t('items', { namespace: 'news', locale: locale as Locale }) || [];
-    for (const blogPost of blogPosts) {
-      paths.push({
-        params: { lang: locale, newsId: blogPost.id },
-        props: { blogPost, currentLang: locale as Locale }
-      });
-    }
-  }
+  const allNewsByLang = await Promise.all(locales.map((lang) => getAllNews(lang)));
 
-  return paths;
+  return locales.flatMap((locale, index) =>
+    allNewsByLang[index].map((blogPost) => ({
+      params: { lang: locale, newsId: blogPost.slug },
+      props: { blogPost, currentLang: locale },
+    }))
+  );
 }
 
 const { blogPost, currentLang } = Astro.props;
