@@ -13,10 +13,19 @@ const { lang } = Astro.props;
 
 const siteTexts = await getSiteTexts(lang);
 const texts = {
-  title: text(siteTexts, 'not_found.title'),
-  description: text(siteTexts, 'not_found.description'),
-  go_home: text(siteTexts, 'not_found.go_home'),
-  explore_products: text(siteTexts, 'not_found.explore_products'),
+  code: text(siteTexts, 'not_found.code', '404'),
+  title: text(siteTexts, 'not_found.title', lang === 'es' ? 'Página no encontrada' : 'Page not found'),
+  description: text(
+    siteTexts,
+    'not_found.description',
+    lang === 'es' ? 'La página que buscas no existe.' : 'The page you are looking for does not exist.'
+  ),
+  go_home: text(siteTexts, 'not_found.go_home', lang === 'es' ? 'Volver al inicio' : 'Back to home'),
+  explore_products: text(
+    siteTexts,
+    'not_found.explore_products',
+    lang === 'es' ? 'Explorar productos' : 'Explore products'
+  ),
 };
 
 const homeUrl = `/${lang}`;
@@ -56,7 +65,11 @@ const categoryCards: CatProduct[] = categories.map((c) => {
   return { id, title: c.label, image, bgColor, slug };
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
-const categoriesTitle = lang === 'es' ? 'Categorías' : 'Categories';
+const categoriesTitle = text(
+  siteTexts,
+  'not_found.products_title',
+  lang === 'es' ? 'Productos' : 'Products'
+);
 ---
 
 <section id="nf-section" class="w-full min-h-screen flex flex-col items-center bg-white">
@@ -67,18 +80,7 @@ const categoriesTitle = lang === 'es' ? 'Categorías' : 'Categories';
 
       <!-- 404 number with product image in the middle -->
       <div class="nf-code">
-        <span class="nf-digit">4</span>
-        <span class="nf-nut">
-          <img
-            src="https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp"
-            alt="Yummi Nuts"
-            class="nf-nut-img"
-            loading="eager"
-            width="140"
-            height="140"
-          />
-        </span>
-        <span class="nf-digit">4</span>
+        <span class="nf-code-text">{texts.code}</span>
       </div>
 
       <h1 class="nf-title">{texts.title}</h1>
@@ -126,30 +128,13 @@ const categoriesTitle = lang === 'es' ? 'Categorías' : 'Categories';
     gap: 0.25rem;
     margin-bottom: 1.5rem;
   }
-  .nf-digit {
+  .nf-code-text {
     font-size: clamp(5rem, 14vw, 9rem);
     font-weight: 900;
     line-height: 1;
     color: #0073C1;
     font-family: var(--font-title);
   }
-  .nf-nut {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .nf-nut-img {
-    width: clamp(80px, 11vw, 130px);
-    height: clamp(80px, 11vw, 130px);
-    object-fit: contain;
-    animation: nfSpin 6s ease-in-out infinite;
-    filter: drop-shadow(0 6px 16px rgba(0,115,193,0.25));
-  }
-  @keyframes nfSpin {
-    0%, 100% { transform: rotate(-8deg) scale(1); }
-    50%       { transform: rotate(8deg) scale(1.06); }
-  }
-
   /* Title & description */
   .nf-title {
     font-family: var(--font-title);

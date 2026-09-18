@@ -6,6 +6,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import SEO from '../../components/SEO.astro';
 import HomePageContent from '../../views/Home/index.astro';
 import { getPageByRouteId } from '../../services/api/pages';
+import { getSiteTexts, text } from '../../services/api/site-texts';
 
 export async function getStaticPaths() {
   const homeRoute = getRouteById('home');
@@ -23,9 +24,10 @@ const homeRoute = getRouteById('home');
 if (!homeRoute) throw new Error("Home route configuration is missing.");
 
 const page = await getPageByRouteId('home', lang);
+const siteTexts = await getSiteTexts(lang);
 
-const pageTitle = page?.metaTitle || page?.title || '';
-const pageDescription = page?.metaDescription || page?.excerpt || '';
+const pageTitle = page?.metaTitle || page?.title || text(siteTexts, 'meta.home.title', '');
+const pageDescription = page?.metaDescription || page?.excerpt || text(siteTexts, 'meta.home.description', '');
 const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
 ---
 
@@ -81,4 +83,3 @@ const pageImage = page?.ogImage?.seoUrl ?? page?.ogImage?.originalUrl ?? '';
   </Fragment>
   <HomePageContent cmsBanners={page?.banners ?? null} />
 </MainLayout>
-

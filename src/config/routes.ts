@@ -3,8 +3,8 @@ export interface RouteConfig {
   id: string; // Identificador único para la ruta (ej: 'home', 'contact')
   slugs: { [key: string]: string }; // Mapeo de idioma a slug (ej: { es: 'contacto', en: 'contact' })
   contentComponent: string; // Ruta al componente Astro que renderiza el contenido (ej: '@/components/pages/ContactPage.astro')
-  metaTitleKey?: string; // Clave para el título en common.json (ej: 'meta.contact.title')
-  metaDescriptionKey?: string; // Clave para la descripción en common.json
+  metaTitleKey?: string; // Identificador histórico; la metadata real proviene del CMS.
+  metaDescriptionKey?: string; // Identificador histórico; la metadata real proviene del CMS.
 }
 
 export const routesConfig: RouteConfig[] = [

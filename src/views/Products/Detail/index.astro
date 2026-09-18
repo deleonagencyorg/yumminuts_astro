@@ -1,7 +1,7 @@
 ---
 // src/views/Products/Detail/index.astro
-import { t } from '../../../i18n/i18n';
 import type { Locale } from '../../../i18n/i18n';
+import { getSiteTexts, text } from '../../../services/api/site-texts';
 import './styles.css';
 import { initProductDetail } from './scripts.js';
 import ProductsCarousel from '../../../components/common/ProductsCarousel/index.astro';
@@ -48,10 +48,15 @@ const { currentLang, productId, product } = Astro.props as {
 
 const discover = await getDiscoverSection(currentLang, 'products');
 const categories = await getProductCategories(currentLang);
+const siteTexts = await getSiteTexts(currentLang);
 
 // Si el producto no existe, lanzar error
 if (!product) {
-  throw new Error(t('errors.product_not_found', { locale: currentLang }));
+  throw new Error(text(
+    siteTexts,
+    'errors.product_not_found',
+    currentLang === 'es' ? 'Producto no encontrado.' : 'Product not found.'
+  ));
 }
 
 // Helpers de categoría
@@ -239,7 +244,7 @@ const productBenefits = [
                         <ProductCard
                           title={p.name.replace(/^Yummi\s*Nuts?\s*/i, '')}
                           image={p.image}
-                          bgColor={p.background_color || safeProduct.background_color}
+                          bgColor={p.backgroundColor || p.background_color}
                           size="sm"
                         />
                       </a>

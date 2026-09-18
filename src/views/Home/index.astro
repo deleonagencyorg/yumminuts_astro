@@ -6,6 +6,7 @@ import HealthInfoSection from '../../components/common/HealthInfoSection.astro';
 import Categories from '../../components/common/Categories/index.astro';
 import Discover from '../../components/common/Discover/index.astro';
 import Carousel from '../../components/common/Carousel/index.astro';
+import Newsletter from '../../components/common/Newsletter/index.astro';
 import { getAllProducts } from '../../services/api/products';
 import { getDiscoverSection } from '../../services/api/descubrenos';
 import { getProductCategories } from '../../services/api/product-categories';
@@ -68,6 +69,9 @@ const categoryCards: CatProduct[] = categories.map((c) => {
 }).filter((cp: CatProduct) => cp.image && cp.bgColor);
 
 const discover = await getDiscoverSection(currentLang, 'home');
+const homeNewsletterTitle = text(siteTexts, 'home.newsletter.title');
+const homeNewsletterPlaceholder = text(siteTexts, 'home.newsletter.placeholder');
+const homeNewsletterButton = text(siteTexts, 'home.newsletter.button');
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
@@ -119,6 +123,20 @@ const discover = await getDiscoverSection(currentLang, 'home');
         />
       </div>
     </section>
+
+    {(homeNewsletterTitle || homeNewsletterPlaceholder || homeNewsletterButton) && (
+      <section class="w-full py-8 px-4 bg-white reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
+        <div class="container mx-auto max-w-xl">
+          <Newsletter
+            title={homeNewsletterTitle}
+            placeholder={homeNewsletterPlaceholder}
+            buttonText={homeNewsletterButton}
+            centered
+            class="text-primary"
+          />
+        </div>
+      </section>
+    )}
 
     <!-- Sección Descubrenos -->
     {discover && (

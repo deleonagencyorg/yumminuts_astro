@@ -7,6 +7,7 @@ import RecipeDetail from '../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../services/api/recipes';
 import SEO from '../../components/SEO.astro';
 import { getPageByRouteId } from '../../services/api/pages';
+import { getSiteTexts, text } from '../../services/api/site-texts';
 
 // Define the expected structure of the dynamically imported modules
 interface PageModule {
@@ -145,9 +146,16 @@ if (!isRecipeDetail) {
   }
 
   const cmsPage = await getPageByRouteId(currentRoute.id, lang);
+  const siteTexts = await getSiteTexts(lang);
 
-  pageTitle = cmsPage?.metaTitle || cmsPage?.title || '';
-  pageDescription = cmsPage?.metaDescription || cmsPage?.excerpt || '';
+  pageTitle =
+    cmsPage?.metaTitle ||
+    cmsPage?.title ||
+    (currentRoute.metaTitleKey ? text(siteTexts, currentRoute.metaTitleKey, '') : '');
+  pageDescription =
+    cmsPage?.metaDescription ||
+    cmsPage?.excerpt ||
+    (currentRoute.metaDescriptionKey ? text(siteTexts, currentRoute.metaDescriptionKey, '') : '');
   pageImage = cmsPage?.ogImage?.seoUrl ?? cmsPage?.ogImage?.originalUrl ?? '';
   ogTitle = cmsPage?.ogTitle || pageTitle;
   ogDescription = cmsPage?.ogDescription || pageDescription;
