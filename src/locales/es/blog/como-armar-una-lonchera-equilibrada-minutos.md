@@ -11,7 +11,7 @@ keywords:
   - "Yummi Nuts"
   - "nutrición práctica"
 summary: "Armar una lonchera en 15 minutos requiere integrar proteínas de rápida preparación, vegetales frescos y grasas saludables como Yummi Nuts. Esta combinación asegura energía prolongada y un sabor delicioso para tu jornada. "
-preview: "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-YUMMI-NUTS-500X500-2.webp"
+preview: "https://snack.yummiespromociones.com/SnacksyummiesAssets/500x540.webp"
 banner: "https://snack.yummiespromociones.com/SnacksyummiesAssets/BANNER-YUMMI-NUTS-1920X1080-2.webp"
 
 published_date: "2026-09-24"
