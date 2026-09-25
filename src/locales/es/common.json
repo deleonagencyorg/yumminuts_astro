@@ -114,7 +114,7 @@
       "title": "Descúbrenos"
     },
     "healthPage": {
-      "title": "Activa tu mente y cuerpo con Yummi Nuts",
+      "title": "Activa tu mente y cuerpo",
       "description": "Descubre los beneficios de nuestros snacks para tu salud.",
       "link": "/es/salud",
       "image": "https://snack.yummiespromociones.com/yumminuts/home-salud.png",
@@ -251,32 +251,32 @@
       "instagramPosts": [
         {
           "id": "post1",
-          "postUrl": "https://www.instagram.com/reel/Dcj6JzEAGbr/?igsi=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/Dcj6JzEAGbr/embed",
+          "postUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-1.jpg",
           "fallbackImage": "/images/instagram-fallback-1.jpg",
           "alt": "Yummi Nuts Instagram Post 1"
         },
         {
           "id": "post2",
-          "postUrl": "https://www.instagram.com/reel/DcMseZsJfpT/?igsi=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DcMseZsJfpT/embed",
+          "postUrl": "https://www.instagram.com/reel/DdXDNIdpmkJ/?utm_source=ig_web_button_share_sheet&stkn=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DdXDNIdpmkJ/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-2.jpg",
           "fallbackImage": "/images/instagram-fallback-2.jpg",
           "alt": "Yummi Nuts Instagram Post 2"
         },
         {
           "id": "post3",
-          "postUrl": "https://www.instagram.com/reel/Db4bUYTMsMB/?igsi=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/Db4bUYTMsMB/embed",
+          "postUrl": "https://www.instagram.com/reel/DdMsEDXE-Jo/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DdMsEDXE-Jo/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-3.jpg",
           "fallbackImage": "/images/instagram-fallback-3.jpg",
           "alt": "Yummi Nuts Instagram Post 3"
         },
         {
           "id": "post4",
-          "postUrl": "https://www.instagram.com/reel/DbuClewNQ17/?igsi=MzRlODBiNWFlZA==",
-          "embedUrl": "https://www.instagram.com/reel/DbuClewNQ17/embed",
+          "postUrl": "https://www.instagram.com/reel/DdIIBXLAh-L/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DdIIBXLAh-L/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-4.jpg",
           "fallbackImage": "/images/instagram-fallback-4.jpg",
           "alt": "Yummi Nuts Instagram Post 4"

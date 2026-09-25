@@ -32,11 +32,17 @@ function sortWithinCategory(products: HomeProduct[]): HomeProduct[] {
   return [...products].sort((a, b) => a.title.localeCompare(b.title, currentLang));
 }
 
-const groupedRows = homeRowGroups
-  .map((keys) => sortWithinCategory(
-    products.filter((product) => keys.includes(product.categoryKey || ''))
-  ))
-  .filter((row) => row.length > 0);
+const groupedRowsWithKeys = homeRowGroups
+  .map((keys) => {
+    const items = sortWithinCategory(
+      products.filter((product) => keys.includes(product.categoryKey || ''))
+    );
+    return { key: keys[0], items };
+  })
+  .filter((pair) => pair.items.length > 0);
+
+const groupedRows = groupedRowsWithKeys.map((p) => p.items);
+const groupedRowKeys = groupedRowsWithKeys.map((p) => p.key);
 
 const sortedProducts = groupedRows.flat();
 
@@ -63,7 +69,7 @@ function productHref(product: HomeProduct): string {
       class="home-products-rows w-full"
     >
       {groupedRows.map((rowProducts, rowIndex) => (
-        <div class="home-products-row" data-row-index={rowIndex}>
+        <div class="home-products-row" data-row-index={rowIndex} data-row-key={groupedRowKeys[rowIndex]}>
           {rowProducts.map((product, index) => (
             <a
               href={productHref(product)}
@@ -114,6 +120,10 @@ function productHref(product: HomeProduct): string {
     gap: var(--home-products-gap);
     width: 100%;
   }
+
+    .home-products-row[data-row-key="barras"] {
+      margin-top: 2.5rem;
+    }
 
   .home-products-row.hidden-row {
     display: none !important;
@@ -173,34 +183,42 @@ function productHref(product: HomeProduct): string {
     const loadMoreBtn = root.querySelector('.js-home-products-load-more');
     if (!(rowsContainer instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
 
-    const rowBatch = Number(loadMoreBtn.dataset.mobileBatch) || 1;
-
     const allRows = () => Array.from(rowsContainer.querySelectorAll('.home-products-row'));
     const rowCount = () => Math.max(allRows().length, totalRows);
 
-    let visibleRows = Math.min(rowBatch, rowCount());
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 1023px)').matches;
 
-    const updateVisible = () => {
+    if (isMobile) {
       const rows = allRows();
-      const count = rows.length;
-      visibleRows = Math.min(visibleRows, count);
+      rows.forEach((row) => row.classList.remove('hidden-row'));
+      if (loadMoreWrap instanceof HTMLElement) loadMoreWrap.classList.add('hidden');
+    } else {
+      const rowBatch = Number(loadMoreBtn.dataset.desktopBatch) || 1;
 
-      rows.forEach((row, index) => {
-        row.classList.toggle('hidden-row', index >= visibleRows);
+      let visibleRows = Math.min(rowBatch, rowCount());
+
+      const updateVisible = () => {
+        const rows = allRows();
+        const count = rows.length;
+        visibleRows = Math.min(visibleRows, count);
+
+        rows.forEach((row, index) => {
+          row.classList.toggle('hidden-row', index >= visibleRows);
+        });
+
+        const hasMore = visibleRows < count;
+        if (loadMoreWrap instanceof HTMLElement) {
+          loadMoreWrap.classList.toggle('hidden', !hasMore);
+        }
+      };
+
+      loadMoreBtn.addEventListener('click', () => {
+        visibleRows = Math.min(visibleRows + rowBatch, allRows().length);
+        updateVisible();
       });
 
-      const hasMore = visibleRows < count;
-      if (loadMoreWrap instanceof HTMLElement) {
-        loadMoreWrap.classList.toggle('hidden', !hasMore);
-      }
-    };
-
-    loadMoreBtn.addEventListener('click', () => {
-      visibleRows = Math.min(visibleRows + rowBatch, allRows().length);
       updateVisible();
-    });
-
-    updateVisible();
+    }
   }
 
   function setup() {
