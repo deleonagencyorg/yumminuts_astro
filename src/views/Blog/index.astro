@@ -107,6 +107,7 @@ const showLatestNews = morePosts.length > 0;
                         summary={post.summary}
                         minutes={estimateReadMinutes(post.summary)}
                         isNew={i < 3}
+                        currentLang={currentLang}
                       />
                     </div>
                   ))
