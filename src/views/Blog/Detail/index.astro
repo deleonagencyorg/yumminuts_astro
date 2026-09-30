@@ -31,7 +31,11 @@ interface Props {
 const { blogPost, currentLang, allBlogPosts = [], isLoading = false } = Astro.props;
 
 const suggestedPosts = allBlogPosts
-  .filter((post) => post.id !== blogPost.id)
+  .filter((post) => {
+    const postSlug = post.slug || post.id;
+    const currentSlug = blogPost.slug || blogPost.id;
+    return postSlug !== currentSlug;
+  })
   .slice(0, 4);
 
 const readMoreTitle = currentLang === 'es' ? 'Otras Noticias' : 'Other News';
@@ -120,6 +124,7 @@ const formattedContent = hasVisibleBlogContent(normalizedContent)
                   title={post.title}
                   id={post.id}
                   slug={post.slug || post.id}
+                  currentLang={currentLang}
                 />
               ))}
             </div>
