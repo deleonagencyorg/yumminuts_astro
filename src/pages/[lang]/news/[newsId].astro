@@ -1,41 +1,59 @@
 ---
 // src/pages/[lang]/news/[newsId].astro
-import { t, setLocale, type Locale } from '../../../i18n/i18n';
+import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
+import { config } from '../../../i18n/config';
+import SEO from '../../../components/SEO.astro';
+import { getAllNews } from '../../../services/api/news';
+import { getBlogPostsForLocale } from '../../../lib/blogPosts';
 
-export function getStaticPaths() {
-  // Obtener todos los idiomas y noticias disponibles
-  const locales = ['en'];
-  const paths = [];
+export async function getStaticPaths() {
+  const locales = config.supportedLocales as Locale[];
 
-  for (const locale of locales) {
-    // Obtener noticias para este idioma
-    const blogPosts = t('items', { namespace: 'news', locale: locale as Locale }) || [];
-    console.log(`Found ${blogPosts.length} blog posts for language ${locale}`);
-    
-    // Para cada noticia, crear una ruta
-    for (const blogPost of blogPosts) {
-      paths.push({
-        params: { lang: locale, newsId: blogPost.id },
-        props: { blogPost, currentLang: locale as Locale }
-      });
-    }
-  }
+  const allNewsByLang = await Promise.all(locales.map(async (lang) => {
+    const cmsNews = await getAllNews(lang);
+    const localNews = await getBlogPostsForLocale(lang, true);
+    const bySlug = new Map<string, typeof cmsNews[number] | typeof localNews[number]>();
+    for (const item of localNews) bySlug.set(item.slug || item.id, item);
+    for (const item of cmsNews) bySlug.set(item.slug || item.id, {
+      ...item,
+      summary: item.excerpt,
+      preview: item.image,
+      banner: item.image,
+      meta_title: item.title,
+      meta_description: item.excerpt,
+    });
+    return Array.from(bySlug.values());
+  }));
 
-  console.log(`Generated ${paths.length} blog routes in English`);
-  return paths;
+  return locales.flatMap((locale, index) =>
+    allNewsByLang[index].map((blogPost) => ({
+      params: { lang: locale, newsId: blogPost.slug },
+      props: { blogPost, currentLang: locale },
+    }))
+  );
 }
 
 const { blogPost, currentLang } = Astro.props;
 const { lang, newsId } = Astro.params;
 
-// Establecer el idioma para las traducciones
-setLocale(currentLang);
-
-console.log(`Rendering blog: ${newsId} in language: ${lang}`);
+setLocale(lang as Locale);
 ---
 
-<MainLayout title={blogPost.title}>
+<MainLayout title={blogPost?.title || 'News'}>
+  <Fragment slot="head">
+    <SEO
+      currentLang={currentLang}
+      title={blogPost?.metaTitle || blogPost?.title}
+      description={blogPost?.metaDescription || blogPost?.excerpt || blogPost?.description}
+      canonicalUrl={`https://snacksyummies.com/${currentLang}/news/${newsId}`}
+      imageUrl={typeof blogPost?.ogImage === 'string'
+        ? blogPost.ogImage
+        : blogPost?.ogImage?.url
+          ?? (typeof blogPost?.image === 'string' ? blogPost.image : blogPost?.image?.url)
+          ?? 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp'}
+    />
+  </Fragment>
   <BlogDetail blogPost={blogPost} currentLang={currentLang} />
 </MainLayout>

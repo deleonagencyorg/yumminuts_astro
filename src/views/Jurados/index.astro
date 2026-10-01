@@ -1,5 +1,4 @@
 ---
-import type { Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
 import juradosData from '../../locales/es/jurados.json';
 
@@ -11,19 +10,16 @@ export interface Props {
   };
 }
 
-const { lang = 'es', headerColor } = Astro.props;
-
-// Get jurados data
-const { title, description, countries, jurors } = juradosData;
-
-// Find the active country (default to first country if none is active)
-const activeCountry = countries.find(country => country.active) || countries[0];
-const activeCountryId = activeCountry.id;
+const { headerColor } = Astro.props;
 ---
 
-<MainLayout title={juradosData.meta.title} description={juradosData.meta.description} headerColors={headerColor}>
- <section class="py-16 bg-blue h-screen w-full">
-  <h1 class="text-5xl font-bold text-center mb-8">{juradosData.title}</h1>
-  <p class="text-xl text-center mb-12">{juradosData.description}</p>
- </section>
+<MainLayout
+  title={juradosData.meta.title}
+  description={juradosData.meta.description}
+  headerColors={headerColor}
+>
+  <section class="py-16 bg-blue h-screen w-full">
+    <h1 class="text-5xl font-bold text-center mb-8">{juradosData.title}</h1>
+    <p class="text-xl text-center mb-12">{juradosData.description}</p>
+  </section>
 </MainLayout>

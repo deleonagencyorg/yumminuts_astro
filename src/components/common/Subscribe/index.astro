@@ -1,5 +1,6 @@
 ---
-import { t, type Locale } from '../../../i18n/i18n';
+import type { Locale } from '../../../i18n/i18n';
+import { getSiteTexts, text } from '../../../services/api/site-texts';
 
 export interface Props {
   currentLang: Locale;
@@ -21,26 +22,37 @@ const {
   class: className = ''
 } = Astro.props;
 
-// Obtener textos desde los archivos de traducción, usando namespace específico según variante
-const namespace = variant === 'home' ? 'home' : 'common';
-
-// Intentar usar textos personalizados, si no hay, usar los de traducciones
-const title = customTitle || (variant === 'home' 
-  ? t('socialmedia.newsletter', { namespace: 'home', locale: currentLang }) 
-  : t('footer.newsletter_title', { namespace: 'common', locale: currentLang }));
-
-const placeholder = customPlaceholder || (variant === 'home'
-  ? t('newsletter.placeholder', { namespace: 'home', locale: currentLang })
-  : t('footer.newsletter_placeholder', { namespace: 'common', locale: currentLang }));
-
-const buttonText = customButtonText || (variant === 'home'
-  ? t('newsletter.buttonText', { namespace: 'home', locale: currentLang })
-  : t('footer.newsletter_button', { namespace: 'common', locale: currentLang }));
-
-// Mensajes de validación
-const requiredMessage = t('form_validation.required', { namespace: 'common', locale: currentLang });
-const invalidEmailMessage = t('form_validation.invalid_email', { namespace: 'common', locale: currentLang });
-const successMessage = t('subscribe.success', { namespace: 'common', locale: currentLang, fallback: '¡Gracias por suscribirte!' });
+const siteTexts = await getSiteTexts(currentLang);
+const title = customTitle || text(
+  siteTexts,
+  variant === 'home' ? 'home.newsletter.title' : 'footer.newsletter.title',
+  ''
+);
+const placeholder = customPlaceholder || text(
+  siteTexts,
+  variant === 'home' ? 'home.newsletter.placeholder' : 'footer.newsletter.placeholder',
+  ''
+);
+const buttonText = customButtonText || text(
+  siteTexts,
+  variant === 'home' ? 'home.newsletter.button' : 'footer.newsletter.button',
+  currentLang === 'es' ? 'Suscribirse' : 'Subscribe'
+);
+const requiredMessage = text(
+  siteTexts,
+  'form_validation.required',
+  currentLang === 'es' ? 'Este campo es obligatorio.' : 'This field is required.'
+);
+const invalidEmailMessage = text(
+  siteTexts,
+  'form_validation.invalid_email',
+  currentLang === 'es' ? 'Ingresa un correo válido.' : 'Enter a valid email address.'
+);
+const successMessage = text(
+  siteTexts,
+  'subscribe.success',
+  currentLang === 'es' ? '¡Gracias por suscribirte!' : 'Thanks for subscribing!'
+);
 
 // Variables de entorno para la API
 const apiHost = import.meta.env.PUBLIC_CONTACT_API_HOST;
@@ -72,23 +84,6 @@ const formId = `subscribe-form-${Math.random().toString(36).substring(2, 9)}`;
     method="post"
     data-subscribe-form
   >
-    <!-- <div class="mb-2 relative w-full">
-      <input 
-        type="email" 
-        name="email"
-        placeholder={placeholder} 
-        class={`w-full max-w-xs px-4 py-2 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-primary 
-          ${centered ? 'mx-auto' : 'mx-auto md:mx-0'}`}
-        aria-label={placeholder}
-        required
-      />
-      <div class="text-red-500 text-xs mt-1 hidden error-message" data-error-type="required">
-        {requiredMessage}
-      </div>
-      <div class="text-red-500 text-xs mt-1 hidden error-message" data-error-type="invalid-email">
-        {invalidEmailMessage}
-      </div>
-    </div> -->
     
     {currentLang === 'es' && (
       <a 

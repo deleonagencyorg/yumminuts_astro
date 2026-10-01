@@ -1,73 +1,70 @@
 ---
 // src/views/Health/index.astro
-import { t } from '../../i18n/i18n';
-import type { Locale } from '../../i18n/i18n';
 import { getLocale } from '../../i18n/i18n';
 import './styles.css';
-import Carousel from '../../components/common/Carousel/index.astro';
-import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
+import Discover from '../../components/common/Discover/index.astro';
 import VideoSection from '../../components/common/VideoSection/index.astro';
 import LazyImage from '../../components/common/LazyImage.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
+import Carousel from '../../components/common/Carousel/index.astro';
+import { getDiscoverSection } from '../../services/api/descubrenos';
+import { getHealthPage } from '../../services/api/health';
+import { getPageBanners } from '../../services/api/pages';
 
 const currentLang = getLocale();
-const healthBenefits = t('benefits', { namespace: 'health', locale: currentLang });
-const healthHome = t('assets.healthPage', { namespace: 'common', locale: currentLang }) || {};
-const healthCategories = t('categories', { namespace: 'health', locale: currentLang });
-const healthSlider = t('assets.healthPage.slider', { namespace: 'common', locale: currentLang }) || [];
-const slides = healthSlider;
-const healthInfoAssets = t('assets.healthInfo', { namespace: 'common', locale: currentLang }) || [];
-
-// Get video section data
-const videoSectionData = t('assets.healthPage.videosSection', { namespace: 'common', locale: currentLang }) || {};
-const videosData = t('assets.healthPage.videos', { namespace: 'common', locale: currentLang }) || [];
-
-// Get unique health categories
-const uniqueCategories = Object.keys(healthCategories || {});
-console.log('Health home:', healthHome.title);
+const healthPage = await getHealthPage(currentLang);
+const discover = await getDiscoverSection(currentLang, 'health');
+const banners = await getPageBanners('health', currentLang);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <!-- Hero -->
   <section class="w-full pt-4 pb-2 bg-white">
     <div class="container mx-auto px-4">
       <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
-      <div class="mt-4 w-full">
-        <Carousel slides={slides} variant="horizontal" layout="contained" />
-      </div>
+      {banners.length > 0 && (
+        <div class="mt-4 w-full">
+          <Carousel slides={banners} variant="horizontal" layout="contained" />
+        </div>
+      )}
     </div>
   </section>
 
-  <!-- Health Benefits Section -->
-  <section class="w-full pt-10 md:pt-14 pb-8 md:pb-12 bg-white">
-    <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-      <!-- Left: Title + Description -->
-      <div class="w-full md:w-1/2 text-center md:text-left">
-        <h1 class="font-heading text-black text-3xl md:text-5xl font-bold mb-3">{healthHome?.title || 'Activa tu mente y cuerpo con Yummi Nuts'}</h1>
-        <p class="text-gray-600 text-base md:text-lg leading-relaxed">{currentLang === 'es' ? 'Sabemos que cuidar tu cuerpo no es una moda, es un estilo de vida. Por eso Yummi Nuts te comparte información importante sobre tu salud y algunos tips para que sigas cuidando tu cuerpo y disfrutando tus semillas favoritas.' : 'We know that taking care of your body is not a trend, it is a lifestyle. That is why Yummi Nuts shares important information about your health and some tips to continue taking care of your body and enjoying your favorite seeds.' }</p>
-      </div>
-
-      <!-- Right: Simple responsive image -->
-      <div class="w-full md:w-1/2 flex justify-center md:justify-end">
-        <div class="health-hero-image relative overflow-hidden rounded-2xl aspect-[4/3]">
-          <LazyImage alt="Yummi Nuts Health" class="w-full h-full object-contain" src={healthHome?.image || 'https://snack.yummiespromociones.com/yumminuts/home-salud.png'} />
+  {healthPage && (healthPage.title || healthPage.description || healthPage.image) ? (
+    <section class="w-full pt-10 md:pt-14 pb-8 md:pb-12 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div class="w-full md:w-1/2 text-center md:text-left">
+            <h1 class="font-heading text-black text-3xl md:text-5xl font-bold mb-3">{healthPage.title}</h1>
+            <p class="text-gray-600 text-base md:text-lg leading-relaxed">{healthPage.description}</p>
+          </div>
+          {healthPage.image ? (
+            <div class="w-full md:w-1/2 flex justify-center md:justify-end">
+              <div class="health-hero-image relative overflow-hidden rounded-2xl aspect-[4/3]">
+                <LazyImage alt={healthPage.title || 'Yummi Nuts Health'} class="w-full h-full object-contain" src={healthPage.image} />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
-    </div>
-    </div>
-  </section>
+    </section>
+  ) : null}
 
-  <!-- Video Section -->
-  <section id="videos" class="w-full bg-white py-8 md:py-12">
-  <VideoSection 
-    title={videoSectionData?.title || 'Tips para mantener tu cuerpo siempre saludable'}
-    description={videoSectionData?.description || 'Explora más sobre Yummi Nuts a través de nuestros videos.'}
-    videos={videosData}
-  />
-</section>
+  {healthPage?.videos.length ? (
+    <section id="videos" class="w-full bg-white py-8 md:py-12">
+      <VideoSection
+        title={healthPage.videosSectionTitle}
+        description={healthPage.videosSectionDescription}
+        videos={healthPage.videos}
+      />
+    </section>
+  ) : null}
 
-  <DiscoverSection />
+  <!-- Discover Section -->
+  {discover && (
+    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+      <Discover title={discover.title} posts={discover.posts} />
+    </section>
+  )}
 </main>
 
 <script>

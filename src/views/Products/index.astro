@@ -1,44 +1,45 @@
 ---
 // src/components/pages/ProductsPage.astro
-import { t } from '../../i18n/i18n';
-import type { Locale } from '../../i18n/i18n';
 import { getLocale } from '../../i18n/i18n';
 import './styles.css';
-import Carousel from '../../components/common/Carousel/index.astro';
 import ProductsWithFilter from '../../components/common/ProductsWithFilter/index.astro';
-import DiscoverSection from '../../components/common/DiscoverSection/index.astro';
-import categoriesConfig from '../../config/categories.json';
+import Discover from '../../components/common/Discover/index.astro';
+import Carousel from '../../components/common/Carousel/index.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
+import { getDiscoverSection } from '../../services/api/descubrenos';
+import { getPageBanners } from '../../services/api/pages';
 
 
 const currentLang = getLocale();
-const products = t('items', { namespace: 'products', locale: currentLang });
-const commonAssets = t('home.slider', { namespace: 'products', locale: currentLang }) || [];
-const slides = commonAssets;
-
-// Categorías centralizadas (mismas que usa ProductsWithFilter)
-const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.key);
+const discover = await getDiscoverSection(currentLang, 'products');
+const banners = await getPageBanners('products', currentLang);
 ---
 
 <main class="w-full flex flex-col items-center justify-center mt-0">
-  <!-- Hero -->
   <section class="w-full pt-4 pb-2 bg-white reveal-on-scroll">
     <div class="container mx-auto px-4">
       <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
-      <div class="mt-4 w-full">
-        <Carousel slides={slides} layout="contained" />
-      </div>
+      {banners.length > 0 && (
+        <div class="mt-4 w-full">
+          <Carousel slides={banners} layout="contained" />
+        </div>
+      )}
     </div>
   </section>
 
-  <!-- New Products with Filter Component -->
   <section class="w-full py-12 bg-white reveal-on-scroll">
     <div class="container mx-auto px-4 bg-white">
       <ProductsWithFilter showAllProducts={true} />
     </div>
   </section>
 
-  <DiscoverSection />
+  {discover && (
+    <section id="discover" class="w-full bg-white py-2 reveal-on-scroll">
+      <div class="container mx-auto px-4">
+        <Discover title={discover.title} posts={discover.posts} />
+      </div>
+    </section>
+  )}
   
 </main>
 
@@ -53,4 +54,3 @@ const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.k
     });
   });
 </script>
-

@@ -1,30 +1,41 @@
 ---
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { type Locale } from '../../../i18n/i18n';
+import { getAllNews } from '../../../services/api/news';
 import { getBlogPostsForLocale } from '../../../lib/blogPosts';
 
 export async function getStaticPaths() {
-  const locales = ['en', 'es'];
-  const paths: Array<{
-    params: { lang: string; blogId: string };
-    props: {
-      blogPost: Awaited<ReturnType<typeof getBlogPostsForLocale>>[number];
-      currentLang: Locale;
-      allBlogPosts: Awaited<ReturnType<typeof getBlogPostsForLocale>>;
-    };
-  }> = [];
-
+  const locales = ['en', 'es'] as const;
+  const paths = [];
   for (const locale of locales) {
-    const allBlogPosts = await getBlogPostsForLocale(locale, true);
-
-    for (const blogPost of allBlogPosts) {
+    const news = await getAllNews(locale);
+    const cmsPosts = news.map((item) => ({
+      ...item,
+      summary: item.excerpt,
+      preview: item.image,
+      banner: item.image,
+      meta_title: item.title,
+      meta_description: item.excerpt,
+    }));
+    const localPosts = await getBlogPostsForLocale(locale, true);
+    const postsBySlug = new Map<string, typeof cmsPosts[number] | typeof localPosts[number]>();
+    for (const post of localPosts) postsBySlug.set(post.slug || post.id, post);
+    for (const post of cmsPosts) postsBySlug.set(post.slug || post.id, post);
+    const blogPosts = Array.from(postsBySlug.values());
+    for (const blogPost of blogPosts) {
       paths.push({
-        params: { lang: locale, blogId: blogPost.slug || blogPost.id },
-        props: { blogPost, currentLang: locale as Locale, allBlogPosts },
+        params: {
+          lang: locale,
+          blogId: blogPost.slug || blogPost.id
+        },
+        props: {
+          blogPost,
+          currentLang: locale as Locale,
+          allBlogPosts: blogPosts
+        }
       });
     }
   }
-
   return paths;
 }
 

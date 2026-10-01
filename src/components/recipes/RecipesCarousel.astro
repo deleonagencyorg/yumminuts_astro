@@ -1,23 +1,11 @@
 ---
 import RecipeCardCarousel from './RecipeCardCarousel.astro';
 import { getLocale } from '../../i18n/i18n';
+import { getAllRecipes} from '../../services/api/recipes';   
+import type { Recipe } from '../../services/api/types';
 
 // Import all recipe files dynamically (use static glob and filter by lang)
 const currentLang = getLocale();
-interface Recipe {
-  id: string;
-  title: string;
-  image: string;
-  hover_image?: string;
-  preparation_time: number;
-  category?: string;
-  category_en?: string;
-  categories?: string[];
-  categories_en?: string[];
-  difficulty?: string;
-  servings?: number;
-  rating?: number;
-}
 
 // Optional items can be passed from parent (e.g., related recipes)
 export interface Props {
@@ -36,16 +24,7 @@ const {
 // If items provided, use them; otherwise load all by lang
 let recipeItems: Recipe[] = Array.isArray(items) ? (items as unknown as Recipe[]) : [];
 if (!recipeItems.length) {
-  const recipeModules = import.meta.glob<{ default: Recipe }>("../../locales/*/recipes/*.json");
-  for (const path in recipeModules) {
-    // Path format: ../../locales/es/recipes/file.json
-    const pathParts = path.split('/');
-    const lang = pathParts[pathParts.length - 3]; // Get 'es' or 'en' from path
-    if (lang === currentLang) {
-      const mod = await recipeModules[path]();
-      recipeItems.push(mod.default);
-    }
-  }
+  recipeItems = await getAllRecipes(currentLang);
 }
 
 // Aplicar límite si está definido
@@ -83,6 +62,14 @@ const filterLabels = currentLang === 'es'
   ? { breakfast: 'Desayunos', snacks: 'Snack Energéticos', lunch: 'Almuerzos', dinner: 'Cenas', all: 'Todas' }
   : { breakfast: 'Breakfast', snacks: 'Energy Snacks', lunch: 'Lunch', dinner: 'Dinner', all: 'All' };
 
+const filterOptions = [
+  { key: 'all', label: filterLabels.all },
+  { key: 'breakfast', label: filterLabels.breakfast },
+  { key: 'snacks', label: filterLabels.snacks },
+  { key: 'lunch', label: filterLabels.lunch },
+  { key: 'dinner', label: filterLabels.dinner },
+];
+
 // Para desktop: mostrar 4 tarjetas por vista, avanzar de 1 en 1
 // Para mobile: 1 por slide (mejor ajuste a pantalla)
 const mobileGroups = [] as any[];
@@ -92,18 +79,10 @@ for (let i = 0; i < recipeItems.length; i += 1) {
 
 const hasMultipleRecipes = recipeItems.length > 1;
 
-const filterOptions = [
-  { key: 'all', label: filterLabels.all },
-  { key: 'breakfast', label: filterLabels.breakfast },
-  { key: 'snacks', label: filterLabels.snacks },
-  { key: 'lunch', label: filterLabels.lunch },
-  { key: 'dinner', label: filterLabels.dinner },
-];
-
 ---
 
 <div class="w-full" data-recipes-carousel>
-  <div class="w-full">
+  <div class="w-full px-4 ">
     <!-- Título alineado a la izquierda -->
     
     <!-- Seccion de recetas -->
@@ -129,12 +108,19 @@ const filterOptions = [
     {!providedMode && (
     <div class="hidden md:flex md:justify-center md:gap-2.5 mb-6 px-4 md:px-0" id="recipesFilters" data-recipes-filters-desktop>
       {filterOptions.map((option) => (
-        <button type="button" data-filter={option.key} class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white ring-2 ring-brown">
+        <button type="button" data-filter={option.key} class="filter-btn w-full text-center px-4 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 transition-colors border border-white">
           {option.label}
         </button>
       ))}
     </div>
     )}
+
+    {recipeItems.length === 0 ? (
+      <p class="text-center text-gray-500 py-8">
+        {currentLang === 'es' ? 'No hay recetas disponibles en este momento.' : 'No recipes available at this time.'}
+      </p>
+    ) : (
+    <>
      
     <!-- Carousel de recetas - MOBILE (1 por slide) - Solo visible en mobile -->
     <div class="recipes-carousel-mobile relative md:hidden">
@@ -145,11 +131,11 @@ const filterOptions = [
               {group.map((recipe: any) => (
                 <div class="recipe-slide w-full" data-category={getCategoryKey(recipe)}>
                   <RecipeCardCarousel
-                    image={recipe.image}
-                    hoverImage={recipe.hover_image || recipe.image}
+                    image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? ''}
                     title={recipe.title}
                     time={`${recipe.preparation_time}MIN`}
                     id={recipe.id}
+                    slug={recipe.slug ?? recipe.id}
                     difficulty={recipe.difficulty || '---'}
                     servings={recipe.servings || 0}
                     rating={recipe.rating || 0}
@@ -180,17 +166,17 @@ const filterOptions = [
     </div>
 
     <!-- Carousel de recetas - DESKTOP - Solo visible en desktop -->
-    <div class="recipes-carousel relative hidden md:block w-full">
-      <div class="recipes-carousel-container overflow-hidden w-full">
-        <div class="recipes-carousel-track flex items-start justify-start w-full gap-2.5 transition-transform duration-300" id="recipesTrackDesktop" style="transform: translateX(0);">
+    <div class="recipes-carousel relative hidden md:block">
+      <div class="recipes-carousel-container overflow-visible ">
+        <div class="recipes-carousel-track flex items-start justify-center w-full gap-4 md:gap-6 transition-transform duration-300" id="recipesTrackDesktop" style="transform: translateX(0);">
           {recipeItems.map((recipe, index) => (
-            <div class="recipe-slide flex-shrink-0" data-index={index} data-category={getCategoryKey(recipe)}>
+            <div class="recipe-slide w-1/4 px-2 flex-shrink-0 group-hover-container" data-index={index} data-category={getCategoryKey(recipe)}>
               <RecipeCardCarousel
-                image={recipe.image}
-                hoverImage={recipe.hover_image || recipe.image}
+                image={typeof recipe.image === 'string' ? recipe.image : recipe.image?.url ?? ''}
                 title={recipe.title}
                 time={`${recipe.preparation_time}MIN`}
                 id={recipe.id}
+                slug={recipe.slug ?? recipe.id}
                 difficulty={recipe.difficulty || '---'}
                 servings={recipe.servings || 0}
                 rating={recipe.rating || 0}
@@ -226,51 +212,10 @@ const filterOptions = [
       </a>
     </div>
     )}
-      </div>
+    </>
+    )}
   </div>
 </div>
-
-<style>
-  .recipes-filter-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.25rem;
-  }
-
-  .recipes-filter-select::-ms-expand {
-    display: none;
-  }
-
-  .recipes-filter-select:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--color-brown, #8b4513);
-  }
-
-  [data-recipes-carousel] .carousel-dots-mobile {
-    max-width: 100%;
-  }
-
-  [data-recipes-carousel] .recipes-carousel-counter {
-    font-variant-numeric: tabular-nums;
-  }
-
-  @media (min-width: 768px) {
-    [data-recipes-carousel] .recipes-carousel-track {
-      width: 100%;
-    }
-
-    [data-recipes-carousel] .recipes-carousel .recipe-slide {
-      flex: 0 0 calc((100% - (3 * 0.625rem)) / 4);
-      width: calc((100% - (3 * 0.625rem)) / 4);
-      max-width: calc((100% - (3 * 0.625rem)) / 4);
-      box-sizing: border-box;
-    }
-  }
-</style>
 
 <script is:inline>
   (function() {
@@ -283,64 +228,46 @@ const filterOptions = [
     let currentFilter = 'all';
 
     // Setup filtros
-    const filtersContainer = root.querySelector('[data-recipes-filters-desktop]');
+    const filtersContainer = root.querySelector('#recipesFilters');
     const filterButtons = Array.from(filtersContainer?.querySelectorAll('.filter-btn') || []);
     const filterSelect = root.querySelector('[data-recipes-filter-select]');
 
-    function setActiveFilter(filter) {
-      currentFilter = filter || 'all';
-
-      filterButtons.forEach((b) => {
-        const isActive = b.getAttribute('data-filter') === currentFilter;
-        b.classList.toggle('ring-2', isActive);
-        b.classList.toggle('ring-brown', isActive);
-      });
-
-      if (filterSelect instanceof HTMLSelectElement && filterSelect.value !== currentFilter) {
-        filterSelect.value = currentFilter;
-      }
-
-      applyFilterMobile();
-      applyFilterDesktop();
-      syncDesktopRecipesWidth();
+    // Pre-seleccionar el filtro "all" visualmente
+    const allFilterBtn = filterButtons.find(btn => btn.getAttribute('data-filter') === 'all');
+    if (allFilterBtn) {
+      filterButtons.forEach(b => b.classList.remove('ring-2', 'ring-brown'));
+      allFilterBtn.classList.add('ring-2', 'ring-brown');
     }
 
-    setActiveFilter('all');
+    // Configuración para el carrusel mobile
+    setupMobileCarousel();
 
-    function syncDesktopRecipesWidth() {
-      const filters = root.querySelector('[data-recipes-filters-desktop]');
-      const carousel = root.querySelector('.recipes-carousel');
-      if (!(filters instanceof HTMLElement) || !(carousel instanceof HTMLElement)) return;
-
-      const applyWidth = () => {
-        if (window.innerWidth < 768) {
-          carousel.style.width = '';
-          return;
-        }
-        carousel.style.width = `${filters.offsetWidth}px`;
-        carousel.style.maxWidth = '100%';
-      };
-
-      applyWidth();
-      if (!root.dataset.recipesWidthSync) {
-        root.dataset.recipesWidthSync = 'true';
-        window.addEventListener('resize', applyWidth);
-        window.addEventListener('load', applyWidth);
-      }
-    }
+    // Configuración para el carrusel desktop
+    setupDesktopCarousel();
 
     // Eventos de filtros
     filterButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        setActiveFilter(btn.getAttribute('data-filter') || 'all');
+        const filter = btn.getAttribute('data-filter') || 'all';
+        currentFilter = filter;
+        // estilos activos
+        filterButtons.forEach(b => b.classList.remove('ring-2', 'ring-brown'));
+        btn.classList.add('ring-2', 'ring-brown');
+        // aplicar filtros
+        applyFilterMobile();
+        applyFilterDesktop();
       });
     });
 
-    if (filterSelect instanceof HTMLSelectElement) {
-      filterSelect.addEventListener('change', () => {
-        setActiveFilter(filterSelect.value || 'all');
+    filterSelect?.addEventListener('change', () => {
+      currentFilter = filterSelect.value || 'all';
+      filterButtons.forEach((btn) => {
+        btn.classList.toggle('ring-2', btn.getAttribute('data-filter') === currentFilter);
+        btn.classList.toggle('ring-brown', btn.getAttribute('data-filter') === currentFilter);
       });
-    }
+      applyFilterMobile();
+      applyFilterDesktop();
+    });
 
     // Función para configurar el carrusel mobile
     function setupMobileCarousel() {
@@ -392,22 +319,13 @@ const filterOptions = [
 
       function createDots() {
         dotsContainer.innerHTML = '';
-        const total = visibleGroups.length;
-        const MOBILE_DOTS_MAX = 7;
-
-        if (total > MOBILE_DOTS_MAX) {
-          const counter = document.createElement('span');
-          counter.className = 'recipes-carousel-counter text-primary font-bold text-base whitespace-nowrap';
-          counter.setAttribute('data-recipes-counter', '');
-          counter.textContent = `${currentGroup + 1} / ${total}`;
-          dotsContainer.appendChild(counter);
-          return;
-        }
-
-        dotsContainer.classList.add('gap-2', 'flex-wrap', 'justify-center');
-        for (let i = 0; i < total; i++) {
+        for (let i = 0; i < visibleGroups.length; i++) {
           const dot = document.createElement('button');
-          dot.classList.add('w-3', 'h-3', 'shrink-0', 'rounded-full', i === currentGroup ? 'bg-white' : 'bg-gray-300');
+          dot.type = 'button';
+          dot.className = `carousel-dot h-3 w-3 shrink-0 rounded-full border-0 p-0 ${
+            i === currentGroup ? 'bg-primary' : 'bg-gray-300'
+          }`;
+          dot.setAttribute('aria-label', `Ir a la receta ${i + 1}`);
           dot.addEventListener('click', () => {
             currentGroup = i;
             updatePosition();
@@ -431,22 +349,17 @@ const filterOptions = [
         // así que el translate debe basarse en el índice VISIBLE, no en el índice original.
         track.style.transform = `translateX(-${currentGroup * 100}%)`;
 
-        // Actualizar dots o contador
-        const counter = dotsContainer.querySelector('[data-recipes-counter]');
-        if (counter) {
-          counter.textContent = `${currentGroup + 1} / ${visibleGroups.length}`;
-        } else {
-          const dots = dotsContainer.querySelectorAll('button');
-          dots.forEach((dot, i) => {
-            if (i === currentGroup) {
-              dot.classList.remove('bg-gray-300');
-              dot.classList.add('bg-white');
-            } else {
-              dot.classList.remove('bg-white');
-              dot.classList.add('bg-gray-300');
-            }
-          });
-        }
+        // Actualizar dots
+        const dots = dotsContainer.querySelectorAll('button');
+        dots.forEach((dot, i) => {
+          if (i === currentGroup) {
+            dot.classList.remove('bg-gray-300');
+            dot.classList.add('bg-primary');
+          } else {
+            dot.classList.remove('bg-primary');
+            dot.classList.add('bg-gray-300');
+          }
+        });
 
         // Habilitar/deshabilitar botones
         prevClone.classList.toggle('opacity-50', currentGroup === 0);
@@ -568,8 +481,6 @@ const filterOptions = [
         prevClone.classList.toggle('opacity-50', currentSlide === 0);
         nextClone.classList.toggle('opacity-50', currentSlide >= Math.max(0, visibleSlides.length - 4));
       }
-
-      syncDesktopRecipesWidth();
     }
   }
 

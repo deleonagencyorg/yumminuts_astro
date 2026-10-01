@@ -1,16 +1,19 @@
 ---
 import BlogListing from '../../../views/Blog/index.astro';
 import { type Locale } from '../../../i18n/i18n';
+import { getAllNews } from '../../../services/api/news';
 
 export async function getStaticPaths() {
   const locales = ['en', 'es'];
   return locales.map((locale) => ({
     params: { lang: locale },
-    props: { currentLang: locale as Locale },
+    props: { currentLang: locale as Locale }
   }));
 }
 
 const { currentLang } = Astro.props;
+const news = await getAllNews(currentLang);
+const blogPosts = news.map((item) => ({ ...item, summary: item.excerpt }));
 ---
 
-<BlogListing currentLang={currentLang} />
+<BlogListing blogPosts={blogPosts} currentLang={currentLang} />

@@ -2,12 +2,20 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import NotFoundView from '../views/NotFound/index.astro';
 import { setLocale } from '../i18n/i18n';
+import { getSiteTexts, text } from '../services/api/site-texts';
 
 // Static site: default to 'es' at build time; client-side script will swap to 'en' if needed
 setLocale('es');
+const notFoundEs = await getSiteTexts('es');
+const pageTitle = text(notFoundEs, 'not_found.title', 'Página no encontrada');
+const pageDescription = text(
+  notFoundEs,
+  'not_found.description',
+  'La página que buscas no existe.'
+);
 ---
 
-<MainLayout title="Página no encontrada | Page not found" description="La página que buscas no existe.">
+<MainLayout title={pageTitle} description={pageDescription}>
   <Fragment slot="head">
     <meta name="robots" content="noindex, nofollow" />
   </Fragment>

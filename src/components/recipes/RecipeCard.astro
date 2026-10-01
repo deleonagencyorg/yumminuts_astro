@@ -8,6 +8,7 @@ interface Props {
   title: string;
   time?: string;
   id: string;
+  slug?: string;
   textColor?: string;
   iconColor?: string;
 }
@@ -17,12 +18,13 @@ const {
   title, 
   time = "---", 
   id,
+  slug,
   textColor = 'text-black',
   iconColor = 'text-blue-900'
 } = Astro.props;
 
 const currentLocale = getLocale();
-const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${id}`;
+const recipeLink = `/${currentLocale}/${currentLocale === 'es' ? 'recetas' : 'recipes'}/${slug}`;
 
 // Verificar si la imagen es válida (no es placeholder ni está vacía)
 const hasValidImage = image && !image.includes('placeholder.jpg');

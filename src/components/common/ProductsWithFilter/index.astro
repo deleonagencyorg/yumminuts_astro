@@ -1,13 +1,13 @@
 ---
 // Hybrid component combining Categories products display with Recipe-style filtering
-import { t } from '../../../i18n/i18n';
 import { getLocale } from '../../../i18n/i18n';
 import ProductCard from '../ProductCard/index.astro';
-import categoriesConfig from '../../../config/categories.json';
+import { getAllProducts } from '../../../services/api/products';
+import { getProductCategories } from '../../../services/api/product-categories';
 
 const currentLang = getLocale();
-// Load all products from localized JSON
-const products = t('items', { namespace: 'products', locale: currentLang }) || [];
+const products = await getAllProducts(currentLang);
+const categories = await getProductCategories(currentLang);
 
 export interface Props {
   title?: string;
@@ -19,28 +19,21 @@ const {
   showAllProducts = false
 } = Astro.props;
 
-// Use all localized products
-const productItems = Array.isArray(products) ? products : [];
-
-// Build filter categories from centralized config with localized labels
-const filterCategories = (categoriesConfig.categories || []).map((c: any) => ({
+const filterCategories = categories.map((c) => ({
   key: c.key,
-  name: currentLang === 'es' ? c.labels.es : c.labels.en,
-  icon: c.icon,
-  background: c.background,
-  slug: currentLang === 'es' ? c.slugs.es : c.slugs.en
+  name: c.label,
+  background: c.backgroundColor,
+  slug: c.slug,
 }));
 
-// Function to get category from product using categories config first
 function getProductCategory(product: any): string {
-  const cfg = (categoriesConfig as any).categories || [];
   const raw = String(product?.category || product?.title || product?.name || '').toLowerCase();
   // Try exact match against labels/slugs/keys
-  for (const c of cfg) {
-    const labels = [c?.labels?.es, c?.labels?.en].map((s: string) => String(s || '').toLowerCase());
-    const slugs = [c?.slugs?.es, c?.slugs?.en].map((s: string) => String(s || '').toLowerCase());
-    const key = String(c?.key || '').toLowerCase();
-    if (labels.includes(raw) || slugs.includes(raw) || raw === key) return c.key;
+  for (const c of categories) {
+    const label = String(c.label || '').toLowerCase();
+    const slug = String(c.slug || '').toLowerCase();
+    const key = String(c.key || '').toLowerCase();
+    if (raw === label || raw === slug || raw === key) return c.key;
   }
   // Heuristics (fallback)
   const title = String(product?.title || '').toLowerCase();
@@ -54,11 +47,11 @@ function getProductCategory(product: any): string {
   if (title.includes('semilla') || id.includes('semilla') || title.includes('seed') || category.includes('seed') ||
       title.includes('almond') || category.includes('almond') || title.includes('mix') || id.includes('mix')) return 'semillas';
   // Ultimate fallback
-  return (cfg[0]?.key) || 'manies';
+  return categories[0]?.key || 'manies';
 }
 
 // Display products (limit to 6 if not showing all)
-const sourceProducts = showAllProducts ? productItems : productItems.slice(0, 6);
+const displayProducts = showAllProducts ? products : products.slice(0, 6);
 
 const productRowGroups: string[][] = [
   ['manies'],
@@ -71,14 +64,12 @@ function getProductTitle(product: any): string {
 }
 
 function sortWithinCategory(items: any[]): any[] {
-  return [...items].sort((a, b) =>
-    getProductTitle(a).localeCompare(getProductTitle(b), currentLang)
-  );
+  return [...items].sort((a, b) => getProductTitle(a).localeCompare(getProductTitle(b), currentLang));
 }
 
 const groupedRows = productRowGroups
   .map((keys) => sortWithinCategory(
-    sourceProducts.filter((product) => keys.includes(getProductCategory(product)))
+    displayProducts.filter((product) => keys.includes(getProductCategory(product)))
   ))
   .filter((row) => row.length > 0);
 
@@ -98,48 +89,40 @@ function productHref(product: any): string {
   return `/${lang}/${seg}/${slug}`;
 }
 
-const allProductsLabel = currentLang === 'es' ? 'Todos los Productos' : 'All Products';
-const filterAriaLabel = currentLang === 'es' ? 'Filtrar productos' : 'Filter products';
-
-const filterOptions = [
-  { key: 'all', label: allProductsLabel },
-  ...filterCategories.map((category) => ({ key: category.key, label: category.name })),
-];
-
 ---
 
-<div class="products-with-filter w-full" data-products-with-filter>
-  <div class="text-left mb-16 relative z-20">
-    <h2 class="font-heading leading-none not-italic text-black text-4xl md:text-6xl tracking-tight text-left">
-      {title}
-    </h2>
-  </div>
+<div class="w-full py-12 bg-white">
+  <div class="container mx-auto px-4">
+    
+    <!-- Title -->
+    <div class="text-left mb-8">
+      <h2 class="font-heading text-4xl md:text-5xl font-extrabold text-black tracking-[-2px] leading-tight">
+        {title}
+      </h2>
+    </div>
 
-  <!-- Filtro: selector -->
-  <div class="mb-6 w-full">
-    <div class="relative w-full">
+    <div class="mb-6 w-full">
       <select
-        data-products-filter-select
+        id="productsFilters"
         class="products-page-filter-select w-full text-left px-4 py-2 pr-10 rounded-md bg-secondary text-primary font-bold border border-white cursor-pointer"
-        aria-label={filterAriaLabel}
+        aria-label={currentLang === 'es' ? 'Filtrar productos' : 'Filter products'}
       >
-        {filterOptions.map((option) => (
-          <option value={option.key}>{option.label}</option>
+        <option value="all">{currentLang === 'es' ? 'Todos los Productos' : 'All Products'}</option>
+        {filterCategories.map((category) => (
+          <option value={category.key}>{category.name}</option>
         ))}
       </select>
     </div>
-  </div>
 
-    <!-- Products Grid -->
     <div class="products-page-rows w-full" id="productsGrid">
       {groupedRows.map((rowProducts, rowIndex) => (
         <div class="products-page-row" data-row-index={rowIndex}>
           {rowProducts.map((product: any) => (
             <a href={productHref(product)} class="product-card group cursor-pointer block min-w-0" data-category={getProductCategory(product)}>
-              <ProductCard 
+              <ProductCard
                 title={getProductTitle(product)}
-                image={product.image || '/images/products/placeholder.jpg'}
-                bgColor={(product.background_color || product.color_button || product.header_color || (filterCategories.find(c => c.key === getProductCategory(product))?.background) || '#95CFF2')}
+                image={typeof product.image === 'string' ? product.image : product.image?.url || '/images/products/placeholder.jpg'}
+                bgColor={(product.backgroundColor || product.colorButton || filterCategories.find(c => c.key === getProductCategory(product))?.background || '#95CFF2')}
                 description={product.description}
               />
             </a>
@@ -149,12 +132,12 @@ const filterOptions = [
     </div>
 
     <!-- No products message -->
-    <div id="noProductsMessage" class="text-center py-12 hidden">
-      <p class="text-gray-500 text-lg">{currentLang === 'es' ? 'No hay productos en esta categoría.' : 'No products in this category.'}</p>
+    <div id="noProductsMessage" class={`text-center py-12 ${displayProducts.length === 0 ? '' : 'hidden'}`}>
+      <p class="text-gray-500 text-lg">{currentLang === 'es' ? 'No hay productos disponibles en este momento.' : 'No products available at this time.'}</p>
     </div>
 
     <!-- Show All Button (if not showing all products) -->
-    {!showAllProducts && productItems.length > 6 && (
+    {!showAllProducts && products.length > 6 && (
       <div class="text-center mt-12">
         <a 
           href={`/${currentLang === 'es' ? 'es/productos' : 'en/products'}`}
@@ -164,21 +147,17 @@ const filterOptions = [
         </a>
       </div>
     )}
+  </div>
 </div>
 
 <style>
+/* Filter button styles */
 .products-page-filter-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1.25rem;
-}
-
-.products-page-filter-select::-ms-expand {
-  display: none;
 }
 
 .products-page-filter-select:focus {
@@ -190,7 +169,7 @@ const filterOptions = [
 .product-card {
   opacity: 1;
   transform: scale(1);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .product-card.hidden {
@@ -203,7 +182,6 @@ const filterOptions = [
   display: flex;
   flex-direction: column;
   gap: calc(var(--products-page-gap) * 1.5);
-  width: 100%;
 }
 
 .products-page-row {
@@ -211,71 +189,48 @@ const filterOptions = [
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--products-page-gap);
-  width: 100%;
 }
 
-.products-page-row.hidden-row {
-  display: none !important;
-}
+.products-page-row.hidden-row { display: none !important; }
 
 .products-page-row .product-card {
   width: calc((100% - (var(--products-page-cols) - 1) * var(--products-page-gap)) / var(--products-page-cols));
   max-width: calc((100% - (var(--products-page-cols) - 1) * var(--products-page-gap)) / var(--products-page-cols));
-  min-width: 0;
 }
 
 @media (min-width: 640px) {
-  .products-page-rows {
-    --products-page-gap: 1.5rem;
-  }
-}
-
-@media (max-width: 1023px) {
-  .products-page-row .product-card :global(.font-sans) {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-  }
+  .products-page-rows { --products-page-gap: 1.5rem; }
 }
 
 @media (min-width: 1024px) {
-  .products-page-rows {
-    --products-page-cols: 4;
-    --products-page-gap: 1.5rem;
-  }
+  .products-page-rows { --products-page-cols: 4; --products-page-gap: 1.5rem; }
+  .products-page-row .product-card { display: flex; justify-content: center; }
+}
 
-  .products-page-row .product-card {
-    display: flex;
-    justify-content: center;
-  }
-
-  .products-page-row .product-card :global(.group) {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .products-page-row .product-card :global(.font-sans) {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
+/* Text clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>
 
 <script>
-  function initProductsFilters(root: Element) {
-    if ((root as HTMLElement).dataset?.productsFiltersBound === '1') return;
-
-    const filterSelect = root.querySelector('[data-products-filter-select]');
+  function initProductsFilters() {
+    const root = document.currentScript?.closest('.w-full')?.parentElement || document;
+    const filtersEl = root.querySelector('#productsFilters');
     const gridEl = root.querySelector('#productsGrid');
     const noProductsMessage = root.querySelector('#noProductsMessage');
 
-    if (!gridEl || !(filterSelect instanceof HTMLSelectElement)) return;
+    if (!filtersEl || !gridEl) return;
+    if ((filtersEl as any).dataset?.productsFiltersBound === '1') return;
 
     const productCards = Array.from(gridEl.querySelectorAll('.product-card'));
-    const productRows = Array.from(gridEl.querySelectorAll('.products-page-row'));
 
-    if (!productCards.length) return;
+    if (!(filtersEl instanceof HTMLSelectElement) || !productCards.length) return;
 
-    (root as HTMLElement).dataset.productsFiltersBound = '1';
+    (filtersEl as any).dataset.productsFiltersBound = '1';
 
     function apply(category: string) {
       let visibleCount = 0;
@@ -285,43 +240,22 @@ const filterOptions = [
         card.classList.toggle('hidden', !shouldShow);
         if (shouldShow) visibleCount++;
       });
-
-      productRows.forEach((row) => {
-        const visibleInRow = row.querySelectorAll('.product-card:not(.hidden)').length;
-        row.classList.toggle('hidden-row', visibleInRow === 0);
-      });
-
       if (noProductsMessage) {
         noProductsMessage.classList.toggle('hidden', visibleCount !== 0);
       }
     }
 
-    function setActiveFilter(category: string) {
-      const filter = category || 'all';
-      if (filterSelect.value !== filter) {
-        filterSelect.value = filter;
-      }
-      apply(filter);
-    }
+    filtersEl.addEventListener('change', () => apply(filtersEl.value || 'all'));
 
-    filterSelect.addEventListener('change', () => {
-      setActiveFilter(filterSelect.value || 'all');
-    });
-
-    setActiveFilter('all');
-  }
-
-  function initAll() {
-    document.querySelectorAll('[data-products-with-filter]').forEach((root) => {
-      initProductsFilters(root);
-    });
+    // Initial state
+    apply('all');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('DOMContentLoaded', initProductsFilters);
   } else {
-    initAll();
+    initProductsFilters();
   }
-  document.addEventListener('astro:page-load', initAll);
-  document.addEventListener('astro:after-swap', initAll);
+  document.addEventListener('astro:page-load', initProductsFilters);
+  document.addEventListener('astro:after-swap', initProductsFilters);
 </script>

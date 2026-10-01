@@ -1,13 +1,7 @@
 ---
 import LazyImage from '../LazyImage.astro';
-import { t, type Locale } from '../../../i18n/i18n';
-
-export interface SocialMedia {
-  name: string;
-  url: string;
-  alt: string;
-  iconUrl: string;
-}
+import type { Locale } from '../../../i18n/i18n';
+import { getSocialMediaLinks } from '../../../services/api/social-media';
 
 export interface Props {
   currentLang: Locale;
@@ -19,18 +13,15 @@ export interface Props {
 
 const { currentLang, iconColor = "white", iconSize = 24, centered = false, class: className = '' } = Astro.props;
 // Determinar las clases de alineación basadas en la propiedad centered
-const alignmentClasses = centered 
-  ? 'mx-auto justify-center' 
+const alignmentClasses = centered
+  ? 'mx-auto justify-center'
   : 'md:mx-0 md:justify-start';
 
-// Obtener los datos de social media (url y alt) desde los archivos de traducción
-const socialMediaObj = t('social_media', { namespace: 'common', locale: currentLang });
-// Convertir el objeto de redes sociales en un array para poder iterarlo
-const socialMedia = socialMediaObj ? Object.values(socialMediaObj) as SocialMedia[] : [];
+const socialMedia = await getSocialMediaLinks(currentLang);
 ---
 
 <div class={`flex flex-row space-x-4 ${alignmentClasses} ${className}`}>
-  {socialMedia.map((sm: SocialMedia) => (
+  {socialMedia.map((sm) => (
     <a 
       href={sm.url} 
       target="_blank" 

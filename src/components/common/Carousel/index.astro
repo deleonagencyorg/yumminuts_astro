@@ -5,12 +5,25 @@ import './styles.css';
 
 export interface Props {
   slides: Array<{
-    desktop?: string;
-    mobile?: string;
+    type?: 'image' | 'video' | 'html';
+    desktop: string;
+    mobile: string;
     alt: string;
     title: string;
     subtitle: string;
+    description?: string;
     link?: string;
+    html?: {
+      background?: string;
+      backgroundMobile?: string;
+      image?: string;
+      imageMobile?: string;
+      title?: string;
+      subtitle?: string;
+      description?: string;
+      buttonText?: string;
+      buttonUrl?: string;
+    };
   }>;
   loading?: boolean;
   /** `default`: slider vertical en móvil (home). `horizontal`: mantiene 16:9 en móvil (salud). */
