@@ -76,11 +76,17 @@ function sortWithinCategory(items: any[]): any[] {
   );
 }
 
-const groupedRows = productRowGroups
-  .map((keys) => sortWithinCategory(
-    sourceProducts.filter((product) => keys.includes(getProductCategory(product)))
-  ))
-  .filter((row) => row.length > 0);
+const groupedRowsWithKeys = productRowGroups
+  .map((keys) => {
+    const items = sortWithinCategory(
+      sourceProducts.filter((product) => keys.includes(getProductCategory(product)))
+    );
+    return { key: keys[0], items };
+  })
+  .filter((pair) => pair.items.length > 0);
+
+const groupedRows = groupedRowsWithKeys.map((p) => p.items);
+const groupedRowKeys = groupedRowsWithKeys.map((p) => p.key);
 
 function slugify(input: string): string {
   return (input || '')
@@ -133,7 +139,7 @@ const filterOptions = [
     <!-- Products Grid -->
     <div class="products-page-rows w-full" id="productsGrid">
       {groupedRows.map((rowProducts, rowIndex) => (
-        <div class="products-page-row" data-row-index={rowIndex}>
+        <div class="products-page-row" data-row-index={rowIndex} data-row-key={groupedRowKeys[rowIndex]}>
           {rowProducts.map((product: any) => (
             <a href={productHref(product)} class="product-card group cursor-pointer block min-w-0" data-category={getProductCategory(product)}>
               <ProductCard 
@@ -212,6 +218,11 @@ const filterOptions = [
   justify-content: center;
   gap: var(--products-page-gap);
   width: 100%;
+}
+
+/* Separate barras*/
+.products-page-row[data-row-key="barras"] {
+  margin-top: 2.5rem;
 }
 
 .products-page-row.hidden-row {
