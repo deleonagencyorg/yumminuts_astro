@@ -440,44 +440,44 @@
             "alt": "Yumminuts",
             "products": [
                 {
-                    "id": "yummi-nut-mani-con-sal",
-                    "slug": "yummi-nut-mani-con-sal",
-                    "title": "Yummi Nut Maní con Sal",
+                    "id": "yummi-nuts-mani-con-sal",
+                    "slug": "yummi-nuts-mani-con-sal",
+                    "title": "Yummi NutsManí con Sal",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp"
                 },
                 {
-                    "id": "yummi-nut-mani-con-limon",
-                    "slug": "yummi-nut-mani-con-limon",
-                    "title": "Yummi Nut Maní con Limón",
+                    "id": "yummi-nuts-mani-con-limon",
+                    "slug": "yummi-nuts-mani-con-limon",
+                    "title": "Yummi NutsManí con Limón",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp"
                 },
                 {
-                    "id": "yummi-nut-mani-japones",
-                    "slug": "yummi-nut-mani-japones",
-                    "title": "Yummi Nut Maní Japones",
+                    "id": "yummi-nuts-mani-japones",
+                    "slug": "yummi-nuts-mani-japones",
+                    "title": "Yummi NutsManí Japones",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp"
                 },
                 {
-                    "id": "yummi-nut-maranon-con-sal",
-                    "slug": "yummi-nut-maranon-con-sal",
-                    "title": "Yummi Nut Marañón con Sal",
+                    "id": "yummi-nuts-maranon-con-sal",
+                    "slug": "yummi-nuts-maranon-con-sal",
+                    "title": "Yummi NutsMarañón con Sal",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp"
                 },
                 {
-                    "id": "yummi-nut-mix-almendras",
-                    "slug": "yummi-nut-mix-almendras",
-                    "title": "Yummi Nut Mix Almendras",
+                    "id": "yummi-nuts-mix-almendras",
+                    "slug": "yummi-nuts-mix-almendras",
+                    "title": "Yummi NutsMix Almendras",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp"
                 },
                 {
-                    "id": "yummi-nut-omega-mix",
-                    "slug": "yummi-nut-omega-mix",
-                    "title": "Yummi Nut Omega Mix",
+                    "id": "yummi-nuts-omega-mix",
+                    "slug": "yummi-nuts-omega-mix",
+                    "title": "Yummi NutsOmega Mix",
                     "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp",
                     "imageMobile": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp"
                 }
