@@ -49,7 +49,7 @@
     "locations": {
       "+504": {
         "tab": "Honduras",
-        "name": "Yummies Honduras",
+        "name": "Snacks Yummies Honduras",
         "address": "Corporación Dinant, In front of Tropical Plants, Suyapa Blvd., 11101 Tegucigalpa, Francisco Morazán, Honduras",
         "phones": ["2275-3370", "2239-5869", "2235-7521"],
         "email": "contacto.honduras@yummies.com",
@@ -57,7 +57,7 @@
       },
       "+502": {
         "tab": "Guatemala",
-          "name": "Yummies Guatemala",
+          "name": "Snacks Yummies Guatemala",
         "address": "Corporación Dinant, 4 Industrial Complex, El Naranjo Blvd. 16-61, Guatemala City",
         "phones": ["2502-7050"],
         "email": "contacto.guatemala@yummies.com",
@@ -65,7 +65,7 @@
       },
       "+503": {
         "tab": "El Salvador",
-        "name": "Yummies El Salvador",
+        "name": "Snacks Yummies El Salvador",
         "address": "Dinant de El Salvador, S.A. de C.V., National Army Blvd., km 9 1/2, San Bartolo Free Zone entrance, El Salvador",
         "phones": ["2510-8300"],
         "fax": "2295-8243",
@@ -74,7 +74,7 @@
       },
       "+505": {
         "tab": "Nicaragua",
-        "name": "Yummies Nicaragua",
+        "name": "Snacks Yummies Nicaragua",
         "address": "Corporación Dinant, 4RR2+R3W, Managua, Nicaragua",
         "phones": ["2251-4069", "2251-4070"],
         "email": "contacto.nicaragua@yummies.com",
@@ -82,7 +82,7 @@
       },
       "+506": {
         "tab": "Costa Rica",
-        "name": "Yummies Costa Rica",
+        "name": "Snacks Yummies Costa Rica",
         "address": "Comercial Dinant CR Curridabat, San José, Curridabat, Costa Rica",
         "phones": ["2234-7363", "2234-7259", "2234-7482", "2234-7044", "2234-6490"],
         "email": "contacto.costarica@yummies.com",
@@ -90,7 +90,7 @@
       },
       "+1809": {
         "tab": "Dominican Republic",
-        "name": "Yummies Dominican Republic",
+        "name": "Snacks Yummies Dominican Republic",
         "address": "Corporacion Dinant (Yummies), F2R8+G25, Santo Domingo 10408, Dominican Republic",
         "phones": ["473-1212"],
         "email": "contacto.dominicana@yummies.com",

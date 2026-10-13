@@ -35,7 +35,7 @@
   ],
   "items": [
     {
-      "id": "yummi-nut-mani-con-sal",
+      "id": "yummi-nuts-mani-con-sal",
       "name": "Yummi Nuts Salted Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-sal-2.webp",
@@ -79,7 +79,7 @@
       }
     },
     {
-      "id": "yummi-nut-mani-japones-con-sabor-a-chile-toreado",
+      "id": "yummi-nuts-mani-japones-con-sabor-a-chile-toreado",
       "name": "Japanese style Peanuts with Toreado Chile Flavor",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nuts-chile-toreado.webp",
@@ -123,8 +123,8 @@
       }
     },
     {
-      "id": "yummi-nut-mani-con-limon",
-      "name": "Yummi Nut Peanuts with Lemon",
+      "id": "yummi-nuts-mani-con-limon",
+      "name": "Yummi NutsPeanuts with Lemon",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-con-limon-2.webp",
       "background_color": "#B4BF8E",
@@ -167,7 +167,7 @@
       }
     },
     {
-      "id": "yummi-nut-mani-japones",
+      "id": "yummi-nuts-mani-japones",
       "name": "Japanese style Peanuts",
       "category": "Maní",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mani-japones-2.webp",
@@ -211,7 +211,7 @@
       }
     },
     {
-      "id": "yummi-nut-maranon-con-sal",
+      "id": "yummi-nuts-maranon-con-sal",
       "name": "Salted Cashews",
       "category": "Marañones",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-maranon-con-sal-2.webp",
@@ -255,7 +255,7 @@
       }
     },
     {
-      "id": "yummi-nut-mix-almendras",
+      "id": "yummi-nuts-mix-almendras",
       "name": "Almond Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-mix-almendras-2.webp",
@@ -299,7 +299,7 @@
       }
     },
     {
-      "id": "yummi-nut-omega-mix",
+      "id": "yummi-nuts-omega-mix",
       "name": "Omega Mix",
       "category": "Semillas",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/yummi-nut-omega-mix-2.webp",
@@ -340,7 +340,7 @@
       }
     },
     {
-      "id": "yummi-nut-barra-fresa",
+      "id": "yummi-nuts-barra-fresa",
       "name": "Strawberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-fresa2.webp",
@@ -377,7 +377,7 @@
       }
     },
     {
-      "id": "yummi-nut-barra-arandano",
+      "id": "yummi-nuts-barra-arandano",
       "name": "Blueberry Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-arandano.webp",
@@ -417,7 +417,7 @@
       }
     },
     {
-      "id": "yummi-nut-barra-coco",
+      "id": "yummi-nuts-barra-coco",
       "name": "Coconut Bar",
       "category": "Barras",
       "image": "https://snack.yummiespromociones.com/SnacksyummiesAssets/barra-coco.webp",
