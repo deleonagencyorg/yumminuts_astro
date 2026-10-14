@@ -221,11 +221,6 @@
       "href": "/en/health"
     },
     {
-      "id": "news",
-      "text": "News",
-      "href": "/en/blog"
-    },
-    {
       "id": "contact",
       "text": "Contact",
       "href": "/en/contact"
