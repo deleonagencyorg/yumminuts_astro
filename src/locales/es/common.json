@@ -251,32 +251,32 @@
       "instagramPosts": [
         {
           "id": "post1",
-          "postUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/",
-          "embedUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/embed",
+          "postUrl": "https://www.instagram.com/reel/De-tzIxNaYF/?utm_source=ig_web_copy_link&exln=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/De-tzIxNaYF/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-1.jpg",
           "fallbackImage": "/images/instagram-fallback-1.jpg",
           "alt": "Yummi Nuts Instagram Post 1"
         },
         {
           "id": "post2",
-          "postUrl": "https://www.instagram.com/reel/DdXDNIdpmkJ/",
-          "embedUrl": "https://www.instagram.com/reel/DdXDNIdpmkJ/embed",
+          "postUrl": "https://www.instagram.com/reel/DeqInCwg6E5/?utm_source=ig_web_copy_link&psln=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/DeqInCwg6E5/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-2.jpg",
           "fallbackImage": "/images/instagram-fallback-2.jpg",
           "alt": "Yummi Nuts Instagram Post 2"
         },
         {
           "id": "post3",
-          "postUrl": "https://www.instagram.com/reel/DdMsEDXE-Jo/",
-          "embedUrl": "https://www.instagram.com/reel/DdMsEDXE-Jo/embed",
+          "postUrl": "https://www.instagram.com/reel/Dek-6AWtkRp/?utm_source=ig_web_copy_link&rpxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/Dek-6AWtkRp/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-3.jpg",
           "fallbackImage": "/images/instagram-fallback-3.jpg",
           "alt": "Yummi Nuts Instagram Post 3"
         },
         {
           "id": "post4",
-          "postUrl": "https://www.instagram.com/reel/DdIIBXLAh-L/",
-          "embedUrl": "https://www.instagram.com/reel/DdIIBXLAh-L/embed",
+          "postUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/?utm_source=ig_web_copy_link&psln=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+          "embedUrl": "https://www.instagram.com/reel/Ddr6LdpA8n8/embed",
           "imageUrl": "https://snack.yummiespromociones.com/yumminuts/instagram-4.jpg",
           "fallbackImage": "/images/instagram-fallback-4.jpg",
           "alt": "Yummi Nuts Instagram Post 4"
