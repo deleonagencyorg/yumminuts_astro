@@ -8,6 +8,7 @@ export interface BlogPost {
   image: string;
   banner?: string;
   preview?: string;
+  bannerImages: string[];
   content: string;
   author: string;
   published_date: string;
@@ -50,8 +51,11 @@ async function loadPostFromPath(path: string, includeContent: boolean): Promise<
     content = typeof raw === 'string' ? raw.trim() : '';
   }
 
-  const preview = fm.preview ? String(fm.preview) : '';
-  const banner = fm.banner ? String(fm.banner) : '';
+  const preview = typeof fm.preview === 'string' ? fm.preview.trim() : '';
+  const bannerImages = (Array.isArray(fm.banner) ? fm.banner : fm.banner ? [fm.banner] : [])
+    .map((item) => String(item || '').trim())
+    .filter(Boolean);
+  const banner = bannerImages[0] || '';
 
   return {
     id: String(fm.id),
@@ -65,6 +69,7 @@ async function loadPostFromPath(path: string, includeContent: boolean): Promise<
     image: preview || banner || (fm.image ? String(fm.image) : FALLBACK_IMAGE),
     banner: banner || preview || undefined,
     preview: preview || undefined,
+    bannerImages,
     content,
     author: fm.author ? String(fm.author) : 'Yummi Nuts',
     published_date: fm.published_date ? String(fm.published_date) : '',
