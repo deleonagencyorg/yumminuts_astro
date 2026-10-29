@@ -4,7 +4,7 @@ import { type Locale } from '../../../i18n/i18n';
 import Breadcrumb from '../../../components/common/Breadcrumb/Breadcrumb.astro';
 import BlogCard from '../../../components/blog/BlogCard.astro';
 import BlogDetailSkeleton from '../../../components/blog/BlogDetailSkeleton.astro';
-import { fade, slide } from 'astro:transitions';
+import { fade } from 'astro:transitions';
 import LazyImage from '../../../components/common/LazyImage.astro';
 import type { BlogPost } from '../../../lib/blogPosts';
 import {
@@ -43,6 +43,16 @@ const pageTitle = blogPost.meta_title || blogPost.title;
 const pageDescription = blogPost.meta_description || blogPost.summary || '';
 const desktopImage = blogPost.banner || blogPost.preview || blogPost.image;
 const mobileImage = blogPost.preview || blogPost.banner || blogPost.image;
+const bannerImages = blogPost.bannerImages ?? [];
+const carouselSlides = bannerImages.length
+  ? bannerImages.map((src) => ({
+      desktop: src,
+      mobile: bannerImages.length === 1 ? mobileImage : src,
+    }))
+  : [{ desktop: desktopImage, mobile: mobileImage }];
+const hasMultipleSlides = carouselSlides.length > 1;
+const prevLabel = currentLang === 'es' ? 'Anterior' : 'Previous';
+const nextLabel = currentLang === 'es' ? 'Siguiente' : 'Next';
 
 const blogDetailClasses = {
   h2: 'font-heading text-2xl md:text-3xl font-bold text-black mt-10 mb-4',
@@ -83,24 +93,41 @@ const formattedContent = hasVisibleBlogContent(normalizedContent)
             </h1>
           </div>
 
-          <div
-            class="blog-image-container w-full mb-8 rounded-lg overflow-hidden text-center flex justify-center"
-            transition:animate={slide({ duration: '0.3s' })}
-          >
-            <LazyImage
-              src={mobileImage}
-              alt={blogPost.title}
-              class="w-full object-cover mx-auto md:hidden"
-              transition:name={`blog-image-${blogPost.id}`}
-              loading="lazy"
-            />
-            <LazyImage
-              src={desktopImage}
-              alt={blogPost.title}
-              class="hidden md:block md:w-[500px] w-full object-cover mx-auto"
-              transition:name={`blog-image-${blogPost.id}`}
-              loading="lazy"
-            />
+          <div class="blog-image-carousel relative w-full md:max-w-[680px] mx-auto mb-8" data-blog-image-carousel>
+            <div class="blog-image-track flex overflow-x-auto snap-x snap-mandatory scroll-smooth rounded-lg" data-blog-track>
+              {carouselSlides.map((slide) => (
+                <div class="blog-image-slide snap-center shrink-0 w-full">
+                  <LazyImage
+                    src={slide.mobile}
+                    alt={blogPost.title}
+                    class="w-full object-cover md:hidden"
+                    loading="lazy"
+                  />
+                  <LazyImage
+                    src={slide.desktop}
+                    alt={blogPost.title}
+                    class="hidden md:block w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+            {hasMultipleSlides && (
+              <>
+                <button type="button" class="blog-image-nav blog-image-nav-prev" data-blog-prev aria-label={prevLabel}>❮</button>
+                <button type="button" class="blog-image-nav blog-image-nav-next" data-blog-next aria-label={nextLabel}>❯</button>
+                <div class="flex justify-center gap-2 mt-3">
+                  {carouselSlides.map((_, index) => (
+                    <button
+                      type="button"
+                      class:list={['blog-image-dot', { 'is-active': index === 0 }]}
+                      data-blog-dot={index}
+                      aria-label={`${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {formattedContent && (
@@ -135,7 +162,101 @@ const formattedContent = hasVisibleBlogContent(normalizedContent)
   </div>
 </Layout>
 
+<script>
+  function initBlogImageCarousels() {
+    document.querySelectorAll('[data-blog-image-carousel]').forEach((root) => {
+      if (!(root instanceof HTMLElement) || root.dataset.blogCarouselBound === '1') return;
+      const track = root.querySelector('[data-blog-track]');
+      const prev = root.querySelector('[data-blog-prev]');
+      const next = root.querySelector('[data-blog-next]');
+      if (!(track instanceof HTMLElement)) return;
+
+      root.dataset.blogCarouselBound = '1';
+      const dots = Array.from(root.querySelectorAll('[data-blog-dot]'));
+      let index = 0;
+
+      const setActive = (nextIndex: number) => {
+        const count = track.children.length;
+        if (!count) return;
+        index = (nextIndex + count) % count;
+        track.scrollTo({ left: index * track.clientWidth, behavior: 'smooth' });
+        dots.forEach((dot, dotIndex) => {
+          dot.classList.toggle('is-active', dotIndex === index);
+        });
+      };
+
+      prev?.addEventListener('click', () => setActive(index - 1));
+      next?.addEventListener('click', () => setActive(index + 1));
+      dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+          setActive(Number(dot.getAttribute('data-blog-dot')) || 0);
+        });
+      });
+
+      track.addEventListener('scroll', () => {
+        const width = track.clientWidth || 1;
+        const nextIndex = Math.round(track.scrollLeft / width);
+        if (nextIndex === index) return;
+        index = nextIndex;
+        dots.forEach((dot, dotIndex) => {
+          dot.classList.toggle('is-active', dotIndex === index);
+        });
+      }, { passive: true });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBlogImageCarousels);
+  } else {
+    initBlogImageCarousels();
+  }
+  document.addEventListener('astro:page-load', initBlogImageCarousels);
+  document.addEventListener('astro:after-swap', initBlogImageCarousels);
+</script>
+
 <style>
+  .blog-image-track {
+    scrollbar-width: none;
+  }
+
+  .blog-image-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .blog-image-nav {
+    position: absolute;
+    top: 42%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.375rem;
+    background: #385cad;
+    color: #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  }
+
+  .blog-image-nav-prev {
+    left: 0.5rem;
+  }
+
+  .blog-image-nav-next {
+    right: 0.5rem;
+  }
+
+  .blog-image-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: #b5d3ed;
+  }
+
+  .blog-image-dot.is-active {
+    background: #385cad;
+  }
+
 .animate-zoom {
   animation: zoom 15s linear infinite;
 }

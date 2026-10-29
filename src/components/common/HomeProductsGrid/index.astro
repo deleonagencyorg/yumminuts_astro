@@ -1,6 +1,7 @@
 ---
 import ProductCard from '../ProductCard/index.astro';
 import { getLocale } from '../../../i18n/i18n';
+import categoriesConfig from '../../../config/categories.json';
 
 export interface HomeProduct {
   id: string;
@@ -49,6 +50,15 @@ const sortedProducts = groupedRows.flat();
 const productsSegment = currentLang === 'es' ? 'productos' : 'products';
 const langPrefix = currentLang === 'es' ? 'es' : 'en';
 const loadMoreLabel = currentLang === 'es' ? 'Cargar más' : 'Load more';
+const allProductsLabel = currentLang === 'es' ? 'Todos' : 'All Products';
+const filterAriaLabel = currentLang === 'es' ? 'Filtrar productos' : 'Filter products';
+const filterOptions = [
+  { key: 'all', label: allProductsLabel },
+  ...(categoriesConfig.categories || []).map((category) => ({
+    key: category.key,
+    label: currentLang === 'es' ? category.labels.es : category.labels.en,
+  })),
+];
 const instanceId = `home-products-${Math.random().toString(36).slice(2)}`;
 
 function productHref(product: HomeProduct): string {
@@ -64,6 +74,18 @@ function productHref(product: HomeProduct): string {
       </h2>
     </div>
 
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" role="group" aria-label={filterAriaLabel}>
+      {filterOptions.map((option) => (
+        <button
+          type="button"
+          class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white"
+          data-filter={option.key}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+
     <div
       id={`${instanceId}-grid`}
       class="home-products-rows w-full"
@@ -74,6 +96,7 @@ function productHref(product: HomeProduct): string {
             <a
               href={productHref(product)}
               class="home-product-card block w-full min-w-0"
+              data-category={product.categoryKey || ''}
               data-row={rowIndex}
               data-index={index}
             >
@@ -125,7 +148,8 @@ function productHref(product: HomeProduct): string {
       margin-top: 2.5rem;
     }
 
-  .home-products-row.hidden-row {
+  .home-products-row.hidden-row,
+  .home-product-card.hidden {
     display: none !important;
   }
 
@@ -181,44 +205,71 @@ function productHref(product: HomeProduct): string {
     const rowsContainer = root.querySelector('.home-products-rows');
     const loadMoreWrap = root.querySelector('.home-products-load-more-wrap');
     const loadMoreBtn = root.querySelector('.js-home-products-load-more');
-    if (!(rowsContainer instanceof HTMLElement) || !(loadMoreBtn instanceof HTMLButtonElement)) return;
+    const filterButtons = Array.from(root.querySelectorAll('[data-filter]'));
+    if (!(rowsContainer instanceof HTMLElement)) return;
 
     const allRows = () => Array.from(rowsContainer.querySelectorAll('.home-products-row'));
-    const rowCount = () => Math.max(allRows().length, totalRows);
+    const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
+    const rowBatch = loadMoreBtn instanceof HTMLButtonElement
+      ? Number(loadMoreBtn.dataset.desktopBatch) || 1
+      : 1;
 
-    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 1023px)').matches;
+    let activeFilter = 'all';
+    let visibleRows = Math.min(rowBatch, Math.max(allRows().length, totalRows));
 
-    if (isMobile) {
+    const updateVisible = () => {
       const rows = allRows();
-      rows.forEach((row) => row.classList.remove('hidden-row'));
-      if (loadMoreWrap instanceof HTMLElement) loadMoreWrap.classList.add('hidden');
-    } else {
-      const rowBatch = Number(loadMoreBtn.dataset.desktopBatch) || 1;
+      const filtering = activeFilter !== 'all';
+      const paginate = !filtering && !isMobile();
+      visibleRows = Math.min(visibleRows, rows.length);
 
-      let visibleRows = Math.min(rowBatch, rowCount());
-
-      const updateVisible = () => {
-        const rows = allRows();
-        const count = rows.length;
-        visibleRows = Math.min(visibleRows, count);
-
-        rows.forEach((row, index) => {
-          row.classList.toggle('hidden-row', index >= visibleRows);
+      rows.forEach((row, index) => {
+        const cards = Array.from(row.querySelectorAll('.home-product-card'));
+        let visible = 0;
+        cards.forEach((card) => {
+          const show = !filtering || card.getAttribute('data-category') === activeFilter;
+          card.classList.toggle('hidden', !show);
+          if (show) visible += 1;
         });
+        row.classList.toggle('hidden-row', visible === 0 || (paginate && index >= visibleRows));
+      });
 
-        const hasMore = visibleRows < count;
-        if (loadMoreWrap instanceof HTMLElement) {
-          loadMoreWrap.classList.toggle('hidden', !hasMore);
-        }
-      };
+      const hasMore = paginate && visibleRows < rows.length;
+      if (loadMoreWrap instanceof HTMLElement) {
+        loadMoreWrap.classList.toggle('hidden', !hasMore);
+      }
+    };
 
+    const setActiveButton = (filter) => {
+      filterButtons.forEach((btn) => {
+        btn.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
+        btn.classList.add('text-primary');
+      });
+      const activeBtn = filterButtons.find((btn) => btn.getAttribute('data-filter') === filter);
+      if (activeBtn) activeBtn.classList.add('bg-secondary', 'text-primary');
+      filterButtons.forEach((btn) => {
+        if (btn !== activeBtn) btn.classList.add('opacity-40');
+      });
+    };
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.getAttribute('data-filter') || 'all';
+        setActiveButton(activeFilter);
+        updateVisible();
+      });
+    });
+
+    setActiveButton(activeFilter);
+
+    if (loadMoreBtn instanceof HTMLButtonElement) {
       loadMoreBtn.addEventListener('click', () => {
         visibleRows = Math.min(visibleRows + rowBatch, allRows().length);
         updateVisible();
       });
-
-      updateVisible();
     }
+
+    updateVisible();
   }
 
   function setup() {

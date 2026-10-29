@@ -104,7 +104,7 @@ function productHref(product: any): string {
   return `/${lang}/${seg}/${slug}`;
 }
 
-const allProductsLabel = currentLang === 'es' ? 'Todos los Productos' : 'All Products';
+const allProductsLabel = currentLang === 'es' ? 'Todos' : 'All Products';
 const filterAriaLabel = currentLang === 'es' ? 'Filtrar productos' : 'Filter products';
 
 const filterOptions = [
@@ -121,19 +121,16 @@ const filterOptions = [
     </h2>
   </div>
 
-  <!-- Filtro: selector -->
-  <div class="mb-6 w-full">
-    <div class="relative w-full">
-      <select
-        data-products-filter-select
-        class="products-page-filter-select w-full text-left px-4 py-2 pr-10 rounded-md bg-secondary text-primary font-bold border border-white cursor-pointer"
-        aria-label={filterAriaLabel}
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" role="group" aria-label={filterAriaLabel}>
+    {filterOptions.map((option) => (
+      <button
+        type="button"
+        class="filter-btn w-full text-center px-6 py-2 rounded-md bg-secondary text-primary font-bold hover:text-primary hover:bg-secondary hover:opacity-100 active:text-primary active:bg-secondary transition-colors border border-white"
+        data-filter={option.key}
       >
-        {filterOptions.map((option) => (
-          <option value={option.key}>{option.label}</option>
-        ))}
-      </select>
-    </div>
+        {option.label}
+      </button>
+    ))}
   </div>
 
     <!-- Products Grid -->
@@ -173,25 +170,6 @@ const filterOptions = [
 </div>
 
 <style>
-.products-page-filter-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23385cad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.25rem;
-}
-
-.products-page-filter-select::-ms-expand {
-  display: none;
-}
-
-.products-page-filter-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--color-brown, #8b4513);
-}
-
 /* Product card animations */
 .product-card {
   opacity: 1;
@@ -275,11 +253,11 @@ const filterOptions = [
   function initProductsFilters(root: Element) {
     if ((root as HTMLElement).dataset?.productsFiltersBound === '1') return;
 
-    const filterSelect = root.querySelector('[data-products-filter-select]');
+    const filterButtons = Array.from(root.querySelectorAll('[data-filter]'));
     const gridEl = root.querySelector('#productsGrid');
     const noProductsMessage = root.querySelector('#noProductsMessage');
 
-    if (!gridEl || !(filterSelect instanceof HTMLSelectElement)) return;
+    if (!gridEl || !filterButtons.length) return;
 
     const productCards = Array.from(gridEl.querySelectorAll('.product-card'));
     const productRows = Array.from(gridEl.querySelectorAll('.products-page-row'));
@@ -309,14 +287,22 @@ const filterOptions = [
 
     function setActiveFilter(category: string) {
       const filter = category || 'all';
-      if (filterSelect.value !== filter) {
-        filterSelect.value = filter;
-      }
+      filterButtons.forEach((btn) => {
+        btn.classList.remove('bg-secondary', 'opacity-40', 'opacity-50', 'text-primary');
+        btn.classList.add('text-primary');
+      });
+      const activeBtn = filterButtons.find((btn) => btn.getAttribute('data-filter') === filter);
+      activeBtn?.classList.add('bg-secondary', 'text-primary');
+      filterButtons.forEach((btn) => {
+        if (btn !== activeBtn) btn.classList.add('opacity-40');
+      });
       apply(filter);
     }
 
-    filterSelect.addEventListener('change', () => {
-      setActiveFilter(filterSelect.value || 'all');
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setActiveFilter(btn.getAttribute('data-filter') || 'all');
+      });
     });
 
     setActiveFilter('all');
