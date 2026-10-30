@@ -214,7 +214,7 @@ const headerColors = {
               const phoneContainer = document.createElement('div');
               const phoneLink = document.createElement('a');
               phoneLink.href = `tel:${phone}`;
-              phoneLink.textContent = `+${phone}`;
+              phoneLink.textContent = phone;
               phoneLink.className = 'text-black hover:text-primary font-medium font-semibold transition-colors';
               phoneContainer.appendChild(phoneLink);
               officePhones.appendChild(phoneContainer);
