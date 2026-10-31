@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../utils/staticPaths';
 // src/pages/[lang]/[pageSlug].astro
 import { routesConfig, findRouteBySlug } from '../../config/routes';
 import { setLocale, type Locale } from '../../i18n/i18n';
@@ -7,7 +8,6 @@ import RecipeDetail from '../../views/Recipes/Detail/index.astro';
 import { getAllRecipes } from '../../services/api/recipes';
 import SEO from '../../components/SEO.astro';
 import { getPageByRouteId } from '../../services/api/pages';
-import { getSiteTexts, text } from '../../services/api/site-texts';
 
 // Define the expected structure of the dynamically imported modules
 interface PageModule {
@@ -34,8 +34,13 @@ export async function getStaticPaths() {
   return paths;
 }
 
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
 const { lang, pageSlug } = Astro.params as { lang: Locale; pageSlug: string };
-const { routeId } = Astro.props as { routeId: string };
+const { routeId } = staticPath.props as { routeId: string };
 
 setLocale(lang);
 
@@ -146,16 +151,15 @@ if (!isRecipeDetail) {
   }
 
   const cmsPage = await getPageByRouteId(currentRoute.id, lang);
-  const siteTexts = await getSiteTexts(lang);
 
   pageTitle =
     cmsPage?.metaTitle ||
     cmsPage?.title ||
-    (currentRoute.metaTitleKey ? text(siteTexts, currentRoute.metaTitleKey, '') : '');
+    pageSlug.charAt(0).toUpperCase() + pageSlug.slice(1).replace(/-/g, ' ');
   pageDescription =
     cmsPage?.metaDescription ||
     cmsPage?.excerpt ||
-    (currentRoute.metaDescriptionKey ? text(siteTexts, currentRoute.metaDescriptionKey, '') : '');
+    '';
   pageImage = cmsPage?.ogImage?.seoUrl ?? cmsPage?.ogImage?.originalUrl ?? '';
   ogTitle = cmsPage?.ogTitle || pageTitle;
   ogDescription = cmsPage?.ogDescription || pageDescription;

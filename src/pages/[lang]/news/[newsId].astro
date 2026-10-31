@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../../utils/staticPaths';
 // src/pages/[lang]/news/[newsId].astro
 import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
@@ -6,25 +7,20 @@ import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { config } from '../../../i18n/config';
 import SEO from '../../../components/SEO.astro';
 import { getAllNews } from '../../../services/api/news';
-import { getBlogPostsForLocale } from '../../../lib/blogPosts';
 
 export async function getStaticPaths() {
   const locales = config.supportedLocales as Locale[];
 
   const allNewsByLang = await Promise.all(locales.map(async (lang) => {
     const cmsNews = await getAllNews(lang);
-    const localNews = await getBlogPostsForLocale(lang, true);
-    const bySlug = new Map<string, typeof cmsNews[number] | typeof localNews[number]>();
-    for (const item of localNews) bySlug.set(item.slug || item.id, item);
-    for (const item of cmsNews) bySlug.set(item.slug || item.id, {
+    return cmsNews.map((item) => ({
       ...item,
       summary: item.excerpt,
       preview: item.image,
       banner: item.image,
       meta_title: item.title,
       meta_description: item.excerpt,
-    });
-    return Array.from(bySlug.values());
+    }));
   }));
 
   return locales.flatMap((locale, index) =>
@@ -35,7 +31,12 @@ export async function getStaticPaths() {
   );
 }
 
-const { blogPost, currentLang } = Astro.props;
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { blogPost, currentLang } = staticPath.props;
 const { lang, newsId } = Astro.params;
 
 setLocale(lang as Locale);

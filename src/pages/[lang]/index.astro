@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../utils/staticPaths';
 // src/pages/[lang]/index.astro
 import { getRouteById } from '../../config/routes';
 import { setLocale, type Locale } from '../../i18n/i18n';
@@ -14,6 +15,11 @@ export async function getStaticPaths() {
   return Object.keys(homeRoute.slugs).map(lang => ({
     params: { lang },
   }));
+}
+
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
 }
 
 const { lang } = Astro.params as { lang: Locale };

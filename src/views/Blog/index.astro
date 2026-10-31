@@ -5,16 +5,22 @@ import BlogCard from '../../components/blog/BlogCard.astro';
 import BlogCardSkeleton from '../../components/blog/BlogCardSkeleton.astro';
 import Breadcrumb from '../../components/common/Breadcrumb/Breadcrumb.astro';
 import { fade } from 'astro:transitions';
-import { getBlogPostsForLocale } from '../../lib/blogPosts';
+
+export interface BlogListPost {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  image: string;
+}
 
 export interface Props {
   currentLang: Locale;
+  blogPosts?: BlogListPost[];
   isLoading?: boolean;
 }
 
-const { currentLang, isLoading = false } = Astro.props;
-
-const blogPosts = await getBlogPostsForLocale(currentLang);
+const { currentLang, blogPosts = [], isLoading = false } = Astro.props;
 
 function estimateReadMinutes(text: string): number {
   if (!text) return 1;
@@ -41,7 +47,7 @@ const showLatestNews = morePosts.length > 0;
     <Breadcrumb bgColor="bg-white" textColor="text-black" hoverColor="hover:text-black" />
     
     <div class="flex items-center justify-center text-center mb-12 md:h-64 md:rounded-none rounded-2xl"  style="background-image: url('https://snack.yummiespromociones.com/yumminuts/bgrecipes.png'); background-size: cover; background-position: center; background-repeat: no-repeat;" transition:animate={fade({ duration: '0.5s' })}>
-      <h1 class="font-heading text-2xl md:text-4xl font-bold mb-4 text-primary py-4 ">{currentLang === 'es' ? 'Descubre las noticias y actualizaciones mas importantes.' : 'Discover the latest news and updates.'}</h1>
+      <h1 class="font-heading text-2xl md:text-4xl font-bold mb-4 text-primary py-4 ">{currentLang === 'es' ? 'Noticias' : 'News'}</h1>
     
     </div>
     {(!blogPosts || blogPosts.length === 0) ? (

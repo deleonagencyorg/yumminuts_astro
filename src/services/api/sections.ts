@@ -21,6 +21,16 @@ interface CmsHealthIcon {
   image?: CmsMultimedia | null;
 }
 
+interface CmsFooterLink {
+  label: string;
+  url: string;
+}
+
+export interface FooterLinkView {
+  text: string;
+  href: string;
+}
+
 export interface FooterPhoneView {
   country: string;
   flag: string;
@@ -54,6 +64,13 @@ export function getFooterPhones(locale: string = 'es'): Promise<FooterPhoneView[
     flagImageUrl: mediaUrl(item.flagImage),
     number: item.number || '',
     telHref: `tel:+${(item.number || '').replace(/\D/g, '').replace(/^00?1(?=809)/, '1')}`,
+  }));
+}
+
+export function getFooterLinks(locale: string = 'es'): Promise<FooterLinkView[]> {
+  return loadSection<CmsFooterLink, FooterLinkView>('v1/footer-links', locale, (item) => ({
+    text: item.label || '',
+    href: item.url || '#',
   }));
 }
 

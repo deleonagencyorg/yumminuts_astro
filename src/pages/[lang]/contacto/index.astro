@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../../utils/staticPaths';
 // src/pages/[lang]/contacto/index.astro
 import MainLayout from '../../../layouts/MainLayout.astro';
 import SEO from '../../../components/SEO.astro';
@@ -15,7 +16,12 @@ export async function getStaticPaths() {
   }));
 }
 
-const { currentLang } = Astro.props;
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { currentLang } = staticPath.props;
 const { lang } = Astro.params;
 
 // Set header color config for contact page

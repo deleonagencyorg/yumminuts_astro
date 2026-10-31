@@ -1,7 +1,6 @@
 ---
 // src/views/Products/Detail/index.astro
 import type { Locale } from '../../../i18n/i18n';
-import { getSiteTexts, text } from '../../../services/api/site-texts';
 import './styles.css';
 import { initProductDetail } from './scripts.js';
 import ProductsCarousel from '../../../components/common/ProductsCarousel/index.astro';
@@ -48,15 +47,10 @@ const { currentLang, productId, product } = Astro.props as {
 
 const discover = await getDiscoverSection(currentLang, 'products');
 const categories = await getProductCategories(currentLang);
-const siteTexts = await getSiteTexts(currentLang);
 
 // Si el producto no existe, lanzar error
 if (!product) {
-  throw new Error(text(
-    siteTexts,
-    'errors.product_not_found',
-    currentLang === 'es' ? 'Producto no encontrado.' : 'Product not found.'
-  ));
+  throw new Error(`Product '${productId}' was not found for locale '${currentLang}'`);
 }
 
 // Helpers de categoría

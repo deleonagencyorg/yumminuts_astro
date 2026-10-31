@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../utils/staticPaths';
 // src/pages/[lang]/zibas-creators.astro
 import ZibasCreatorsView from '../../views/ZibasCreators/index.astro';
 import { type Locale } from '../../i18n/i18n';
@@ -12,7 +13,12 @@ export async function getStaticPaths() {
   }));
 }
 
-const { currentLang } = Astro.props || { currentLang: 'es' };
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { currentLang } = staticPath.props;
 
 // Solo permitir español por ahora
 if (currentLang !== 'es') {

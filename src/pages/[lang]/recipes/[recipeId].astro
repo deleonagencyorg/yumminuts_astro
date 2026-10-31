@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../../utils/staticPaths';
 // src/pages/[lang]/recipes/[recipeId].astro
 import { setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
@@ -24,7 +25,12 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { recipe, currentLang } = Astro.props;
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { recipe, currentLang } = staticPath.props;
 const { lang, recipeId } = Astro.params;
 
 // Establecer el idioma para las traducciones

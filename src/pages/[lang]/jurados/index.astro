@@ -1,4 +1,5 @@
 ---
+import { resolveStaticPath } from '../../../utils/staticPaths';
 import JuradosView from '../../../views/Jurados/index.astro';
 import { type Locale } from '../../../i18n/i18n';
 import { getHeaderColors } from '../../../config/headerColors';
@@ -11,7 +12,12 @@ export async function getStaticPaths() {
   }));
 }
 
-const { currentLang } = Astro.props;
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { currentLang } = staticPath.props;
 
 // Set header color config for contact page
 const headerColorConfig = getHeaderColors('contact');

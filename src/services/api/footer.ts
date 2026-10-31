@@ -18,10 +18,6 @@ export interface FooterLabels {
   newsletterDescription: string;
   emailPlaceholder: string;
   home: string;
-  products: string;
-  health: string;
-  latestNews: string;
-  contact: string;
   support: string;
   privacyPolicy: string;
   cookiePolicy: string;
@@ -61,10 +57,6 @@ function mapFooter(config: CmsFooterConfig): FooterLabels {
     newsletterDescription: text(config.newsletterDescription),
     emailPlaceholder: text(config.emailPlaceholder),
     home: text(config.home),
-    products: text(config.products),
-    health: text(config.health),
-    latestNews: text(config.latestNews),
-    contact: text(config.contact),
     support: text(config.support),
     privacyPolicy: text(config.privacyPolicy),
     cookiePolicy: text(config.cookiePolicy),

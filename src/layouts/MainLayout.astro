@@ -1,7 +1,7 @@
 ---
 import Favicon from '../components/Favicon.astro';
 // ----------------------
-import { type Locale } from '../i18n/i18n'; 
+import { getCurrentCommonTexts, type Locale } from '../i18n/i18n'; 
 import Header from '../components/common/Header/index.astro';
 import Footer from '../components/common/Footer/index.astro';
 import MobileMenu from '../components/common/MobileMenu/index.astro';
@@ -27,6 +27,8 @@ const pathSegments = Astro.url.pathname.split('/');
 const langFromUrl = pathSegments[1] as Locale;
 const validLocales: Locale[] = ['es', 'en'];
 const currentLang = validLocales.includes(langFromUrl) ? langFromUrl : 'es'; 
+const commonTexts = getCurrentCommonTexts(currentLang);
+const commonTextsJson = JSON.stringify(commonTexts).replace(/</g, '\\u003c');
 const { pathname } = Astro.url;
 const headerColorConfig = getHeaderColors(pathname);
 
@@ -46,6 +48,12 @@ if (headerColors) {
 ---
 <html lang={currentLang}>
   <head>
+    <script is:inline define:vars={{ currentLang, commonTextsJson }}>
+      const parsedCommonTexts = JSON.parse(commonTextsJson);
+      window.__cmsCommonTexts ??= {};
+      window.__cmsCommonTexts[currentLang] = parsedCommonTexts;
+      window.__cmsCommonLocale = currentLang;
+    </script>
     <Favicon />
 
     <meta charset="UTF-8" />

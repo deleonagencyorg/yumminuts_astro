@@ -1,11 +1,10 @@
 ---
 // src/components/common/Footer/index.astro
 import type { Locale } from '../../../i18n/i18n';
-import { getRouteById } from '../../../config/routes';
 import './styles.css';
 import Skeleton from './Skeleton.astro';
 import { getFooterLabels } from '../../../services/api/footer';
-import { getFooterPhones } from '../../../services/api/sections';
+import { getFooterLinks, getFooterPhones } from '../../../services/api/sections';
 import { getSocialMediaLinks } from '../../../services/api/social-media';
 
 export interface Props {
@@ -17,17 +16,12 @@ const { currentLang, loading = false } = Astro.props;
 
 const footer = await getFooterLabels(currentLang);
 const phones = await getFooterPhones(currentLang);
+const footerLinks = await getFooterLinks(currentLang);
 
 const socialMedia = await getSocialMediaLinks(currentLang);
 const instagramUrl = socialMedia.find((sm) => sm.platform.toLowerCase() === 'instagram')?.url || '';
 const facebookUrl = socialMedia.find((sm) => sm.platform.toLowerCase() === 'facebook')?.url || '';
 
-function langPath(routeId: string): string {
-  const route = getRouteById(routeId);
-  if (!route) return `/${currentLang}`;
-  const slug = route.slugs[currentLang] || '';
-  return slug ? `/${currentLang}/${slug}` : `/${currentLang}`;
-}
 ---
 
 {loading ? (
@@ -60,10 +54,9 @@ function langPath(routeId: string): string {
             {footer.home}
           </div>
           <div class="flex flex-col font-sans gap-3 md:gap-4 items-start justify-start text-primary text-base md:text-lg">
-            <a href={langPath('products')} class="hover:underline hover:text-blue">{footer.products}</a>
-            <a href={langPath('health')} class="hover:underline hover:text-blue">{footer.health}</a>
-            <a href={langPath('news')} class="hover:underline hover:text-blue">{footer.latestNews}</a>
-            <a href={langPath('contact')} class="hover:underline hover:text-blue">{footer.contact}</a>
+            {footerLinks.map((link) => (
+              <a href={link.href} class="hover:underline hover:text-blue">{link.text}</a>
+            ))}
           </div>
         </div>
 
@@ -110,7 +103,7 @@ function langPath(routeId: string): string {
     <!-- Copyright Section -->
     <div class="container mx-auto px-4 md:px-6 mt-8 text-center">
       <p class="text-xs md:text-sm text-primary opacity-80">
-        &copy; {new Date().getFullYear()} Yummi Nuts. {footer.copyright || 'Todos los derechos reservados.'}
+        {(footer.copyright || '').replace('{year}', String(new Date().getFullYear()))}
       </p>
     </div>
   </footer>

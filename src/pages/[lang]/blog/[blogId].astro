@@ -1,8 +1,8 @@
 ---
+import { resolveStaticPath } from '../../../utils/staticPaths';
 import BlogDetail from '../../../views/Blog/Detail/index.astro';
 import { type Locale } from '../../../i18n/i18n';
 import { getAllNews } from '../../../services/api/news';
-import { getBlogPostsForLocale } from '../../../lib/blogPosts';
 
 export async function getStaticPaths() {
   const locales = ['en', 'es'] as const;
@@ -17,11 +17,7 @@ export async function getStaticPaths() {
       meta_title: item.title,
       meta_description: item.excerpt,
     }));
-    const localPosts = await getBlogPostsForLocale(locale, true);
-    const postsBySlug = new Map<string, typeof cmsPosts[number] | typeof localPosts[number]>();
-    for (const post of localPosts) postsBySlug.set(post.slug || post.id, post);
-    for (const post of cmsPosts) postsBySlug.set(post.slug || post.id, post);
-    const blogPosts = Array.from(postsBySlug.values());
+    const blogPosts = cmsPosts;
     for (const blogPost of blogPosts) {
       paths.push({
         params: {
@@ -39,7 +35,12 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { blogPost, currentLang, allBlogPosts } = Astro.props;
+const staticPath = await resolveStaticPath(getStaticPaths, Astro.params);
+if (!staticPath) {
+  return Astro.rewrite('/404');
+}
+
+const { blogPost, currentLang, allBlogPosts } = staticPath.props;
 ---
 
 <BlogDetail blogPost={blogPost} currentLang={currentLang} allBlogPosts={allBlogPosts} />
