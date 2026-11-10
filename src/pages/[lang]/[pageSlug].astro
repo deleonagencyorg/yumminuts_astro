@@ -4,6 +4,7 @@ import { routesConfig, findRouteBySlug } from '../../config/routes';
 import { setLocale, t, type Locale } from '../../i18n/i18n';
 import MainLayout from '../../layouts/MainLayout.astro';
 import RecipeDetail from '../../views/Recipes/Detail/index.astro';
+import { recipeExcerpt } from '../../lib/seo';
 
 // Define the expected structure of the dynamically imported modules
 interface PageModule {
@@ -142,7 +143,7 @@ if (!isRecipeDetail) {
 ---
 
 {isRecipeDetail && (
-  <MainLayout title={recipeData.title ?? ''} description="">
+  <MainLayout title={recipeData.title ?? ''} description={recipeExcerpt(recipeData)} image={recipeData.image}>
     <RecipeDetail currentLang={langCode as Locale} recipeId={recipeId} />
   </MainLayout>
 )}

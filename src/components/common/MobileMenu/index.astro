@@ -108,7 +108,7 @@ const closeMenuLabel = t('menu_labels.close_main_menu', { namespace: 'common', l
       {socialMedia && Object.entries(socialMedia).map(([key, social]) => {
         const sm = social as { name: string; url: string; alt?: string; iconUrl?: string };
         return (
-          <a href={sm.url} target="_blank" rel="noopener noreferrer" title={sm.name} class="text-white hover:text-gray-300">
+          <a href={sm.url} target="_blank" rel="noopener noreferrer" title={sm.name} aria-label={sm.name} class="text-white hover:text-gray-300">
             <span class="sr-only">{sm.name}</span>
             {sm.iconUrl && (
               <LocalizedImage

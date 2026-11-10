@@ -34,7 +34,7 @@ const contact = locale === 'es' ? contactEs : contactEn;
 const locationUnavailableText = locale === 'es' ? 'Ubicación no disponible' : 'Location not available';
 
 // Meta information
-const title = contact.title;
+const title = locale === 'es' ? 'Contacto' : 'Contact';
 const metaDescription = contact.description;
 console.log('headerColorConfig in Contact:', headerColorConfig);
 const headerColors = {
@@ -53,9 +53,9 @@ const headerColors = {
       
       <!-- Left Column - Contact Info -->
     <div class="w-[100%] lg:w-[40%] pl-8 lg:pl-16 flex flex-col justify-center h-[100%] lg:h-[600px]">
-        <h2 class="text-black font-heading text-4xl uppercase md:text-4xl lg:text-5xl font-bold mb-6">
-          {contact.title}
-        </h2>
+        <h1 class="text-black font-heading text-4xl uppercase md:text-4xl lg:text-5xl font-bold mb-6">
+          {locale === 'es' ? 'Contáctanos' : 'Contact us'}
+        </h1>
         
         <p class="text-gray font-sans text-2xl lg:text-lg mb-8 leading-relaxed ">
           {contact.description}

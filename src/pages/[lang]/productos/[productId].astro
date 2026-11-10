@@ -2,8 +2,8 @@
 // src/pages/[lang]/productos/[productId].astro
 import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
-import SEO from '../../../components/SEO.astro';
 import ProductDetail from '../../../views/Products/Detail/index.astro';
+import { productJsonLd } from '../../../lib/seo';
 
 export function getStaticPaths() {
   // Obtener todos los idiomas y productos disponibles
@@ -36,15 +36,11 @@ setLocale(lang as Locale);
 
 ---
 
-<MainLayout title={product.name}>
-  <Fragment slot="head">
-    <SEO 
-      currentLang={currentLang}
-      title={product.name}
-      description={product.description || product.name}
-      canonicalUrl={`https://snacksyummies.com/${currentLang}/productos/${product.id}`}
-      imageUrl={(product.image || (product.sizes && product.sizes[0]?.image) || 'https://snack.yummiespromociones.com/snacksyummies/yumminuts-producto.webp')}
-    />
-  </Fragment>
+<MainLayout
+  title={product.name}
+  description={product.description || product.name}
+  image={product.image || product.sizes?.[0]?.image}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(productJsonLd(product, Astro.url.pathname))} />
   <ProductDetail currentLang={currentLang} productId={productId} />
 </MainLayout>

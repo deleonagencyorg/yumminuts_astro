@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write .",
+    "test:gtm": "node ./node_modules/@playwright/test/cli.js test tests/gtm.spec.ts",
     "lint": "eslint --ext .js,.astro src",
     "lint:fix": "eslint --ext .js,.astro src --fix"
   },
@@ -38,6 +39,7 @@
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^6.0.2",
     "@hookform/resolvers": "^4.1.3",
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@types/dompurify": "^3.0.5",

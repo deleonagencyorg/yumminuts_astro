@@ -46,32 +46,13 @@ const seoKeywords = lang === 'es'
       type="video/mp4"
       fetchpriority="high"
     />
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href={`https://yumminuts.com/${lang}`}>
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content={`Yummi Nuts - ${pageTitle}`}>
-    <meta property="og:description" content={pageDescription}>
-    <meta property="og:image" content="https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp">
-    <meta property="og:url" content={`https://yumminuts.com/${lang}`}>
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Yummi Nuts">
-    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'}>
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content={`Yummi Nuts - ${pageTitle}`}>
-    <meta name="twitter:description" content={pageDescription}>
-    <meta name="twitter:image" content="https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp">
-    <meta name="twitter:site" content="@YummiNuts">
-    
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Yummi Nuts",
       "alternateName": "Yummi Nuts",
-      "url": "https://yumminuts.com",
+      "url": "https://www.yumminuts.com",
       "logo": "https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp",
       "description": lang === 'es' ? "Marca líder de snacks en Centroamérica. Taqueritos, Zambos, Ranchitas. Calidad y sabor inigualable." : "Leading snack brand in Central America. Taqueritos, Zambos, Ranchitas. Unmatched quality and flavor.",
       "foundingDate": "1990",
@@ -87,7 +68,7 @@ const seoKeywords = lang === 'es'
         {
           "@type": "Brand",
           "name": "Yummi Nuts",
-          "url": "https://yumminuts.com"
+          "url": "https://www.yumminuts.com"
         }
       ],
       "sameAs": [
@@ -113,12 +94,12 @@ const seoKeywords = lang === 'es'
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Yummi Nuts",
-      "url": "https://yumminuts.com",
+      "url": "https://www.yumminuts.com",
       "description": lang === 'es' ? "Sitio web oficial de Yummi Nuts, la marca líder de snacks en Centroamérica" : "Official website of Yummi Nuts, the leading snack brand in Central America",
       "inLanguage": lang === 'es' ? "es-ES" : "en-US",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `https://yumminuts.com/${lang}/search?q={search_term_string}`,
+        "target": `https://www.yumminuts.com/${lang}/search?q={search_term_string}`,
         "query-input": "required name=search_term_string"
       }
     })}></script>
@@ -131,7 +112,7 @@ const seoKeywords = lang === 'es'
           "@type": "ListItem",
           "position": 1,
           "name": lang === 'es' ? "Inicio" : "Home",
-          "item": `https://yumminuts.com/${lang}`
+          "item": `https://www.yumminuts.com/${lang}`
         }
       ]
     })}></script>

@@ -1,4 +1,19 @@
 {
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/", "destination": "/es/", "statusCode": 301 },
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 },
+    { "source": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-torea/", "destination": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toread/", "destination": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/es/productos/yummi-nut-mani-japones-con-sabor-a-chile-torea/", "destination": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/es/productos/yummi-nut-mani-japones-con-sabor-a-chile-toread/", "destination": "/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-torea/", "destination": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-toread/", "destination": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/en/products/yummi-nut-mani-japones-con-sabor-a-chile-torea/", "destination": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/en/products/yummi-nut-mani-japones-con-sabor-a-chile-toread/", "destination": "/en/products/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/", "statusCode": 301 },
+    { "source": "/es/productos/yummi-nut-:rest/", "destination": "/es/productos/yummi-nuts-:rest/", "statusCode": 301 },
+    { "source": "/en/products/yummi-nut-:rest/", "destination": "/en/products/yummi-nuts-:rest/", "statusCode": 301 }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

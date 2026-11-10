@@ -25,6 +25,7 @@ const uniqueCategories = (categoriesConfig.categories || []).map((c: any) => c.k
   <section class="w-full pt-4 pb-2 bg-white reveal-on-scroll">
     <div class="container mx-auto px-4">
       <Breadcrumb bgColor="bg-transparent" textColor="text-primary" hoverColor="hover:text-primary" />
+      <h1 class="font-heading text-3xl md:text-5xl font-bold text-black mt-6">{currentLang === 'es' ? 'Productos Yummi Nuts' : 'Yummi Nuts Products'}</h1>
       <div class="mt-4 w-full">
         <Carousel slides={slides} layout="contained" />
       </div>
