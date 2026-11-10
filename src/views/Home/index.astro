@@ -130,6 +130,7 @@ const itemsForCarousel: Recipe[] = allRecipes.length ? allRecipes.slice(0, 10) :
 ---
 
   <main class="w-full flex flex-col items-center justify-center mt-0">
+    <h1 class="sr-only">{currentLang === 'es' ? 'Yummi Nuts: maní, marañón y mezclas para cada momento' : 'Yummi Nuts: peanuts, cashews and mixes for every moment'}</h1>
     <!-- Slider Section: ancho completo -->
     <section class="w-full max-w-[100vw] overflow-hidden reveal-on-scroll opacity-0 translate-y-6 transition-all duration-700 ease-out">
       <Carousel slides={slides} />

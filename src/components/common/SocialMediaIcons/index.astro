@@ -35,7 +35,8 @@ const socialMedia = socialMediaObj ? Object.values(socialMediaObj) as SocialMedi
       href={sm.url} 
       target="_blank" 
       rel="noopener noreferrer" 
-      title={sm.name} 
+      title={sm.name}
+      aria-label={sm.name}
       class={`hover:text-gray-300 transition-colors`}
     >
       <span class="sr-only">{sm.name}</span>

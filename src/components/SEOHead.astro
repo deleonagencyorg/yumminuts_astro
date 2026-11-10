@@ -1,0 +1,47 @@
+---
+import { alternatePaths, absoluteUrl, withTrailingSlash } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description, image, noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('https://www.yumminuts.com');
+const canonical = new URL(withTrailingSlash(Astro.url.pathname), site).href;
+const ogImage = image ?? 'https://snack.yummiespromociones.com/SnacksyummiesAssets/YNUTS_LOGO2_COLOR.webp';
+const resolvedImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, site).href;
+const lang = Astro.url.pathname.split('/').filter(Boolean)[0] === 'en' ? 'en' : 'es';
+const ogLocale = lang === 'en' ? 'en_US' : 'es_GT';
+const alternates = alternatePaths(Astro.url.pathname);
+const defaultAlternate = alternates.find((item) => item.lang === 'es') ?? alternates[0];
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" type="text/plain" href="https://www.yumminuts.com/llms.txt" title="Yummi Nuts para modelos de lenguaje" />
+{noindex ? (
+  <meta name="robots" content="noindex, follow" />
+) : (
+  <meta name="robots" content="index, follow" />
+)}
+{alternates.map((item) => (
+  <link rel="alternate" hreflang={item.lang} href={absoluteUrl(item.path)} />
+))}
+{defaultAlternate && (
+  <link rel="alternate" hreflang="x-default" href={absoluteUrl(defaultAlternate.path)} />
+)}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Yummi Nuts" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={resolvedImage} />
+<meta property="og:locale" content={ogLocale} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={resolvedImage} />

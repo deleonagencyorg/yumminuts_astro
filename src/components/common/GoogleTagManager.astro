@@ -1,36 +1,91 @@
 ---
-// Replace with your actual GTM ID
-const gtmId ='GTM-T82M4TL';
-
-// Validar que el GTM ID esté configurado
-if (!gtmId || gtmId === 'GTM-T82M4TL') {
-  console.warn('GTM ID no está configurado correctamente. Verifica tu archivo .env');
+interface Props {
+  part: 'script' | 'noscript';
 }
+
+const { part } = Astro.props;
+
+const FALLBACK_GTM_ID = 'GTM-T82M4TL';
+const rawId = import.meta.env.PUBLIC_GTM_ID;
+const candidate = typeof rawId === 'string' ? rawId.trim() : '';
+const gtmId = /^GTM-[A-Z0-9]+$/.test(candidate) ? candidate : FALLBACK_GTM_ID;
+
+const gtmScript = `(function () {
+  try {
+    var id = ${JSON.stringify(gtmId)};
+    if (!id || !/^GTM-[A-Z0-9]+$/.test(id)) return;
+
+    var w = window;
+    w.dataLayer = w.dataLayer || [];
+
+    function pagePayload() {
+      return {
+        event: 'page_view',
+        page_location: w.location.href,
+        page_path: w.location.pathname + w.location.search,
+        page_title: document.title
+      };
+    }
+
+    function ensureGtm() {
+      if (w.__yumminutsGtmReady) return;
+
+      var selector = 'script[data-gtm-id="' + id + '"]';
+      if (document.querySelector(selector)) {
+        w.__yumminutsGtmReady = true;
+        return;
+      }
+
+      w.__yumminutsGtmReady = true;
+      w.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtm.js?id=' + id;
+      script.setAttribute('data-gtm-id', id);
+      script.onerror = function () {
+        w.__yumminutsGtmReady = false;
+        if (script.parentNode) script.parentNode.removeChild(script);
+      };
+
+      var first = document.getElementsByTagName('script')[0];
+      if (first && first.parentNode) first.parentNode.insertBefore(script, first);
+      else (document.head || document.documentElement).appendChild(script);
+    }
+
+    ensureGtm();
+
+    if (!w.__yumminutsGtmHook) {
+      w.__yumminutsGtmHook = true;
+      var skipFirst = true;
+      document.addEventListener('astro:page-load', function () {
+        try {
+          if (skipFirst) {
+            skipFirst = false;
+            return;
+          }
+          ensureGtm();
+          w.dataLayer.push(pagePayload());
+        } catch (navError) {
+          console.warn('GTM no pudo registrar la navegacion', navError);
+        }
+      });
+    }
+  } catch (error) {
+    console.warn('GTM no se pudo inicializar', error);
+  }
+})();`;
 ---
 
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-  <iframe 
-    src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-    height="0" 
-    width="0" 
-    style="display:none;visibility:hidden">
-  </iframe>
-</noscript>
+{part === 'noscript' && (
+  <noscript>
+    <iframe
+      src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+      height="0"
+      width="0"
+      style="display:none;visibility:hidden"
+    ></iframe>
+  </noscript>
+)}
 
-<!-- Google Tag Manager -->
-<script is:inline define:vars={{ gtmId }}>
-  if (gtmId && gtmId !== 'GTM-T82M4TL') {
-    (function(w,d,s,l,i){
-      w[l]=w[l]||[];
-      w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-      var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-      j.async=true;
-      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-      f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer',gtmId);
-  } else {
-    console.warn('GTM no inicializado: ID no válido');
-  }
-</script>
+{part === 'script' && <script is:inline set:html={gtmScript} />}

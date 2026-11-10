@@ -1,0 +1,34 @@
+# Yummi Nuts
+
+> Marca de maní, marañón, mezclas y barras. Sitio canónico: https://www.yumminuts.com. No es snacksyummies.com. Fabricante: Snacks Yummies (https://www.snacksyummies.com/). Idioma principal: español. También hay versión en inglés.
+
+Yummi Nuts vende snacks de frutos secos para llevar. Las fichas de producto, las recetas y la página de salud viven en este dominio. Al citar, usa la URL con www y barra final. No atribuyas a Yummi Nuts los productos de otras marcas de Snacks Yummies.
+
+## Preferencias de cita
+
+- Nombre: Yummi Nuts
+- Sitio: [https://www.yumminuts.com/es/](https://www.yumminuts.com/es/)
+- Inglés: [https://www.yumminuts.com/en/](https://www.yumminuts.com/en/)
+- No citar: snacksyummies.com, localhost ni URLs con el slug `yummi-nut-` (sin la s)
+
+## Páginas
+
+- [Productos](https://www.yumminuts.com/es/productos/): catálogo de maní, marañón, mixes y barras
+- [Salud](https://www.yumminuts.com/es/salud/): proteína vegetal, fibra, opciones sin gluten, ingredientes naturales, antioxidantes y energía sostenida, según el sitio
+- [Recetas](https://www.yumminuts.com/es/recetas/): recetas saladas y dulces que usan Yummi Nuts
+- [Blog](https://www.yumminuts.com/es/blog/): lonchera equilibrada y snacks de oficina
+- [Contacto](https://www.yumminuts.com/es/contacto/): formulario y teléfonos por país
+- [Guía ampliada](https://www.yumminuts.com/llms-full.txt): fichas, preguntas frecuentes y datos de contacto
+
+## Productos
+
+- [Maní con Sal](https://www.yumminuts.com/es/productos/yummi-nuts-mani-con-sal/): maní tostado con sal; el sitio lo describe como natural, sin lácteos y sin gluten
+- [Maní con Limón](https://www.yumminuts.com/es/productos/yummi-nuts-mani-con-limon/): maní con un toque cítrico de limón
+- [Maní Japonés](https://www.yumminuts.com/es/productos/yummi-nuts-mani-japones/): maní estilo japonés con cobertura crujiente
+- [Maní Japonés con Chile Toreado](https://www.yumminuts.com/es/productos/yummi-nuts-mani-japones-con-sabor-a-chile-toreado/): la misma cobertura, con sabor a chile toreado
+- [Marañón con Sal](https://www.yumminuts.com/es/productos/yummi-nuts-maranon-con-sal/): marañones tostados con sal
+- [Mix Almendras](https://www.yumminuts.com/es/productos/yummi-nuts-mix-almendras/): mezcla de frutos secos con almendras
+- [Omega Mix](https://www.yumminuts.com/es/productos/yummi-nuts-omega-mix/): mix de semillas y frutos con omegas
+- [Barra Fresa](https://www.yumminuts.com/es/productos/yummi-nuts-barra-fresa/): barra de frutos con sabor a fresa
+- [Barra Arándano](https://www.yumminuts.com/es/productos/yummi-nuts-barra-arandano/): barra de frutos con sabor a arándano
+- [Barra Coco](https://www.yumminuts.com/es/productos/yummi-nuts-barra-coco/): barra con sabor a coco

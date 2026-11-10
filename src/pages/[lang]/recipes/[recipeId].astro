@@ -3,6 +3,7 @@
 import { t, setLocale, type Locale } from '../../../i18n/i18n';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import RecipeDetail from '../../../views/Recipes/Detail/index.astro';
+import { recipeExcerpt } from '../../../lib/seo';
 
 export async function getStaticPaths() {
   const paths: any[] = [];
@@ -38,6 +39,6 @@ const { lang, recipeId } = Astro.params;
 setLocale(lang as Locale);
 ---
 
-<MainLayout title={recipe.title}>
+<MainLayout title={recipe.title} description={recipeExcerpt(recipe)} image={recipe.image}>
   <RecipeDetail currentLang={currentLang} recipeId={recipeId} />
 </MainLayout>
